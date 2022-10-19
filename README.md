@@ -4,13 +4,15 @@ Money Management System
 - Currency Converter (done)
 - Login, Register -OTP ***
 - Calculator ***
-- Statistic 
+- Statistic **
   - Pie chart -- income vs expenses
   - Line graph -- income vs expenses
   - Bar chart -- income vs expenses
-- Dashboard
+- Dashboard **
 - Transaction (Expeses tracker) ***
   - Account ***
   - Category ***
--	Personal customer support
-- Tips
+-	Personal customer support *
+- Tips *
+*** should be done by 29/10
+** after *** done proceed to this

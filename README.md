@@ -1,6 +1,9 @@
 # 4007CEM-CS-ALL2
 4007CEM COMPUTER SCIENCE ACTIVITY LED LEARNING PROJECT 2
 Money Management System 
+- *** should be done by 29/10
+- ** after *** done proceed to this
+
 - Currency Converter (done)
 - Login, Register -OTP ***
 - Calculator ***
@@ -14,5 +17,4 @@ Money Management System
   - Category ***
 -	Personal customer support *
 - Tips *
-- *** should be done by 29/10
-- ** after *** done proceed to this
+

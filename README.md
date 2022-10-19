@@ -14,5 +14,5 @@ Money Management System
   - Category ***
 -	Personal customer support *
 - Tips *
--*** should be done by 29/10
--** after *** done proceed to this
+- *** should be done by 29/10
+- ** after *** done proceed to this

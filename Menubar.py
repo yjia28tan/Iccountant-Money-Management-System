@@ -22,6 +22,7 @@ currency = ImageTk.PhotoImage(Image.open('currency.png').resize((160, 30), resam
 calculator = ImageTk.PhotoImage(Image.open('calculator.png').resize((160, 30), resample=Image.LANCZOS))
 customer = ImageTk.PhotoImage(Image.open('QNA.png').resize((160, 30), resample=Image.LANCZOS))
 tips = ImageTk.PhotoImage(Image.open('tips.png').resize((160, 30), resample=Image.LANCZOS))
+logout = ImageTk.PhotoImage(Image.open('logout.png').resize((160, 30), resample=Image.LANCZOS))
 user = ImageTk.PhotoImage(Image.open('user.png').resize((145, 45), resample=Image.LANCZOS))
 
 
@@ -39,6 +40,7 @@ currency_b = Button(menuFrame, image=currency, bg='#000000', relief='flat').grid
 calculator_b = Button(menuFrame, image=calculator, bg='#000000', relief='flat').grid(row=8)
 customer_b = Button(menuFrame, image=customer, bg='#000000', relief='flat').grid(row=9)
 tips_b = Button(menuFrame, image=tips, bg='#000000', relief='flat').grid(row=10)
+logout_b = Button(menuFrame, image=logout, bg='#000000', relief='flat').place(x=1, y=680)
 user_b = Button(menuFrame, image=user, bg='#000000', relief='flat').place(x=15, y=720)
 
 # So that it does not depend on the widgets inside the frame

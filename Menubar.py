@@ -41,10 +41,6 @@ customer_b = Button(menuFrame, image=customer, bg='#000000', relief='flat').grid
 tips_b = Button(menuFrame, image=tips, bg='#000000', relief='flat').grid(row=10)
 user_b = Button(menuFrame, image=user, bg='#000000', relief='flat').place(x=15, y=720)
 
-# Bind to the frame, if centered or left
-menuFrame.bind('<Enter>')
-menuFrame.bind('<Leave>')
-
 # So that it does not depend on the widgets inside the frame
 menuFrame.grid_propagate(False)
 

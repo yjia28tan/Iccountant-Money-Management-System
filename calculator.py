@@ -1,6 +1,6 @@
 import tkinter as tk
 
-btn_params = {'padx': 16, 'pady': 1, 'bd': 4, 'fg': 'white', 'bg': '#666666', 'font': ('arial', 18), 'width': 2,
+btn_params = {'padx': 16, 'pady': 1, 'bd': 4, 'fg': 'white', 'bg': '#666666', 'font': ('arial', 12), 'width': 4,
               'height': 2, 'relief': 'flat', 'activebackground': "#666666"}
 
 
@@ -10,6 +10,8 @@ class Calculator:
         self.expression = ""
         # be used to store data in memory
         self.recall = ""
+        # be used to store current data in memory
+        self.current = ""
         # self.answer
         self.sum_up = ""
         # create string for text input
@@ -17,7 +19,7 @@ class Calculator:
         # assign instance to master
         self.master = master
         # set frame showing inputs and title
-        top_frame = tk.Frame(master, width=650, height=20, bd=4, relief='flat', bg='#666666')
+        top_frame = tk.Frame(master, width=500, height=20, bd=4, relief='flat', bg='#666666')
         top_frame.pack(side=tk.TOP)
         # set frame showing all buttons
         bottom_frame = tk.Frame(master, width=650, height=470, bd=4, relief='flat', bg='#666666')
@@ -26,8 +28,8 @@ class Calculator:
         my_item = tk.Label(top_frame, text="Calculator", font=('arial', 14), fg='white', width=26, bg='#666666')
         my_item.pack()
         # entry interface for inputs
-        txt_display = tk.Entry(top_frame, font=('arial', 36), relief='flat', bg='#666666', fg='white',
-                               textvariable=self.text_input, width=60, bd=4, justify='right')
+        txt_display = tk.Entry(top_frame, font=('arial', 23), relief='flat', bg='#999999', fg='black',
+                               textvariable=self.text_input, width=55, bd=4, justify='right', state='readonly')
         txt_display.pack()
 
         # row 0
@@ -117,21 +119,13 @@ class Calculator:
         self.btn_eq.configure(bg='#ff9980', activebackground='#ff9980')
         self.btn_eq.grid(row=4, column=6)
         # decimal to convert to float
-        self.btn_dec = tk.Button(bottom_frame, **btn_params, text=".", command=lambda: self.val_dot('.'))
+        self.btn_dec = tk.Button(bottom_frame, **btn_params, text=".", command=lambda: self.btn_click('.'))
         self.btn_dec.grid(row=4, column=7)
         # subtracts current self.expression to self.recall string
         self.btn_M_sub = tk.Button(bottom_frame, **btn_params, text="M-", command=self.memory_minus)
         self.btn_M_sub.grid(row=4, column=8)
 
     # functions
-
-    # validate number of dots
-    def val_dot(self, expression_val):
-        if "." in self.expression:
-            self.text_input.set(self.expression)
-        else:
-            self.btn_click('.')
-
     # allows button you click to be put into self.expression
 
     def btn_click(self, expression_val):
@@ -140,7 +134,16 @@ class Calculator:
             self.text_input.set(self.expression)
         else:
             self.expression = self.expression + str(expression_val)
+            print(self.expression)
             self.text_input.set(self.expression)
+
+    # validate number of dots
+
+    def val_dot(self, expression_val):
+        self.current = self.expression
+        while "." in self.expression:
+            self.text_input.set(self.current)
+        self.btn_click('.')
 
     # clears last item in string
 
@@ -196,12 +199,13 @@ class Calculator:
         self.sum_up = str(eval(self.expression))
         self.text_input.set(self.sum_up)
         self.expression = self.sum_up
-
+        print(self.text_input.get())
 
 # tkinter layout
 root = tk.Tk()
-b = Calculator(root)
-root.title("Simple Scientific Calculator")
-root.geometry("650x490+50+50")
+root.title("Basic Calculator")
+root.geometry("410x360")
 root.resizable(False, False)
+
+Calculator(root)
 root.mainloop()

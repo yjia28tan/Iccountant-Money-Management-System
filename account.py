@@ -6,7 +6,6 @@ from PIL import Image, ImageTk
 import tkinter.font as tkFont
 from tkinter import messagebox
 import sqlite3
-#from category import *
 
 window = Tk()
 window.title("ICCOUNTANT")
@@ -138,7 +137,7 @@ class Account:
         rows = cur.fetchall()
                 global count
         count = 0
-        for row in rows:  # loop to display all the invoice
+        for row in rows:  # loop to display account
             if count % 2 == 0:
                 self.Account.insert("", END, values=row, tags='evenrow')
             else:

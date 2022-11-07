@@ -14,11 +14,14 @@ Everything should be done by 20/11
   - Line graph -- income vs expenses
   - Bar chart -- income vs expenses
 - Dashboard **
-- Transaction (Expeses tracker) ***
+- Transaction (Expeses tracker) (done)
   - Account (done)
-  - Category ***
+  - Category (done)
 -	Personal customer support *
 - Tips *
+- Logout
+- User Account
 
 **Combine code 
+**remember to change userID = ?
 

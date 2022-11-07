@@ -34,7 +34,6 @@ tips = ImageTk.PhotoImage(Image.open('tips.png').resize((160, 30), resample=Imag
 logout = ImageTk.PhotoImage(Image.open('logout.png').resize((160, 30), resample=Image.LANCZOS))
 user = ImageTk.PhotoImage(Image.open('user.png').resize((145, 45), resample=Image.LANCZOS))
 
-
 menuFrame = Frame(window, bg='#000000', width=180, height=window.winfo_height(), highlightbackground='#1A1A1A')
 menuFrame.place(x=0, y=0)
 
@@ -566,6 +565,7 @@ class Transaction:
                                   command=self.root.destroy)
         self.cancel_b.grid(row=6, column=1)
 
+
 # Defining the buttons for menu bar in Home page
 logo_l = Label(menuFrame, image=logo, bg='#000000').grid(row=1)
 dashboard_b = Button(menuFrame, image=dashboard, bg='#000000', relief='flat').grid(row=2)
@@ -577,9 +577,10 @@ currency_b = Button(menuFrame, image=currency, bg='#000000', relief='flat', comm
 calculator_b = Button(menuFrame, image=calculator, bg='#000000', relief='flat', command=cal).grid(row=8)
 customer_b = Button(menuFrame, image=customer, bg='#000000', relief='flat').grid(row=9)
 tips_b = Button(menuFrame, image=tips, bg='#000000', relief='flat').grid(row=10)
-logout_b = Button(menuFrame, image=logout, bg='#000000', relief='flat').place(x=1, y=530)
-user_b = Button(menuFrame, image=user, bg='#000000', relief='flat').place(x=10, y=570)
+logout_b = Button(menuFrame, image=logout, bg='#000000', relief='flat').place(x=1, y=570)
+user_b = Button(menuFrame, image=user, bg='#000000', relief='flat').place(x=10, y=610)
 
 # So that it does not depend on the widgets inside the frame
 menuFrame.grid_propagate(False)
+Transaction(window)
 window.mainloop()

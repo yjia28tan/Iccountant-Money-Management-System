@@ -4,24 +4,21 @@
 
 Money Management System 
 
-
-*** should be done by 29/10
-
-
-** after *** done proceed to this
-
+Everything should be done by 20/11
 
 - Currency Converter (done)
-- Login, Register -OTP ***
-- Calculator ***
+- Login, Register -OTP *** 
+- Calculator (done)
 - Statistic **
   - Pie chart -- income vs expenses
   - Line graph -- income vs expenses
   - Bar chart -- income vs expenses
 - Dashboard **
 - Transaction (Expeses tracker) ***
-  - Account ***
+  - Account (done)
   - Category ***
 -	Personal customer support *
 - Tips *
+
+**Combine code 
 

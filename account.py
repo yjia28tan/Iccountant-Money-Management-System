@@ -84,14 +84,6 @@ class Account:
         self.heading_label.place(x=200, y=15)
 
         # ====================================== Account table ===============================================
-        self.treestyle = ttk.Style()
-        self.treestyle.theme_use("default")
-        self.treestyle.configure("Treeview", background="#666666", foreground="black", fieldbackground="#666666",
-                             rowheight=25)
-        self.treestyle.configure('.', borderwidth=1)
-        self.treestyle.map('Treeview', background=[('selected', '#9fc5f8')])
-        self.treestyle.layout("Treeview", [('Treeview.treearea', {'sticky': 'nswe'})])
-
         # Frame for tree view
         self.treeFrame = Frame(master, bg='#1A1A1A', width=1500, height=400)
         self.treeFrame.place(x=200, y=100)
@@ -108,6 +100,14 @@ class Account:
 
         self.Account.tag_configure('oddrow', background='#cccccc')
         self.Account.tag_configure('evenrow', background='#999999')
+        
+        self.treestyle = ttk.Style()
+        self.treestyle.theme_use("default")
+        self.treestyle.configure("Treeview", background="#666666", foreground="black", fieldbackground="#666666",
+                             rowheight=25)
+        self.treestyle.configure('.', borderwidth=1)
+        self.treestyle.map('Treeview', background=[('selected', '#9fc5f8')])
+        self.treestyle.layout("Treeview", [('Treeview.treearea', {'sticky': 'nswe'})])
 
         self.Account.pack()
 
@@ -136,8 +136,14 @@ class Account:
         cur = conn.cursor()
         cur.execute("SELECT acc_name, acc_amount FROM account WHERE user_id = 1 ")  # change 1 to user_id = ?
         rows = cur.fetchall()
+                global count
+        count = 0
         for row in rows:  # loop to display all the invoice
-            self.Account.insert("", END, values=row)
+            if count % 2 == 0:
+                self.Account.insert("", END, values=row, tags='evenrow')
+            else:
+                self.Account.insert("", END, values=row, tags='oddrow')
+            count += 1
 
     # update and display tree
     def updatetree(self):

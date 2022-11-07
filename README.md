@@ -7,7 +7,7 @@ Money Management System
 Everything should be done by 20/11
 
 - Currency Converter (done)
-- Login, Register -OTP *** 
+- Login, Register -OTP (done)
 - Calculator (done)
 - Statistic **
   - Pie chart -- income vs expenses

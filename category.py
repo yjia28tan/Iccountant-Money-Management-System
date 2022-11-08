@@ -5,6 +5,7 @@ from PIL import Image, ImageTk
 import tkinter.font as tkFont
 from tkinter import messagebox
 import sqlite3
+import customtkinter
 
 window = Tk()
 window.title("ICCOUNTANT")
@@ -13,6 +14,7 @@ window.state('zoomed')
 window.resizable(True, True)
 window.iconphoto(False, tk.PhotoImage(file="logo_refined.png"))
 window.configure(bg='#1A1A1A')
+customtkinter.set_appearance_mode("dark")
 
 def connectDatabase():
     try:

@@ -40,28 +40,33 @@ class LoginPage(tk.Frame):
         self.logo1 = Label(self.logo_frame, image=self.logo, bg='black')
         self.logo1.pack(side=tk.LEFT, padx=20)
 
-        
-
-        #email/username
+    
+        #title
         tk.Label(self.lgn_frame, text='', bg = 'black').pack(pady= 60)
-        self.lgn_title = tk.Label(self.lgn_frame, text = 'Log In', font = ('Bold', 20, 'bold'),fg = 'white', bg='black')
+        self.lgn_title = tk.Label(self.lgn_frame, text = 'Log In',fg = 'white', bg='black')
+        self.lgn_title.config(font=tkFont.Font(family='Lato', size=20, weight="bold"))
         self.lgn_title.pack(pady = 20)
         tk.Label(self.lgn_frame, text='', bg = 'black').pack(pady= 10)
         
-        self.username_or_email_lb = tk.Label(self.lgn_frame, text='Email/username', font=('Bold', 15), fg = 'white', bg='black')
+        #email/username
+        self.username_or_email_lb = tk.Label(self.lgn_frame, text='Email/username', fg = 'white', bg='black')
+        self.username_or_email_lb.config(font=tkFont.Font(family='Lato', size=15, weight="bold"))
         self.username_or_email_lb.pack(pady=5)
         self.username_or_email = StringVar()
-        self.username_or_email_entry = Entry(self.lgn_frame, justify = 'center', width = 30, highlightthickness = 0, textvariable=self.username_or_email, relief = FLAT, font = ('Bold', 12), fg = 'white', bg = 'black', insertbackground = 'white')
+        self.username_or_email_entry = Entry(self.lgn_frame, justify = 'center', width = 30, highlightthickness = 0, textvariable=self.username_or_email, relief = FLAT, fg = 'white', bg = 'black', insertbackground = 'white')
+        self.username_or_email_entry.config(font=tkFont.Font(family='Lato', size=12))
         self.username_or_email_entry.pack(pady=5)
         self.username_or_email_line = Canvas(self.lgn_frame, width=300, height = 2.0, bg = 'white', highlightthickness = 0)
         self.username_or_email_line.pack()
 
 
         #password
-        self.password_lb = tk.Label(self.lgn_frame, text='Password', font=('Bold', 15), fg = 'white', bg='black')
+        self.password_lb = tk.Label(self.lgn_frame, text='Password', fg = 'white', bg='black')
+        self.password_lb.config(font=tkFont.Font(family='Lato', size=15, weight="bold"))
         self.password_lb.pack(pady=5)
         self.password = StringVar()
-        self.password_lb_entry = Entry(self.lgn_frame,justify = 'center' ,width = 30, highlightthickness = 0, textvariable=self.password, relief = FLAT, font = ('Bold', 12), fg = 'white', bg = 'black',insertbackground = 'white',show='*')
+        self.password_lb_entry = Entry(self.lgn_frame,justify = 'center' ,width = 30, highlightthickness = 0, textvariable=self.password, relief = FLAT, fg = 'white', bg = 'black',insertbackground = 'white',show='*')
+        self.password_lb_entry.config(font=tkFont.Font(family='Lato', size=12))
         self.password_lb_entry.pack(pady=5)
         self.password_lb_line = Canvas(self.lgn_frame, width=300, height = 2.0, bg = 'white', highlightthickness = 0)
         self.password_lb_line.pack()

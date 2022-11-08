@@ -19,14 +19,6 @@ window.configure(bg='#1A1A1A')
 customtkinter.set_appearance_mode("dark")
 
 
-def show_frame(self, cont):
-    frame = self.frames[cont]
-    # raises the current frame to the top
-    frame.tkraise()
-
-# userID = IntVar()
-global userID
-
 def connectDatabase():
     try:
         global conn

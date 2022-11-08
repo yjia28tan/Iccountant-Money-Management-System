@@ -19,8 +19,8 @@ Everything should be done by 20/11
 - Dashboard **
 -	Personal customer support *
 - Tips *
-- Logout
-- User Account
+- Logout (done but need to showframe(login))
+- User Account (left edit function)
 
 **Combine code 
 

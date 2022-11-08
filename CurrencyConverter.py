@@ -4,6 +4,7 @@ from tkinter import *
 import tkinter as tk
 from tkinter import ttk
 import tkinter.font as tkFont
+from tkinter import messagebox
 
 
 class Converter:
@@ -96,17 +97,21 @@ class CurrencyConverter(tk.Tk):
         self.converted_amount_field_label.config(text="")
         self.from_currency_variable.set("Currency")
         self.to_currency_variable.set("Currency")
-
+                 
     def convert(self):
         # fetch the values enter by user
-        amount = float(self.amount_field.get())
+        self.amount_field.get()
         from_curr = self.from_currency_variable.get()
         to_curr = self.to_currency_variable.get()
-        converted = self.currency_converter.convert
-        converted_amount = self.currency_converter.convert(from_curr, to_curr, amount)
-        converted_amount = round(converted_amount, 2)
-
-        self.converted_amount_field_label.config(text=str(converted_amount))
+        # if the entries are empty
+        if not self.amount_field.get() or self.from_currency_variable.get() == "Currency" or self.to_currency_variable.get() == "Currency":
+            messagebox.showerror('Error', "Please fill in all the fields!")
+        else:
+            amount = float(self.amount_field.get())
+            converted = self.currency_converter.convert
+            converted_amount = self.currency_converter.convert(from_curr, to_curr, amount)
+            converted_amount = round(converted_amount, 2)
+            self.converted_amount_field_label.config(text=str(converted_amount))
 
     def restrictNumberOnly(self, action, string):
         # compile a regular expression pattern

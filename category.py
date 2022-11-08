@@ -99,18 +99,22 @@ class Category:
         self.updatetree()
 
         # Buttons
-        self.style = ttk.Style()
-        self.style.configure('TButton', font=tkFont.Font(family='calibri', size=20, weight="bold", slant="italic"),
-                             borderwidth='4')
-
-        self.add_button = Button(master, text='Add', fg='white', bg='#666666', relief='ridge',
-                                 command=lambda: self.addCategoryWindow(Toplevel))
+                self.add_button = customtkinter.CTkButton(master, text='Add', width=50, height=30, text_color='black',
+                                                  fg_color="#b4a7d6",
+                                                  hover_color="#ffffff",
+                                                  command=lambda: self.addCategoryWindow(Toplevel))
         self.add_button.place(x=200, y=58)
-        self.edit_button = Button(master, text='Edit', fg='white', bg='#666666', relief='ridge',
-                                  command=lambda: self.editCategoryWindow(Toplevel))
+
+        self.edit_button = customtkinter.CTkButton(master, text='Edit', width=50, height=30, text_color='black',
+                                                   fg_color="#b4a7d6",
+                                                   hover_color="#ffffff",
+                                                   command=lambda: self.editCategoryWindow(Toplevel))
+
         self.edit_button.place(x=260, y=58)
-        self.delete_button = Button(master, text='Delete', fg='white', bg='#666666', relief='ridge',
-                                    command=lambda: self.deleteCategory())
+
+        self.delete_button = customtkinter.CTkButton(master, text='Delete', width=50, height=30, text_color='black',
+                                                     fg_color="#b4a7d6",
+                                                     hover_color="#ffffff", command=lambda: self.deleteCategory())
         self.delete_button.place(x=320, y=58)
 
     # ========================================= Functions =================================================
@@ -158,12 +162,12 @@ class Category:
         self.accname_line.pack()
 
         # Buttons
-        self.addConfirm = Button(self.addWindow, text='OK', fg='white', bg='#666666', relief='ridge',
-                                 command=lambda: self.addCategory())
+        self.addConfirm = customtkinter.CTkButton(self.addWindow, text='OK', width=50, height=30, fg_color="#464E63",
+                                                  hover_color="#667190", command=lambda: self.addCategory())
         self.addConfirm.pack(pady=10)
 
-        self.cancel = Button(self.addWindow, text='Cancel', fg='white', bg='#666666', relief='ridge',
-                             command=lambda: self.closeAdd())
+        self.cancel = customtkinter.CTkButton(self.addWindow, text='Cancel', width=55, height=30, fg_color="#464E63",
+                                              hover_color="#667190", command=lambda: self.closeAdd())
         self.cancel.pack(pady=10)
 
     # add category
@@ -234,14 +238,14 @@ class Category:
             self.EditCatName_line.pack()
 
             # Buttons
-            self.editConfirm = Button(self.editWindow, text='OK', fg='white', bg='#666666', relief='ridge',
-                                          command=lambda: self.editCat())
+            self.editConfirm = customtkinter.CTkButton(self.editWindow, text='OK', width=50, height=30, fg_color="#464E63",
+                                                      hover_color="#667190", command=lambda: self.editCat())
             self.editConfirm.pack(pady=10)
 
-            self.Editcancel = Button(self.editWindow, text='Cancel', fg='white', bg='#666666', relief='ridge',
-                                         command=lambda: self.editWindow.destroy())
+            self.Editcancel = customtkinter.CTkButton(self.editWindow, text='Cancel', width=50, height=30, fg_color="#464E63",
+                                                      hover_color="#667190", command=lambda: self.editWindow.destroy())
             self.Editcancel.pack(pady=10)
-
+            
             # display record in Entry box
             self.EditCategoryNameEntry.insert(0, selection[0])
 

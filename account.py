@@ -114,18 +114,17 @@ class Account:
         self.displayAccount()
 
         # ============= Buttons ===============
-        self.style = ttk.Style()
-        self.style.configure('TButton', font=tkFont.Font(family='calibri', size=20, weight="bold", slant="italic"),
-                             borderwidth='4')
-
-        self.add_button = Button(master, text='Add', fg='white', bg='#666666', relief='ridge',
-                                 command=lambda: self.addAccountWindow(Toplevel))
+        self.add_button = customtkinter.CTkButton(master, text='Add', width=50, height=30, text_color='black', fg_color="#b4a7d6",
+                                                  hover_color="#ffffff", command=lambda: self.addAccountWindow(Toplevel))
         self.add_button.place(x=200, y=58)
-        self.edit_button = Button(master, text='Edit', fg='white', bg='#666666', relief='ridge',
-                                  command=lambda: self.editAccountWindow(Toplevel))
+
+        self.edit_button = customtkinter.CTkButton(master, text='Edit', width=50, height=30, text_color='black', fg_color="#b4a7d6",
+                                                  hover_color="#ffffff", command=lambda: self.editAccountWindow(Toplevel))
+
         self.edit_button.place(x=260, y=58)
-        self.delete_button = Button(master, text='Delete', fg='white', bg='#666666', relief='ridge',
-                                    command=lambda: self.deleteAccount())
+
+        self.delete_button = customtkinter.CTkButton(master, text='Delete', width=50, height=30, text_color='black', fg_color="#b4a7d6",
+                                                  hover_color="#ffffff", command=lambda: self.deleteAccount())
         self.delete_button.place(x=320, y=58)
 
     # ================================================ Functions =======================================================
@@ -182,13 +181,13 @@ class Account:
         self.amount_line.place(x=50, y=180)
 
         # Buttons
-        self.addConfirm = Button(self.addWindow, text='OK', fg='white', bg='#666666', relief='ridge',
-                                 command=lambda: self.addAcc())
+        self.addConfirm = customtkinter.CTkButton(self.addWindow, text='OK', width=50, height=30, fg_color="#464E63",
+                                                  hover_color="#667190", command=lambda: self.addAcc())
         self.addConfirm.place(x=55, y=200)
 
-        self.cancel = Button(self.addWindow, text='Cancel', fg='white', bg='#666666', relief='ridge',
-                             command=lambda: self.addWindow.destroy())
-        self.cancel.place(x=150, y=200)
+        self.cancel = customtkinter.CTkButton(self.addWindow, text='Cancel', width=50, height=30, fg_color="#464E63",
+                                                  hover_color="#667190", command=lambda: self.addWindow.destroy())
+        self.cancel.place(x=180, y=200)
 
     #  add account
     def addAcc(self):
@@ -271,13 +270,13 @@ class Account:
             self.Editamount_line.place(x=50, y=180)
 
             # Buttons
-            self.editConfirm = Button(self.editWindow, text='OK', fg='white', bg='#666666', relief='ridge',
-                                      command=lambda: self.editAccount())
+            self.editConfirm = customtkinter.CTkButton(self.editWindow, text='OK', width=50, height=30, fg_color="#464E63",
+                                                      hover_color="#667190", command=lambda: self.editAccount())
             self.editConfirm.place(x=55, y=200)
 
-            self.Editcancel = Button(self.editWindow, text='Cancel', fg='white', bg='#666666', relief='ridge',
-                                 command=lambda: self.editWindow.destroy())
-            self.Editcancel.place(x=150, y=200)
+            self.Editcancel = customtkinter.CTkButton(self.editWindow, text='Cancel', width=50, height=30, fg_color="#464E63",
+                                                      hover_color="#667190", command=lambda: self.editWindow.destroy())
+            self.Editcancel.place(x=180, y=200)
 
             # display record in Entry box
             for record in self.AccID:

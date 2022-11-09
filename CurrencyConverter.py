@@ -5,7 +5,9 @@ import tkinter as tk
 from tkinter import ttk
 import tkinter.font as tkFont
 from tkinter import messagebox
-
+from PIL import Image, ImageTk
+import customtkinter
+customtkinter.set_appearance_mode("dark")
 
 class Converter:
     def __init__(self, url):
@@ -25,33 +27,11 @@ class CurrencyConverter(tk.Tk):
 
     def __init__(self, converter):
         tk.Tk.__init__(self)
-        self.title = 'Currency Converter'
+        self.title("ICCOUNTANT - Currency Converter")
         self.currency_converter = converter
         self.configure(background='black')
-        self.geometry("650x708")
-
-
-        # Heading Label
-        self.heading_label = Label(self, text ='CURRENCY CONVERTOR', fg='white', bg='black')
-        self.heading_label.config(font=tkFont.Font(family='Lato', size=25, weight="bold", slant="italic"))
-        self.heading_label.place(x=120, y=15)
-        # Date Label
-        self.date_label = Label(self, text=f"Date : {self.currency_converter.data['date']}", fg='white', bg='black')
-        self.date_label.config(font=tkFont.Font(family='Lato', size=15))
-        self.date_label.place(x=292, y=70, anchor=CENTER)
-
-        # Entry box
-        valid = (self.register(self.restrictNumberOnly), '%d', '%P')  # validation on entry value
-        self.amount_field = Entry(self, width=12, bd=3, relief=tk.FLAT, justify=tk.CENTER, validate='key', validatecommand=valid)
-        self.amount_field.configure(font=tkFont.Font(family='Lato', size=15, weight="bold", slant="italic"), fg='white',
-                                    bg='grey')
-        self.amount_field.place(x=30, y=175)
-        # to_currecy amount field
-        self.converted_amount_field_label = Label(self, relief=tk.FLAT, justify=tk.CENTER, width=12,
-                                                  borderwidth=3)
-        self.converted_amount_field_label.configure(font=tkFont.Font(family='Lato', size=15, weight="bold",
-                                                                     slant="italic"), fg='white', bg='grey')
-        self.converted_amount_field_label.place(x=350, y=175)
+        self.geometry("550x300")
+        self.iconphoto(False, tk.PhotoImage(file="logo_refined.png"))
 
         # declaring variables
         self.from_currency_variable = StringVar(self)
@@ -59,35 +39,64 @@ class CurrencyConverter(tk.Tk):
         self.to_currency_variable = StringVar(self)
         self.to_currency_variable.set("Currency")  # default value
 
+        # Close button
+        self.closeimg = ImageTk.PhotoImage(Image.open('close.png').resize((30, 30), resample=Image.LANCZOS))
+        self.close_button = tk.Button(self, image=self.closeimg, bg='#000000', relief='flat', command=lambda : self.destroy())
+        self.close_button.pack(anchor=NE)
+
+        # Heading Label
+        self.heading_label = Label(self, text ='CURRENCY CONVERTOR', fg='#F2F3F4', bg='black')
+        self.heading_label.config(font=tkFont.Font(family='Lato', size=25, weight="bold", slant="italic"))
+        self.heading_label.pack()
+
+        # Date Label
+        self.date_label = Label(self, text=f"Date : {self.currency_converter.data['date']}", fg='white', bg='black')
+        self.date_label.config(font=tkFont.Font(family='Lato', size=15))
+        self.date_label.pack(pady=3)
+
         font = tkFont.Font(family='Lato', size=15, weight="normal", slant="italic")
         self.option_add('*TCombobox*Listbox.font', font)
         # Define the style for combobox widget
         style = ttk.Style()
-        style.theme_use('clam') # 换style
-        style.configure("TCombobox", fieldbackground="red", background="grey") # 换colour
+        style.theme_use('clam')
+        style.configure("TCombobox", fieldbackground="red", background="grey")
 
         # dropdown box for choosing currency
         self.from_currency_dropdown = ttk.Combobox(self, textvariable=self.from_currency_variable,
                                                    values=list(self.currency_converter.currencies.keys()), font=font,
                                                    state='readonly', width=12, justify=tk.CENTER, foreground='black')
-        self.from_currency_dropdown.place(x=30, y=125)
+        self.from_currency_dropdown.pack(side=LEFT, anchor=N, padx=25)
+
         self.to_currency_dropdown = ttk.Combobox(self, textvariable=self.to_currency_variable,
                                                  values=list(self.currency_converter.currencies.keys()), font=font,
                                                  state='readonly', width=12, justify=tk.CENTER, foreground='black')
-        self.to_currency_dropdown.place(x=350, y=125)
+        self.to_currency_dropdown.pack(side=RIGHT, anchor=N, padx=25)
+
+        # Entry box
+        valid = (self.register(self.restrictNumberOnly), '%d', '%P')  # validation on entry value
+        self.amount_field = Entry(self, width=12, bd=3, relief=tk.FLAT, justify=tk.CENTER, validate='key',
+                                  validatecommand=valid)
+        self.amount_field.configure(font=tkFont.Font(family='Lato', size=15, weight="bold", slant="italic"), fg='white',
+                                    bg='grey')
+        self.amount_field.place(x=30, y=150)
+
+        # to_currecy amount field
+        self.converted_amount_field_label = Label(self, relief=tk.FLAT, justify=tk.CENTER, width=11,
+                                                  borderwidth=3)
+        self.converted_amount_field_label.configure(font=tkFont.Font(family='Lato', size=15, weight="bold",
+                                                                     slant="italic"), fg='white', bg='grey')
+        self.converted_amount_field_label.place(x=378, y=150)
 
         # Convert button
-        self.convert_button = Button(self, text="Convert", foreground='white', background='black', command=self.convert)
-        self.convert_button.config(font=('Lato', 10, 'bold'))
-        self.convert_button.place(x=150, y=240)
+        self.convert_button = customtkinter.CTkButton(self, text="Convert", width=50, height=30, text_font=('Lato', 11),
+                                                      fg_color="#464E63", hover_color="#667190", command=self.convert)
+        self.convert_button.pack(anchor=CENTER, pady=30)
 
         # Clear button
-        self.clear_button = tk.Button(self, text="Clear All", bg="grey", fg="white", command=self.clear_all)
-        self.clear_button.place(x=300, y=240)
+        self.clear_button = customtkinter.CTkButton(self, text="Clear All", width=50, height=30, text_font=('Lato', 11),
+                                                    fg_color="#464E63", hover_color="#667190", command=self.clear_all)
+        self.clear_button.pack(anchor=CENTER)
 
-        # Close button
-        self.close_button = tk.Button(self, text="Close", bg="grey", fg="white", command=self.close)
-        self.close_button.place(x=15, y=15)
 
     def close(self):
         self.destroy()
@@ -97,7 +106,7 @@ class CurrencyConverter(tk.Tk):
         self.converted_amount_field_label.config(text="")
         self.from_currency_variable.set("Currency")
         self.to_currency_variable.set("Currency")
-                 
+
     def convert(self):
         # fetch the values enter by user
         self.amount_field.get()
@@ -113,6 +122,7 @@ class CurrencyConverter(tk.Tk):
             converted_amount = round(converted_amount, 2)
             self.converted_amount_field_label.config(text=str(converted_amount))
 
+
     def restrictNumberOnly(self, action, string):
         # compile a regular expression pattern
         regex_pattern = re.compile(r"[0-9,]*?(\.)?[0-9,]*$")
@@ -122,7 +132,6 @@ class CurrencyConverter(tk.Tk):
         # Then, some more digits and/or spaces, and the end of the expression: [0-9 ]*$
         result = regex_pattern.match(string)
         return string == "" or (string.count('.') <= 1 and result is not None)
-        # learn regex: https://pynative.com/python-regex-compile/
 
 
 if __name__ == '__main__':

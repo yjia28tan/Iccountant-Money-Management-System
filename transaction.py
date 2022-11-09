@@ -181,6 +181,8 @@ class Transaction:
                                                (self.ammount, self.accountid,))
                                 connect.commit()
                             self.root.destroy()
+                            self.transaction_list.delete(*self.transaction_list.get_children())
+                            self.display_all()
                         except ValueError:
                             messagebox.showerror('Error', 'Please reenter the amount in number.')
                             self.root.destroy()
@@ -309,6 +311,8 @@ class Transaction:
                                            (self.ammount_entry.get(), self.accountid,))
                 connect.commit()
                 self.root.destroy()
+                self.transaction_list.delete(*self.transaction_list.get_children())
+                self.display_all()
             except ValueError:
                 messagebox.showerror('Error', 'Please reenter the amount in number.')
                 self.root.destroy()
@@ -407,6 +411,7 @@ class Transaction:
                 selection = values["values"]
                 self.transaction_list.delete(selected)
                 user = 1
+                self.account_amount = selection[4]
                 cursor.execute("SELECT t.trans_id FROM transactions t, type ty, account a, category c WHERE ty.type_id "
                                "= t.type_id AND a.acc_id = t.acc_id AND c.cat_id = t.cat_id AND t.amount= ? AND t.date "
                                "= ? AND t.remark = ? AND t.user_id = ? AND ty.type_name = ? AND a.acc_name = ? AND "
@@ -414,8 +419,23 @@ class Transaction:
                                                   selection[1], selection[2],))
                 self.transID = cursor.fetchall()
                 self.transid = self.transID[0][0]
+                cursor.execute("SELECT acc_id from transactions WHERE trans_id = ?", (self.transid,))
+                self.accountID = cursor.fetchall()
+                self.accountid = self.accountID[0][0]
+                cursor.execute("SELECT type_id from transactions WHERE trans_id = ?", (self.transid,))
+                self.typeID = cursor.fetchall()
+                self.typeid = self.typeID[0][0]
+                if self.typeid == 1:
+                    cursor.execute("UPDATE account SET acc_amount = acc_amount-? WHERE acc_id = ?",
+                                   (self.account_amount, self.accountid,))
+                else:
+                    cursor.execute("UPDATE account SET acc_amount = acc_amount+? WHERE acc_id = ?",
+                                   (self.account_amount, self.accountid,))
+                connect.commit()
                 cursor.execute("DELETE FROM transactions WHERE trans_id = ? ", (self.transid,))
                 connect.commit()
+                self.transaction_list.delete(*self.transaction_list.get_children())
+                self.display_all()
 
     def sort(self):
         self.query = "SELECT t.date, a.acc_name, c.cat_name, ty.type_name, t.amount, t.remark FROM transactions t, " \
@@ -464,6 +484,8 @@ class Transaction:
         if self.account_cbox.get() == 'None' and self.category_cbox.get() == 'None' and self.type_cbox.get() == 'None' \
                 and self.month_cbox.get() == 'None' and self.year_cbox.get() == 'None':
             messagebox.showerror('Information', 'You does not filter transaction with any conditions.')
+            self.transaction_list.delete(*self.transaction_list.get_children())
+            self.display_all()
         self.root.destroy()
         for n, val in enumerate(self.variable_list):
             globals()["var%d" % n] = val

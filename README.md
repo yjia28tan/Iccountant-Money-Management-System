@@ -8,6 +8,7 @@ Everything should be done by 20/11
 
 - Currency Converter (done)
 - Login, Register -OTP (done)
+- Logout (done)
 - Calculator (done)
 - Transaction (Expeses tracker) (done)
   - Account (done)
@@ -16,14 +17,13 @@ Everything should be done by 20/11
   - Pie chart -- income vs expenses
   - Line graph -- income vs expenses
   - Bar chart -- income vs expenses
-- Dashboard **
+- Dashboard ** (put chart inside)
 -	Personal customer support *
 - Tips *
-- Logout (done but need to showframe(login))
 - User Account (left edit function)
 
-**Combine code 
+**Combine code (left statistic dashboard, tips, customer support)
 
 
-**remember to change userID = ?
+**remember to change userID = ? 
 

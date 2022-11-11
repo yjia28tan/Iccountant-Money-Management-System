@@ -15,10 +15,6 @@ connect = sqlite3.connect('Iccountant.db')
 cursor = connect.cursor()
 
 
-def show_frame(frame):
-    raise(frame)
-
-
 class LoginPage(tk.Frame):
     def __init__(self, root):
         self.root = root
@@ -328,7 +324,7 @@ class Account:
         self.menuFrame.grid_propagate(False)
 
         # ============= Heading Label =================
-        self.heading_label = Label(master, text='ACCOUNTS', fg='white', bg='#1A1A1A')
+        self.heading_label = Label(master, text='ACCOUNT BALANCES', fg='white', bg='#1A1A1A')
         self.heading_label.config(font=tkFont.Font(family='Lato', size=20, weight="bold", slant="italic"))
         self.heading_label.place(x=200, y=15)
 
@@ -483,7 +479,7 @@ class Account:
             self.EditAccountNameLabel = Label(self.editWindow, text='Account Name', fg='white', bg='#1A1A1A',
                                               font=tkFont.Font(family='calibri', size=15))
             self.EditAccountNameLabel.place(x=50, y=60)
-            self.EditAmountLabel = Label(self.editWindow, text='Begin Amount', fg='white', bg='#1A1A1A',
+            self.EditAmountLabel = Label(self.editWindow, text='Amount', fg='white', bg='#1A1A1A',
                                          font=tkFont.Font(family='calibri', size=15))
             self.EditAmountLabel.place(x=50, y=130)
 
@@ -979,7 +975,7 @@ class Transaction:
         self.transaction_b.grid(row=4)
         self.category_b = Button(menuFrame, image=self.category, bg='#000000', relief='flat', command=self.cat)
         self.category_b.grid(row=5)
-        self.account_b = Button(menuFrame, image=self.account, bg='#000000', relief='flat')
+        self.account_b = Button(menuFrame, image=self.account, bg='#000000', relief='flat', command=self.acc)
         self.account_b.grid(row=6)
         self.currency_b = Button(menuFrame, image=self.currency, bg='#000000', relief='flat', command=self.con)
         self.currency_b.grid(row=7)
@@ -1024,6 +1020,27 @@ class Transaction:
         self.filter_b = tk.Button(side_frame, image=self.transaction_filter, bg='#1A1A1A', relief='flat',
                                   command=self.filter)
         self.filter_b.place(x=980, y=60)
+        self.total_in_l = Label(side_frame, font=('lato', 12), bg='#1A1A1A', text='Total Income: ', fg='lightgreen')
+        self.total_in_l.place(x=500, y=65)
+
+        # get total income from database
+        cursor.execute("SELECT sum(t.amount) FROM transactions t, user u, type ty WHERE t.user_id = u.user_id AND "
+                       "t.type_id = ty.type_id AND t.type_id = 1 AND u.user_id = ? ", (self.user_id,))
+        self.total_in_Amount = cursor.fetchall()
+        self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
+        self.total_in_a = Label(side_frame, font=('lato', 12), bg='#1A1A1A', text=str(self.total_in_amount),
+                                fg='lightgreen')
+        self.total_in_a.place(x=600, y=65)
+        self.total_ex = Label(side_frame, font=('lato', 12), bg='#1A1A1A', text='Total Expense: ', fg='red')
+        self.total_ex.place(x=725, y=65)
+
+        # get total expense from database
+        cursor.execute("SELECT sum(t.amount) FROM transactions t, user u, type ty WHERE t.user_id = u.user_id AND "
+                       "t.type_id = ty.type_id AND t.type_id = 2 AND u.user_id = ? ", (self.user_id,))
+        self.total_ex_Amount = cursor.fetchall()
+        self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
+        self.total_ex_a = Label(side_frame, font=('lato', 12), bg='#1A1A1A', text=str(self.total_ex_amount), fg='red')
+        self.total_ex_a.place(x=835, y=65)
 
         # Transaction List
         self.transaction_frame = Frame(side_frame, bg='#1A1A1A', height=25, width=1050)
@@ -1136,6 +1153,7 @@ class Transaction:
             count += 1
 
     def insert_transaction(self):
+        # validate input
         if self.account_cbox.get() == 'Select Account':
             messagebox.showerror('Error', 'Please select an account.')
             self.root.destroy()
@@ -1154,22 +1172,36 @@ class Transaction:
                     else:
                         try:
                             self.ammount = round(float(self.ammount_entry.get()), 2)
+
+                            # get the latest id from database
                             cursor.execute("SELECT max(trans_id) FROM transactions")
                             self.id = cursor.fetchall()
+
+                            # create new id
                             self.ID = int(self.id[0][0]) + 1
+
+                            # get current date
                             today = datetime.now()
+
+                            # get type id that user input from database
                             cursor.execute("SELECT type_id FROM type WHERE type_name = ?", (self.type_cbox.get(),))
                             self.typeID = cursor.fetchall()
                             self.typeid = self.typeID[0][0]
+
+                            # get account id that user input from database
                             cursor.execute("SELECT a.acc_id FROM account a, user u WHERE a.user_id = u.user_id AND "
                                            "a.user_id = ? AND a.acc_name = ?", (self.user_id, self.account_cbox.get(),))
                             self.accountID = cursor.fetchall()
                             self.accountid = self.accountID[0][0]
+
+                            # get category id that user input from database
                             cursor.execute("SELECT c.cat_id FROM category c, user u WHERE c.user_id = u.user_id AND"
                                            " c.user_id = ? AND c.cat_name = ?", (self.user_id, self.category_cbox.get(),
                                                                                  ))
                             self.categoryID = cursor.fetchall()
                             self.categoryid = self.categoryID[0][0]
+
+                            # insert the data that user input to database
                             cursor.execute("INSERT INTO transactions (trans_id, amount, date, remark, user_id, type_id,"
                                            " acc_id, cat_id) VALUES (?,?,?,?,?,?,?,?)",
                                            (self.ID, self.ammount, today.strftime("%Y-%m-%d"),
@@ -1177,17 +1209,41 @@ class Transaction:
                                             self.categoryid))
                             connect.commit()
                             messagebox.showinfo('Information', 'Record successfully added.')
+
+                            # validate income or expense
+                            # update the income amount to the selected account in the database
                             if self.typeid == 1:
                                 cursor.execute("UPDATE account SET acc_amount = (acc_amount+?) WHERE acc_id = ?",
                                                (self.ammount, self.accountid,))
                                 connect.commit()
+
+                            # update the expense amount to the selected account in the database
                             else:
                                 cursor.execute("UPDATE account SET acc_amount = (acc_amount-?) WHERE acc_id = ?",
                                                (self.ammount, self.accountid,))
                                 connect.commit()
                             self.root.destroy()
+
+                            # empty the treeview
                             self.transaction_list.delete(*self.transaction_list.get_children())
                             self.display_all()
+
+                            # get total income from database
+                            cursor.execute("SELECT sum(t.amount) FROM transactions t, user u, type ty WHERE t.user_id ="
+                                           " u.user_id AND t.type_id = ty.type_id AND t.type_id = 1 AND u.user_id = ? ",
+                                           (self.user_id,))
+                            self.total_in_Amount = cursor.fetchall()
+                            self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
+                            self.total_in_a.config(text=str(self.total_in_amount))
+
+                            # get total expense from database
+                            cursor.execute("SELECT sum(t.amount) FROM transactions t, user u, type ty WHERE t.user_id ="
+                                           " u.user_id AND t.type_id = ty.type_id AND t.type_id = 2 AND u.user_id = ? ",
+                                           (self.user_id,))
+                            self.total_ex_Amount = cursor.fetchall()
+                            self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
+                            self.total_ex_a.config(text=str(self.total_ex_amount))
+
                         except ValueError:
                             messagebox.showerror('Error', 'Please reenter the amount in number.')
                             self.root.destroy()
@@ -1258,28 +1314,28 @@ class Transaction:
                 # verify input is number or not
                 self.ammount = round(float(self.ammount_entry.get()), 2)
 
-                # get original account input
+                # get the original account id from the database
                 cursor.execute("SELECT acc_id FROM account WHERE acc_name = ?", (self.oriaccount,))
                 self.oriAccount = cursor.fetchall()
                 self.oriacc = self.oriAccount[0][0]
 
-                # get original type input
+                # get the original type id from the database
                 cursor.execute("SELECT type_id FROM type WHERE type_name = ?", (self.oritypeID,))
                 self.oritypeId = cursor.fetchall()
                 self.oritypeid = self.oritypeId[0][0]
 
-                # get new type input
+                # get the type id that user input from the database
                 cursor.execute("SELECT type_id FROM type WHERE type_name = ?", (self.type_cbox.get(),))
                 self.typeID = cursor.fetchall()
                 self.typeid = self.typeID[0][0]
 
-                # get new account input
+                # get the account id that user input from the database
                 cursor.execute("SELECT a.acc_id FROM account a, user u WHERE a.user_id = u.user_id AND "
                                "a.user_id = ? AND a.acc_name = ?", (self.user_id, self.account_cbox.get(),))
                 self.accountID = cursor.fetchall()
                 self.accountid = self.accountID[0][0]
 
-                # get new category input
+                # get the category id that user input from the database
                 cursor.execute("SELECT c.cat_id FROM category c, user u WHERE c.user_id = u.user_id AND"
                                " c.user_id = ? AND c.cat_name = ?", (self.user_id, self.category_cbox.get(),))
                 self.categoryID = cursor.fetchall()
@@ -1293,53 +1349,100 @@ class Transaction:
                 connect.commit()
                 messagebox.showinfo('Information', 'Record successfully updated.')
 
-                # verify conditions to update account table in database
+                # validate the condition to update the amount of the acoount in database
+                # if the user did not change the account
                 if self.oriacc == self.accountid:
+
+                    # if the original type is income
                     if self.oritypeid == 1:
+
+                        # if the user did not change the type
                         if self.typeid == 1:
                             cursor.execute("UPDATE account SET acc_amount = (acc_amount-?+?) WHERE acc_id = ?",
                                            (self.oriamount, self.ammount_entry.get(), self.accountid,))
+
+                        # if the user change the type to expense
                         else:
                             cursor.execute("UPDATE account SET acc_amount = (acc_amount-?-?) WHERE acc_id = ?",
                                            (self.oriamount, self.ammount_entry.get(), self.accountid,))
+
+                    # if the original type is expense
                     else:
+
+                        # if the user change the type to income
                         if self.typeid == 1:
                             cursor.execute("UPDATE account SET acc_amount = (acc_amount+?+?) WHERE acc_id = ?",
                                            (self.oriamount, self.ammount_entry.get(), self.accountid,))
+
+                        # if the user did not change the type
                         else:
                             cursor.execute("UPDATE account SET acc_amount = (acc_amount+?-?) WHERE acc_id = ?",
                                            (self.oriamount, self.ammount_entry.get(), self.accountid,))
+
+                # if the user change the account
                 else:
+
+                    # if the original type is income
                     if self.oritypeid == 1:
                         cursor.execute("UPDATE account SET acc_amount = (acc_amount-?) WHERE acc_id = ?",
                                        (self.oriamount, self.oriacc,))
+
+                        # if the user did not change the type
                         if self.typeid == 1:
                             cursor.execute("UPDATE account SET acc_amount = (acc_amount+?) WHERE acc_id = ?",
                                            (self.ammount_entry.get(), self.accountid,))
+
+                        # if the user change the type to expense
                         else:
                             cursor.execute("UPDATE account SET acc_amount = (acc_amount-?) WHERE acc_id = ?",
                                            (self.ammount_entry.get(), self.accountid,))
+
+                    # if the original type is expense
                     else:
                         cursor.execute("UPDATE account SET acc_amount = (acc_amount+?) WHERE acc_id = ?",
                                        (self.oriamount, self.oriacc,))
+
+                        # if the user change the type to income
                         if self.typeid == 1:
                             cursor.execute("UPDATE account SET acc_amount = (acc_amount+?) WHERE acc_id = ?",
                                            (self.ammount_entry.get(), self.accountid,))
+
+                        # if the user did not change the type
                         else:
                             cursor.execute("UPDATE account SET acc_amount = (acc_amount-?) WHERE acc_id = ?",
                                            (self.ammount_entry.get(), self.accountid,))
                 connect.commit()
                 self.root.destroy()
+
+                # empty treeview
                 self.transaction_list.delete(*self.transaction_list.get_children())
                 self.display_all()
+
+                # get total income from database
+                cursor.execute("SELECT sum(t.amount) FROM transactions t, user u, type ty WHERE t.user_id = u.user_id "
+                               "AND t.type_id = ty.type_id AND t.type_id = 1 AND u.user_id = ? ", (self.user_id,))
+                self.total_in_Amount = cursor.fetchall()
+                self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
+                self.total_in_a.config(text=str(self.total_in_amount))
+
+                # get total expense from database
+                cursor.execute("SELECT sum(t.amount) FROM transactions t, user u, type ty WHERE t.user_id = u.user_id "
+                               "AND t.type_id = ty.type_id AND t.type_id = 2 AND u.user_id = ? ", (self.user_id,))
+                self.total_ex_Amount = cursor.fetchall()
+                self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
+                self.total_ex_a.config(text=str(self.total_ex_amount))
+
             except ValueError:
                 messagebox.showerror('Error', 'Please reenter the amount in number.')
                 self.root.destroy()
 
     def edit(self):
+        # if the user did not select a row in the treeview
         if not self.transaction_list.selection():
             messagebox.showerror("Error", "Please select a row to edit.")
         else:
+
+            # get the value of the selected row
             selected = self.transaction_list.focus()
             values = self.transaction_list.item(selected)
             selection = values["values"]
@@ -1418,12 +1521,15 @@ class Transaction:
             self.cancel_b.grid(row=7, column=1)
 
     def delete(self):
+        # if the user did not select a row in the treeview
         if not self.transaction_list.selection():
             tk.messagebox.showerror("Error", "Please select a row to delete.")
         else:
             result = tk.messagebox.askquestion('Delete Confirmation', 'Are you sure you want to delete this record?',
                                                icon="warning")
             if result == 'yes':
+
+                # get the value of the selected row
                 selected = self.transaction_list.focus()
                 values = self.transaction_list.item(selected)
                 selection = values["values"]
@@ -1432,7 +1538,7 @@ class Transaction:
                 # get account amount that selected
                 self.account_amount = selection[4]
 
-                # get transaction id from database
+                # get the transaction id of the selected row from the database
                 cursor.execute("SELECT t.trans_id FROM transactions t, type ty, account a, category c WHERE ty.type_id "
                                "= t.type_id AND a.acc_id = t.acc_id AND c.cat_id = t.cat_id AND t.amount= ? AND t.date "
                                "= ? AND t.remark = ? AND t.user_id = ? AND ty.type_name = ? AND a.acc_name = ? AND "
@@ -1441,20 +1547,23 @@ class Transaction:
                 self.transID = cursor.fetchall()
                 self.transid = self.transID[0][0]
 
-                # get account id from database
+                # get the account id of the selected row from the database
                 cursor.execute("SELECT acc_id from transactions WHERE trans_id = ?", (self.transid,))
                 self.accountID = cursor.fetchall()
                 self.accountid = self.accountID[0][0]
 
-                # get type id from database
+                # get the type id of the selected row from the database
                 cursor.execute("SELECT type_id from transactions WHERE trans_id = ?", (self.transid,))
                 self.typeID = cursor.fetchall()
                 self.typeid = self.typeID[0][0]
 
                 # verify conditions to update account table in database
+                # if the type of the selected row is income
                 if self.typeid == 1:
                     cursor.execute("UPDATE account SET acc_amount = acc_amount-? WHERE acc_id = ?",
                                    (self.account_amount, self.accountid,))
+
+                # if the type of the selected row is expense
                 else:
                     cursor.execute("UPDATE account SET acc_amount = acc_amount+? WHERE acc_id = ?",
                                    (self.account_amount, self.accountid,))
@@ -1463,36 +1572,74 @@ class Transaction:
                 # remove record in database
                 cursor.execute("DELETE FROM transactions WHERE trans_id = ? ", (self.transid,))
                 connect.commit()
+
+                # empty treeview
                 self.transaction_list.delete(*self.transaction_list.get_children())
                 self.display_all()
 
+                # get total income from database
+                cursor.execute("SELECT sum(t.amount) FROM transactions t, user u, type ty WHERE t.user_id = u.user_id "
+                               "AND t.type_id = ty.type_id AND t.type_id = 1 AND u.user_id = ? ", (self.user_id,))
+                self.total_in_Amount = cursor.fetchall()
+                self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
+                self.total_in_a.config(text=str(self.total_in_amount))
+
+                # get total expense from database
+                cursor.execute("SELECT sum(t.amount) FROM transactions t, user u, type ty WHERE t.user_id = u.user_id "
+                               "AND t.type_id = ty.type_id AND t.type_id = 2 AND u.user_id = ? ", (self.user_id,))
+                self.total_ex_Amount = cursor.fetchall()
+                self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
+                self.total_ex_a.config(text=str(self.total_ex_amount))
+
     def sort(self):
         # verify conditions to filter out data
+        # query to display the transaction with condition in the treeview
         self.query = "SELECT t.date, a.acc_name, c.cat_name, ty.type_name, t.amount, t.remark FROM transactions t, " \
                      "account a, category c, type ty, user u WHERE t.acc_id = a.acc_id AND t.cat_id = c.cat_id AND " \
                      "t.type_id = ty.type_id AND t.user_id = u.user_id AND t.user_id = ? "
+
+        # query to get the total income amount
+        self.query1 = "SELECT sum(t.amount) FROM transactions t, account a, category c, type ty, user u WHERE " \
+                      "t.acc_id = a.acc_id AND t.cat_id = c.cat_id AND t.type_id = ty.type_id AND t.user_id = " \
+                      "u.user_id AND t.type_id = 1 AND t.user_id = ? "
+
+        # query to get the total expense amount
+        self.query2 = "SELECT sum(t.amount) FROM transactions t, account a, category c, type ty, user u WHERE " \
+                      "t.acc_id = a.acc_id AND t.cat_id = c.cat_id AND t.type_id = ty.type_id AND t.user_id = " \
+                      "u.user_id AND t.type_id = 2 AND t.user_id = ? "
+
+        # a list to store the condition variable
         self.variable_list = [self.user_id]
+
+        # verify the condition
         if self.account_cbox.get() == 'None':
             pass
         else:
+            # get the account id that user input
             cursor.execute("SELECT a.acc_id FROM account a, user u WHERE a.user_id = u.user_id AND a.user_id = ? AND "
                            "a.acc_name = ?", (self.user_id, self.account_cbox.get(),))
             self.accountID = cursor.fetchall()
             self.accountid = self.accountID[0][0]
             self.query = self.query + "AND t.acc_id = ? "
+            self.query1 = self.query1 + "AND t.acc_id = ? "
+            self.query2 = self.query2 + "AND t.acc_id = ? "
             self.variable_list.append(self.accountid)
         if self.category_cbox.get() == 'None':
             pass
         else:
+            # get the category id that the user input
             cursor.execute("SELECT c.cat_id FROM category c, user u WHERE c.user_id = u.user_id AND c.user_id = ? AND "
                            "c.cat_name = ?", (self.user_id, self.category_cbox.get(),))
             self.categoryID = cursor.fetchall()
             self.categoryid = self.categoryID[0][0]
             self.query = self.query + "AND c.cat_id = ? "
+            self.query1 = self.query1 + "AND c.cat_id = ? "
+            self.query2 = self.query2 + "AND c.cat_id = ? "
             self.variable_list.append(self.categoryid)
         if self.type_cbox.get() == 'None':
             pass
         else:
+            # get the type id that the user input
             cursor.execute("SELECT type_id FROM type WHERE type_name = ?", (self.type_cbox.get(),))
             self.typeID = cursor.fetchall()
             self.typeid = self.typeID[0][0]
@@ -1503,45 +1650,119 @@ class Transaction:
                 pass
             else:
                 self.query = self.query + "AND strftime('%Y', t.date) = ? "
+                self.query1 = self.query1 + "AND strftime('%Y', t.date) = ? "
+                self.query2 = self.query2 + "AND strftime('%Y', t.date) = ? "
                 self.variable_list.append(self.year_cbox.get())
         else:
             if self.year_cbox.get() == 'None':
                 messagebox.showerror('Error', 'Please select the year of the month that you choose.')
             else:
                 self.query = self.query + "AND strftime('%Y', t.date) = ? AND strftime('%m', t.date) = ? "
+                self.query1 = self.query1 + "AND strftime('%Y', t.date) = ? AND strftime('%m', t.date) = ? "
+                self.query2 = self.query2 + "AND strftime('%Y', t.date) = ? AND strftime('%m', t.date) = ? "
                 self.variable_list.append(self.year_cbox.get())
                 self.variable_list.append(self.month_cbox.get())
+
+        # verify if the user did not filter data with any condition
         if self.account_cbox.get() == 'None' and self.category_cbox.get() == 'None' and self.type_cbox.get() == 'None' \
                 and self.month_cbox.get() == 'None' and self.year_cbox.get() == 'None':
             messagebox.showerror('Information', 'You does not filter transaction with any conditions.')
+
+            # empty the treeview
             self.transaction_list.delete(*self.transaction_list.get_children())
             self.display_all()
+
+            # get total income from database
+            cursor.execute("SELECT sum(t.amount) FROM transactions t, user u, type ty WHERE t.user_id = u.user_id "
+                           "AND t.type_id = ty.type_id AND t.type_id = 1 AND u.user_id = ? ", (self.user_id,))
+            self.total_in_Amount = cursor.fetchall()
+            self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
+            self.total_in_a.config(text=str(self.total_in_amount))
+
+            # get total expense from database
+            cursor.execute("SELECT sum(t.amount) FROM transactions t, user u, type ty WHERE t.user_id = u.user_id "
+                           "AND t.type_id = ty.type_id AND t.type_id = 2 AND u.user_id = ? ", (self.user_id,))
+            self.total_ex_Amount = cursor.fetchall()
+            self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
+            self.total_ex_a.config(text=str(self.total_ex_amount))
         self.root.destroy()
+
+        # assign new variable from the variable list
         for n, val in enumerate(self.variable_list):
             globals()["var%d" % n] = val
+
+        # empty treeview
         self.transaction_list.delete(*self.transaction_list.get_children())
         try:
             cursor.execute(self.query, (var0,))
+            self.rows = cursor.fetchall()
+
+            # get total income from database
+            cursor.execute(self.query1, (var0,))
+            self.total_in_Amount = cursor.fetchall()
+
+            # get total expense from database
+            cursor.execute(self.query2, (var0,))
+            self.total_ex_Amount = cursor.fetchall()
         except:
             try:
                 cursor.execute(self.query, (var0, var1,))
+                self.rows = cursor.fetchall()
+
+                # get total income from database
+                cursor.execute(self.query1, (var0, var1,))
+                self.total_in_Amount = cursor.fetchall()
+
+                # get total expense from database
+                cursor.execute(self.query2, (var0, var1,))
+                self.total_ex_Amount = cursor.fetchall()
             except:
                 try:
                     cursor.execute(self.query, (var0, var1, var2,))
+                    self.rows = cursor.fetchall()
+
+                    # get total income from database
+                    cursor.execute(self.query1, (var0, var1,))
+                    self.total_in_Amount = cursor.fetchall()
+
+                    # get total expense from database
+                    cursor.execute(self.query2, (var0, var1,))
+                    self.total_ex_Amount = cursor.fetchall()
                 except:
                     try:
-                        cursor.execute(self.query, (var0, var1, var2, var3,))
+                        cursor.execute(self.query, (var0, var1, var3,))
+                        self.rows = cursor.fetchall()
+
+                        # get total income from database
+                        cursor.execute(self.query1, (var0, var1, var3,))
+                        self.total_in_Amount = cursor.fetchall()
+
+                        # get total expense from database
+                        cursor.execute(self.query2, (var0, var1, var3,))
+                        self.total_ex_Amount = cursor.fetchall()
                     except:
                         try:
-                            cursor.execute(self.query, (var0, var1, var2, var3, var4,))
+                            cursor.execute(self.query, (var0, var1, var3, var4,))
+                            self.rows = cursor.fetchall()
+
+                            # get total income from database
+                            cursor.execute(self.query1, (var0, var1, var3, var4,))
+                            self.total_in_Amount = cursor.fetchall()
+
+                            # get total expense from database
+                            cursor.execute(self.query2, (var0, var1, var3, var4,))
+                            self.total_ex_Amount = cursor.fetchall()
                         except:
                             pass
-        rows = cursor.fetchall()
+        self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
+        self.total_in_a.config(text=str(self.total_in_amount))
+        self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
+        self.total_ex_a.config(text=str(self.total_ex_amount))
 
         # loop to display all the transaction in treeview
         global count
         count = 0
-        for row in rows:
+        for row in self.rows:
             if count % 2 == 0:
                 self.transaction_list.insert("", END, values=row, tags='evenrow')
             else:

@@ -225,6 +225,7 @@ class Transaction:
 
                             # empty the treeview
                             self.transaction_list.delete(*self.transaction_list.get_children())
+                            self.display_all()
 
                             # get total income from database
                             cursor.execute("SELECT sum(t.amount) FROM transactions t, user u, type ty WHERE t.user_id ="
@@ -239,7 +240,6 @@ class Transaction:
                             self.total_ex_Amount = cursor.fetchall()
                             self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
                             self.total_ex_a.config(text=str(self.total_ex_amount))
-                            self.display_all()
 
                         except ValueError:
                             messagebox.showerror('Error', 'Please reenter the amount in number.')
@@ -309,6 +309,7 @@ class Transaction:
             self.root.destroy()
         else:
             try:
+                # verify input is number or not
                 self.amount = round(float(self.amount_entry.get()), 2)
 
                 # get the original account id from the database
@@ -339,7 +340,7 @@ class Transaction:
                 self.categoryid = self.categoryID[0][0]
                 user=1
 
-                # update the data that edit by the user to the database
+                # update transaction table in database
                 cursor.execute("UPDATE transactions SET amount= ?, date = ?, remark = ?, user_id = ?, type_id = ?, "
                                "acc_id = ?, cat_id = ? WHERE trans_id = ?",
                                (self.amount_entry.get(), self.date_entry.get(), self.remark_entry.get(), user,
@@ -414,6 +415,7 @@ class Transaction:
 
                 # empty treeview
                 self.transaction_list.delete(*self.transaction_list.get_children())
+                self.display_all()
 
                 # get total income from database
                 cursor.execute("SELECT sum(t.amount) FROM transactions t, user u, type ty WHERE t.user_id ="
@@ -428,7 +430,6 @@ class Transaction:
                 self.total_ex_Amount = cursor.fetchall()
                 self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
                 self.total_ex_a.config(text=str(self.total_ex_amount))
-                self.display_all()
 
             except ValueError:
                 messagebox.showerror('Error', 'Please reenter the amount in number.')
@@ -534,6 +535,8 @@ class Transaction:
                 selection = values["values"]
                 self.transaction_list.delete(selected)
                 user = 1
+
+                # get account amount that selected
                 self.account_amount = selection[4]
 
                 # get the transaction id of the selected row from the database
@@ -555,6 +558,7 @@ class Transaction:
                 self.typeID = cursor.fetchall()
                 self.typeid = self.typeID[0][0]
 
+                # verify conditions to update account table in database
                 # if the type of the selected row is income
                 if self.typeid == 1:
                     cursor.execute("UPDATE account SET acc_amount = acc_amount-? WHERE acc_id = ?",
@@ -566,12 +570,13 @@ class Transaction:
                                    (self.account_amount, self.accountid,))
                 connect.commit()
 
-                # remove the data of the selected row in database
+                # remove record in database
                 cursor.execute("DELETE FROM transactions WHERE trans_id = ? ", (self.transid,))
                 connect.commit()
 
                 # empty treeview
                 self.transaction_list.delete(*self.transaction_list.get_children())
+                self.display_all()
 
                 # get total income from database
                 cursor.execute("SELECT sum(t.amount) FROM transactions t, user u, type ty WHERE t.user_id ="
@@ -586,9 +591,9 @@ class Transaction:
                 self.total_ex_Amount = cursor.fetchall()
                 self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
                 self.total_ex_a.config(text=str(self.total_ex_amount))
-                self.display_all()
 
     def sort(self):
+        # verify conditions to filter out data
         # query to display the transaction with condition in the treeview
         self.query = "SELECT t.date, a.acc_name, c.cat_name, ty.type_name, t.amount, t.remark FROM transactions t, " \
                      "account a, category c, type ty, user u WHERE t.acc_id = a.acc_id AND t.cat_id = c.cat_id AND " \
@@ -666,6 +671,7 @@ class Transaction:
 
             # empty the treeview
             self.transaction_list.delete(*self.transaction_list.get_children())
+            self.display_all()
 
             # get total income from database
             cursor.execute("SELECT sum(t.amount) FROM transactions t, user u, type ty WHERE t.user_id = u.user_id AND "
@@ -680,7 +686,6 @@ class Transaction:
             self.total_ex_Amount = cursor.fetchall()
             self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
             self.total_ex_a.config(text=str(self.total_ex_amount))
-            self.display_all()
         self.root.destroy()
 
         # assign new variable from the variable list

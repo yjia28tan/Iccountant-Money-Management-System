@@ -17,6 +17,7 @@ import requests  # to verify email
 
 customtkinter.set_appearance_mode("dark")
 connect = sqlite3.connect('Iccountant')
+# connect = sqlite3.connect('Iccountant.db')
 cursor = connect.cursor()
 
 
@@ -46,14 +47,6 @@ class windows(Tk):
 
         # We will now create a dictionary of frames
         self.frames = {}
-
-        # we'll create the frames themselves later but let's add the components to the dictionary.
-        # for F in (LoginPage, RegisterPage, ForgotPassword, Dashboard, Account): # , Category, Transaction,
-        #     frame = F(container, self)
-        #
-        #     # the windows class acts as the root window for the frames.
-        #     self.frames[F] = frame
-        #     frame.grid(row=0, column=0, sticky="nsew")
 
         # Using a method to switch frames
         self.show_frame(LoginPage)
@@ -141,10 +134,6 @@ class LoginPage(tk.Frame):
                                               fg_color="#464E63", hover_color="#667190",
                                               command=lambda: controller.show_frame(ForgotPassword))
         self.fgpbtn.pack(pady=5)
-
-        # self.user = Entry(self.lgn_frame, justify='center', bg='black', fg='red',
-        #                   textvariable=self.controller.shared_user_id["userID"])
-        # self.user.pack()
 
         def show_password(self):
             if self.btn_value.get() == 1:

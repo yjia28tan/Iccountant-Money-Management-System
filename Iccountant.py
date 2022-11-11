@@ -17,6 +17,7 @@ import requests  # to verify email
 
 customtkinter.set_appearance_mode("dark")
 connect = sqlite3.connect('Iccountant')
+# connect = sqlite3.connect('Iccountant.db')
 cursor = connect.cursor()
 
 

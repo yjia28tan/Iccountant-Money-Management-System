@@ -17,7 +17,6 @@ import requests  # to verify email
 
 customtkinter.set_appearance_mode("dark")
 connect = sqlite3.connect('Iccountant')
-# connect = sqlite3.connect('Iccountant.db')
 cursor = connect.cursor()
 
 
@@ -47,6 +46,14 @@ class windows(Tk):
 
         # We will now create a dictionary of frames
         self.frames = {}
+
+        # we'll create the frames themselves later but let's add the components to the dictionary.
+        # for F in (LoginPage, RegisterPage, ForgotPassword, Dashboard, Account): # , Category, Transaction,
+        #     frame = F(container, self)
+        #
+        #     # the windows class acts as the root window for the frames.
+        #     self.frames[F] = frame
+        #     frame.grid(row=0, column=0, sticky="nsew")
 
         # Using a method to switch frames
         self.show_frame(LoginPage)
@@ -114,69 +121,69 @@ class LoginPage(tk.Frame):
         self.password_lb_line.pack()
         self.btn_value = IntVar(value=0)
         self.check_btn = Checkbutton(self.lgn_frame, text='Show password', variable=self.btn_value,
-                                     command=lambda : show_password(self), fg='white', bg='black')
+                                     command=lambda: self.show_password(), fg='white', bg='black')
         self.check_btn.pack(pady=5)
 
         # import button #master=self.lgn_frame
         self.lgnbtn = customtkinter.CTkButton(self.lgn_frame, text="Login", width=220, height=40,
                                               fg_color="#464E63", hover_color="#667190",
-                                              command=lambda: data_validation(self))
+                                              command=lambda: self.data_validation())
         self.lgnbtn.pack(pady=5)
 
         # register
         self.regbtn = customtkinter.CTkButton(self.lgn_frame, text="Register", width=220, height=40,
                                               fg_color="#464E63", hover_color="#667190",
-                                              command=lambda: controller.show_frame(RegisterPage))
+                                              command=lambda: self.controller.show_frame(RegisterPage))
         self.regbtn.pack(pady=5)
 
         # forgot password
         self.fgpbtn = customtkinter.CTkButton(master=self.lgn_frame, text="Forgot Password?", width=220, height=40,
                                               fg_color="#464E63", hover_color="#667190",
-                                              command=lambda: controller.show_frame(ForgotPassword))
+                                              command=lambda: self.controller.show_frame(ForgotPassword))
         self.fgpbtn.pack(pady=5)
 
-        def show_password(self):
-            if self.btn_value.get() == 1:
-                self.password_lb_entry.config(show='')
+    def show_password(self):
+        if self.btn_value.get() == 1:
+            self.password_lb_entry.config(show='')
 
+        else:
+            self.password_lb_entry.config(show='*')
+
+    def data_validation(self):
+        self.uname_email = self.username_or_email.get()
+        self.pwd = self.password.get()
+
+        # applying empty validation
+        if not self.uname_email or not self.pwd:
+            messagebox.showerror('Error!', "Please fill the form!")
+        else:
+            # fetch with username
+            cur = connect.execute('SELECT * from user where username="%s"  and password="%s"' % (self.uname_email,
+                                                                                                 self.pwd))
+            if cur.fetchone():
+                messagebox.showinfo('Success!', "Login Success!")
+                cur = connect.execute(
+                    'SELECT user_id from user WHERE username ="%s" and password="%s"' % (self.uname_email, self.pwd))
+                USER_ID = cur.fetchone()  # output: (1,)
+                userid = USER_ID[0]  # output: 1
+                self.controller.shared_user_id['userID'].set(int(userid))
+                self.controller.shared_user_id['userID'].get()
+                self.controller.show_frame(Dashboard)
             else:
-                self.password_lb_entry.config(show='*')
-
-        def data_validation(self):
-            self.uname_email = self.username_or_email.get()
-            self.pwd = self.password.get()
-
-            # applying empty validation
-            if not self.uname_email or not self.pwd:
-                messagebox.showerror('Error!', "Please fill the form!")
-            else:
-                # fetch with username
-                cur = connect.execute('SELECT * from user where username="%s"  and password="%s"' % (self.uname_email,
-                                                                                                     self.pwd))
+                # fetch with email
+                cur = connect.execute('SELECT * from user where email="%s" and password="%s"' % (self.uname_email,
+                                                                                                 self.pwd))
                 if cur.fetchone():
                     messagebox.showinfo('Success!', "Login Success!")
-                    cur = connect.execute(
-                        'SELECT user_id from user WHERE username ="%s" and password="%s"' % (self.uname_email, self.pwd))
-                    USER_ID = cur.fetchone() # output: (1,)
-                    userid = USER_ID[0] # output: 1
+                    cur = connect.execute('SELECT user_id from user WHERE email="%s" and password="%s"' %
+                                          (self.uname_email, self.pwd))
+                    USER_ID = cur.fetchone()  # output: (1,)
+                    userid = USER_ID[0]  # output: 1
                     self.controller.shared_user_id['userID'].set(int(userid))
                     self.controller.shared_user_id['userID'].get()
-                    controller.show_frame(Dashboard)
+                    self.controller.show_frame(Dashboard)
                 else:
-                    # fetch with email
-                    cur = connect.execute('SELECT * from user where email="%s" and password="%s"' % (self.uname_email,
-                                                                                                     self.pwd))
-                    if cur.fetchone():
-                        messagebox.showinfo('Success!', "Login Success!")
-                        cur = connect.execute('SELECT user_id from user WHERE email="%s" and password="%s"' %
-                                              (self.uname_email, self.pwd))
-                        USER_ID = cur.fetchone()  # output: (1,)
-                        userid = USER_ID[0]  # output: 1
-                        self.controller.shared_user_id['userID'].set(int(userid))
-                        self.controller.shared_user_id['userID'].get()
-                        controller.show_frame(Dashboard)
-                    else:
-                        messagebox.showerror('Error!', "Incorrect email, username, or password!")
+                    messagebox.showerror('Error!', "Incorrect email, username, or password!")
 
 
 class RegisterPage(tk.Frame):
@@ -265,125 +272,125 @@ class RegisterPage(tk.Frame):
         self.conpassword_lb_line.pack()
         self.btn_value = IntVar(value=0)
         self.check_btn = Checkbutton(self.pg1, text="Show password", variable=self.btn_value,
-                                     command=lambda: show_password(self), fg='white', bg='black')
+                                     command=lambda: self.show_password(), fg='white', bg='black')
         self.check_btn.pack()
 
         # buttons
         # next button
         self.nextbtn = customtkinter.CTkButton(master=self.pg1, text="Next", width=140, height=40, fg_color="#464E63",
-                                               hover_color="#667190", command=lambda: data_validation(self))
+                                               hover_color="#667190", command=lambda: self.data_validation())
         self.nextbtn.pack(side=tk.RIGHT, anchor=W, padx=170)
 
         # back button
         self.back = ImageTk.PhotoImage(Image.open('backicon.png').resize((40, 40), resample=Image.LANCZOS))
         self.backbtn1 = Button(self.pg1, image=self.back, bg='black', relief='flat',
-                               command=lambda: controller.show_frame(LoginPage))
+                               command=lambda: self.controller.show_frame(LoginPage))
         self.backbtn1.place(x=142, y=30)
         tk.Label(self.pg1, text='', bg='black').pack(pady=30)
         tk.Label(self.pg1, text='', bg='black').pack(pady=30)
 
-        def show_password(self):
-            if self.btn_value.get() == 1:
-                self.password_lb_entry.config(show='')
-                self.conpassword_lb_entry.config(show='')
+    def show_password(self):
+        if self.btn_value.get() == 1:
+            self.password_lb_entry.config(show='')
+            self.conpassword_lb_entry.config(show='')
+        else:
+            self.password_lb_entry.config(show='*')
+            self.conpassword_lb_entry.config(show='*')
+
+    def data_validation(self):
+        self.name = self.fname.get()
+        self.uname = self.username.get()
+        self.pwd = self.password.get()
+        self.conpwd = self.conpassword.get()
+        self.email_ = self.email.get()
+
+        # email stuff
+        self.s = smtplib.SMTP('smtp.gmail.com', 587)
+
+        # start TLS for security
+        self.s.starttls()
+
+        # authentication
+        self.s.login("iccountant2022@gmail.com", "vgndqclbhalavixj")
+
+        # create 4-digit OTP
+        self.digits = "0123456789"
+        self.OTP = ""
+        for i in range(4):
+            self.OTP += self.digits[math.floor(random.random() * 10)]
+
+        # message to be sent
+        self.subject = "Email verification code"
+        self.text = "Hi user,\n\nYour OTP for the registration is:\n\n" + self.OTP + "\n\nThank you.\n\n\nIccountant"
+        self.msg = 'Subject: {}\n\n{}'.format(self.subject, self.text)
+        self.response = requests.get("https://isitarealemail.com/api/email/validate", params={'email': self.email_})
+        self.status = self.response.json()['status']
+
+        # input validation
+        if not self.fname.get() or not self.name or not self.uname or not self.email_ or not self.pwd or not \
+                self.conpwd:
+            messagebox.showerror('Error!', "Please fill the form!")
+        else:
+            cursor.execute('SELECT * from user where username="%s"' % self.uname)
+            if cursor.fetchone():
+                messagebox.showerror('Error!', "Please enter a unique username!")
             else:
-                self.password_lb_entry.config(show='*')
-                self.conpassword_lb_entry.config(show='*')
-
-        def data_validation(self):
-            self.name = self.fname.get()
-            self.uname = self.username.get()
-            self.pwd = self.password.get()
-            self.conpwd = self.conpassword.get()
-            self.email_ = self.email.get()
-
-            # email stuff
-            self.s = smtplib.SMTP('smtp.gmail.com', 587)
-
-            # start TLS for security
-            self.s.starttls()
-
-            # authentication
-            self.s.login("iccountant2022@gmail.com", "vgndqclbhalavixj")
-
-            # create 4-digit OTP
-            self.digits = "0123456789"
-            self.OTP = ""
-            for i in range(4):
-                self.OTP += self.digits[math.floor(random.random() * 10)]
-
-            # message to be sent
-            self.subject = "Email verification code"
-            self.text = "Hi user,\n\nYour OTP for the registration is:\n\n" + self.OTP + "\n\nThank you.\n\n\nIccountant"
-            self.msg = 'Subject: {}\n\n{}'.format(self.subject, self.text)
-            self.response = requests.get("https://isitarealemail.com/api/email/validate", params={'email': self.email_})
-            self.status = self.response.json()['status']
-
-            # input validation
-            if not self.fname.get() or not self.name or not self.uname or not self.email_ or not self.pwd or not \
-                    self.conpwd:
-                messagebox.showerror('Error!', "Please fill the form!")
-            else:
-                cursor.execute('SELECT * from user where username="%s"' % self.uname)
+                cursor.execute('SELECT * from user where email="%s"' % self.email_)
                 if cursor.fetchone():
-                    messagebox.showerror('Error!', "Please enter a unique username!")
+                    messagebox.showerror('Error!', "Please enter a unique email!")
+                elif len(self.pwd) < 8:
+                    messagebox.showerror('Error!', "Please enter a password that is at least 8 characters!")
+                elif self.pwd != self.conpwd:
+                    messagebox.showerror('Error!', "Please match both password and confirm password!")
+                elif self.status != "valid":
+                    messagebox.showerror('Error!', "Please enter a valid/existing email!")
                 else:
-                    cursor.execute('SELECT * from user where email="%s"' % self.email_)
-                    if cursor.fetchone():
-                        messagebox.showerror('Error!', "Please enter a unique email!")
-                    elif len(self.pwd) < 8:
-                        messagebox.showerror('Error!', "Please enter a password that is at least 8 characters!")
-                    elif self.pwd != self.conpwd:
-                        messagebox.showerror('Error!', "Please match both password and confirm password!")
-                    elif self.status != "valid":
-                        messagebox.showerror('Error!', "Please enter a valid/existing email!")
-                    else:
-                        messagebox.showinfo('Success!', "All of the form is filled!")
-                        self.s.sendmail("all2ctt@gmail.com", self.email_, self.msg)
-                        self.pg2 = Toplevel()
-                        self.pg2.geometry("1280x720")
-                        self.pg2.resizable(None, None)
-                        self.pg2.title("Iccountant")
-                        self.pg2.configure(bg='black')
-                        self.pg2_title = tk.Label(self.pg2, text='Email Verification', fg='white', bg='black')
-                        self.pg2_title.config(font=tkFont.Font(family='Lato', size=20, weight="bold"))
-                        self.pg2_title.place(x=225, y=45)
-                        Canvas(self.pg2, width=1000, height=2.0, bg='white', highlightthickness=1).place(x=640, y=100,
-                                                                                                         anchor=tk.CENTER)
+                    messagebox.showinfo('Success!', "All of the form is filled!")
+                    self.s.sendmail("all2ctt@gmail.com", self.email_, self.msg)
+                    self.pg2 = Toplevel()
+                    self.pg2.geometry("1280x720")
+                    self.pg2.resizable(None, None)
+                    self.pg2.title("Iccountant")
+                    self.pg2.configure(bg='black')
+                    self.pg2_title = tk.Label(self.pg2, text='Email Verification', fg='white', bg='black')
+                    self.pg2_title.config(font=tkFont.Font(family='Lato', size=20, weight="bold"))
+                    self.pg2_title.place(x=225, y=45)
+                    Canvas(self.pg2, width=1000, height=2.0, bg='white', highlightthickness=1).place(x=640, y=100,
+                                                                                                     anchor=tk.CENTER)
 
-                        # otp
-                        self.otp_lb = tk.Label(self.pg2, text='4-digit OTP', fg='white', bg='black')
-                        self.otp_lb.config(font=tkFont.Font(family='Lato', size=15, weight="bold"))
-                        self.otp_lb.place(x=640, y=230, anchor=tk.CENTER)
-                        self.otp_ = StringVar()
-                        self.otp_lb_entry = Entry(self.pg2, justify='center', width=30, highlightthickness=0,
-                                                  textvariable=self.otp_, relief=FLAT, font=('Bold', 15), show='*',
-                                                  fg='white',
-                                                  bg='black', insertbackground='white')
-                        self.otp_lb_entry.config(font=tkFont.Font(family='Lato', size=12))
-                        self.otp_lb_entry.place(x=640, y=265, anchor=tk.CENTER)
-                        self.otp_lb_line = Canvas(self.pg2, width=300, height=2.0, bg='white', highlightthickness=0)
-                        self.otp_lb_line.place(x=640, y=280, anchor=tk.CENTER)
+                    # otp
+                    self.otp_lb = tk.Label(self.pg2, text='4-digit OTP', fg='white', bg='black')
+                    self.otp_lb.config(font=tkFont.Font(family='Lato', size=15, weight="bold"))
+                    self.otp_lb.place(x=640, y=230, anchor=tk.CENTER)
+                    self.otp_ = StringVar()
+                    self.otp_lb_entry = Entry(self.pg2, justify='center', width=30, highlightthickness=0,
+                                              textvariable=self.otp_, relief=FLAT, font=('Bold', 15), show='*',
+                                              fg='white',
+                                              bg='black', insertbackground='white')
+                    self.otp_lb_entry.config(font=tkFont.Font(family='Lato', size=12))
+                    self.otp_lb_entry.place(x=640, y=265, anchor=tk.CENTER)
+                    self.otp_lb_line = Canvas(self.pg2, width=300, height=2.0, bg='white', highlightthickness=0)
+                    self.otp_lb_line.place(x=640, y=280, anchor=tk.CENTER)
 
-                        # back button
-                        self.back2 = ImageTk.PhotoImage(
-                            Image.open('backicon.png').resize((40, 40), resample=Image.LANCZOS))
-                        self.backbtn2 = Button(self.pg2, image=self.back2, bg='black', relief='flat',
-                                               command=lambda: showpage1(self))
-                        self.backbtn2.place(x=140, y=40)
+                    # back button
+                    self.back2 = ImageTk.PhotoImage(
+                        Image.open('backicon.png').resize((40, 40), resample=Image.LANCZOS))
+                    self.backbtn2 = Button(self.pg2, image=self.back2, bg='black', relief='flat',
+                                           command=lambda: showpage1(self))
+                    self.backbtn2.place(x=140, y=40)
 
-                        # finish button
-                        self.nextbtn = customtkinter.CTkButton(master=self.pg2,
-                                                               text="Finish",
-                                                               width=140, height=40,
-                                                               fg_color="#464E63",
-                                                               hover_color="#667190",
-                                                               command=lambda: finish_session(self))
-                        self.nextbtn.pack(side=tk.RIGHT, padx=140, pady=320)
+                    # finish button
+                    self.nextbtn = customtkinter.CTkButton(master=self.pg2,
+                                                           text="Finish",
+                                                           width=140, height=40,
+                                                           fg_color="#464E63",
+                                                           hover_color="#667190",
+                                                           command=lambda: finish_session(self))
+                    self.nextbtn.pack(side=tk.RIGHT, padx=140, pady=320)
 
         def showpage1(self):
             self.pg2.destroy()
-            controller.show_frame(RegisterPage)
+            self.controller.show_frame(RegisterPage)
 
         def finish_session(self):
             if self.otp_.get() == self.OTP:
@@ -406,7 +413,7 @@ class RegisterPage(tk.Frame):
                 connect.commit()
                 messagebox.showinfo('Confirmation', 'Record Saved! Session is finished!')
                 self.pg2.destroy()
-                controller.show_frame(LoginPage)
+                self.controller.show_frame(LoginPage)
             else:
                 messagebox.showerror('Error!', "incorrect OTP try again!")
 
@@ -580,7 +587,6 @@ class ForgotPassword(tk.Frame):
                                                          command=lambda: self.otp_validation())
                 self.finishbtn.pack(side=tk.RIGHT, padx=140)
 
-
     def otp_validation(self):
         if self.otp_.get() == self.OTP:
             messagebox.showinfo('Success!', "OTP verified!")
@@ -670,6 +676,7 @@ class Dashboard(tk.Frame):
         # So that it does not depend on the widgets inside the frame
         self.menuFrame.grid_propagate(False)
 
+    # =================================== Functions ===============================
     def con(self):
         os.system('CurrencyConverter.py')
 
@@ -1157,7 +1164,7 @@ class Category(tk.Frame):
                                                   hover_color="#667190", command=lambda: self.addCategory())
         self.addConfirm.pack(pady=10)
         self.cancel = customtkinter.CTkButton(self.addWindow, text='Cancel', width=55, height=30, fg_color="#464E63",
-                                              hover_color="#667190", command=lambda: self.closeAdd())
+                                              hover_color="#667190", command=lambda: self.addWindow.destroy())
         self.cancel.pack(pady=10)
 
     # add category
@@ -1178,10 +1185,6 @@ class Category(tk.Frame):
             except sqlite3.IntegrityError:
                 messagebox.showerror('Error', "Database failed to update")
                 self.addWindow.destroy()
-
-    # close add window
-    def closeAdd(self):
-        self.addWindow.destroy()
 
     # ========== Edit Account ===========
     def editCategoryWindow(self, Toplevel):
@@ -1590,7 +1593,6 @@ class Transaction(tk.Frame):
                             self.root.destroy()
                         except ValueError:
                             messagebox.showerror('Error', 'Please reenter the amount in number.')
-
 
     def add(self):
         self.root = Toplevel()
@@ -2429,7 +2431,7 @@ class UserAccount:
         answer = messagebox.askyesno(title='Confirmation', message='Are you sure that you want to logout?')
         if answer:
             messagebox.showinfo('Log Out', 'You have successfully Logged Out!')
-            # self.controller.show_frame(LoginPage)
+            self.controller.show_frame(LoginPage)
 
 
 if __name__ == "__main__":

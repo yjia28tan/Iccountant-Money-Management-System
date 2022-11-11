@@ -5,6 +5,8 @@
 Money Management System 
 
 Everything should be done by 20/11
+Report by 30/11
+Presentation on 2nd December
 
 - Currency Converter (done)
 - Login, Register -OTP (done)

@@ -134,7 +134,6 @@ class Calculator:
             self.text_input.set(self.expression)
         else:
             self.expression = self.expression + str(expression_val)
-            print(self.expression)
             self.text_input.set(self.expression)
 
     # validate number of dots
@@ -199,13 +198,13 @@ class Calculator:
         self.sum_up = str(eval(self.expression))
         self.text_input.set(self.sum_up)
         self.expression = self.sum_up
-        print(self.text_input.get())
+
 
 # tkinter layout
 root = tk.Tk()
 root.title("Basic Calculator")
 root.geometry("410x360")
 root.resizable(False, False)
-
+root.iconphoto(False, tk.PhotoImage(file="logo_refined.png"))
 Calculator(root)
 root.mainloop()

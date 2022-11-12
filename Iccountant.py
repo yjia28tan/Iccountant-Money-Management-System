@@ -1936,13 +1936,17 @@ class Transaction(tk.Frame):
                                "AND t.type_id = ty.type_id AND t.type_id = 1 AND u.user_id = ? ",
                                (self.controller.shared_user_id['userID'].get(),))
                 self.total_in_Amount = cursor.fetchall()
-                self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
-                self.total_in_a.config(text=str(self.total_in_amount))
+                if self.total_in_Amount == None:
+                    self.total_in_amount.set(0)
+                else:
+                    self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
+                    self.total_in_a.config(text=str(self.total_in_amount))
 
                 # get total expense from database
                 cursor.execute("SELECT sum(t.amount) FROM transactions t, user u, type ty WHERE t.user_id = u.user_id "
                                "AND t.type_id = ty.type_id AND t.type_id = 2 AND u.user_id = ? ",
                                (self.controller.shared_user_id['userID'].get(),))
+                self.total_ex_Amount = cursor.fetchall()
                 if self.total_ex_Amount == None:
                     self.total_ex_amount.set(0)
                 else:
@@ -2254,18 +2258,17 @@ class Transaction(tk.Frame):
         self.cancel_b.grid(row=6, column=1)
 
 
-class UserAccount:
     def __init__(self, master, controller):
         self.controller = controller
-        self.hide_button = None
+        # self.hide_button = None
         Frame.__init__(self, master)
 
         self.menuFrame = Frame(self, bg='#000000', width=180, height=master.winfo_height(),
                                highlightbackground='#1A1A1A')  # 000000
         self.menuFrame.pack(side=LEFT, fill=BOTH)
 
-        self.sideFrame = Frame(self, bg='#1A1A1A', width=1280, height=720)
-        self.sideFrame.place(x=180, y=0)
+        self.sideFrame = Frame(self, bg='#1A1A1A', width=self.winfo_screenwidth(), height=self.winfo_screenheight())
+        self.sideFrame.pack(side=RIGHT, fill=BOTH, expand=TRUE)
 
         # Define and resize the icons to be shown in Menu bar
         self.logo = ImageTk.PhotoImage(Image.open('logo_small.png').resize((165, 58), resample=Image.LANCZOS))
@@ -2317,25 +2320,23 @@ class UserAccount:
         self.menuFrame.grid_propagate(False)
 
         # ============================== User Account Display Frame =========================================
-
-        cursor.execute("SELECT username FROM user WHERE user_id = ? ",
-                       (self.controller.shared_user_id['userID'].get(),))
+        cursor.execute("SELECT username FROM user WHERE user_id = ?", (self.controller.shared_user_id['userID'].get(),))
         username = cursor.fetchone()
         username_get = username[0]
 
-        cursor.execute("SELECT email FROM user WHERE user_id = ? ", (self.controller.shared_user_id['userID'].get(),))
+        cursor.execute("SELECT email FROM user WHERE user_id = ?", (self.controller.shared_user_id['userID'].get(),))
         email = cursor.fetchone()
         email_get = email[0]
 
         # Labels
         self.UsernameLabel = Label(self.sideFrame, text='USERNAME ', fg='white', bg='#1A1A1A',
                                    font=tkFont.Font(family='Lato', size=15))
-        self.UsernameLabel.pack(padx=10, pady=5, anchor=W)
+        self.UsernameLabel.pack(padx=10, pady=10, anchor=W)
 
         self.username_l = Label(self.sideFrame, fg='white', bg='#333333', width=30,
                                 font=tkFont.Font(family='calibri', size=15, slant="italic"))
         self.username_l.config(text=str(username_get))
-        self.username_l.pack(padx=10, pady=5, anchor=N)
+        self.username_l.pack(padx=10, pady=5, anchor=W)
 
         self.EmailLabel = Label(self.sideFrame, text='EMAIL ', fg='white', bg='#1A1A1A',
                                 font=tkFont.Font(family='Lato', size=15))
@@ -2344,7 +2345,7 @@ class UserAccount:
         self.email_l = Label(self.sideFrame, fg='white', bg='#333333', width=30,
                              font=tkFont.Font(family='calibri', size=15, slant="italic"))
         self.email_l.config(text=str(email_get))
-        self.email_l.pack(padx=10, pady=5, anchor=N)
+        self.email_l.pack(padx=10, pady=5, anchor=W)
 
         self.Label = Label(self.sideFrame, text='', bg='#1A1A1A')
         self.Label.pack(padx=100, pady=100)
@@ -2352,17 +2353,17 @@ class UserAccount:
         self.editUsername_button = customtkinter.CTkButton(self.sideFrame, text='Edit Username', width=50, height=30,
                                                            text_color='black', fg_color="#b4a7d6",
                                                            hover_color="#ffffff",
-                                                           command=lambda: self.editUsername(Toplevel))
+                                                           command=lambda: self.editUsername())
         self.editUsername_button.place(x=10, y=250)
 
         self.editPassword_button = customtkinter.CTkButton(self.sideFrame, text='Edit Password', width=50, height=30,
                                                            text_color='black',
                                                            fg_color="#b4a7d6",
                                                            hover_color="#ffffff",
-                                                           command=lambda: self.editPassword(Toplevel))
+                                                           command=lambda: self.editPassword())
         self.editPassword_button.place(x=210, y=250)
 
-    def editUsername(self, Toplevel):
+    def editUsername(self):
         self.editUsernameWindow = tk.Toplevel()
         self.editUsernameWindow.title("Edit Username")
         self.editUsernameWindow.configure(bg='#1A1A1A')
@@ -2383,7 +2384,7 @@ class UserAccount:
     def editusername(self):
         pass
 
-    def editPassword(self, Toplevel):
+    def editPassword(self):
         self.editPasswordWindow = tk.Toplevel()
         self.editPasswordWindow.title("Edit Passwprd")
         self.editPasswordWindow.configure(bg='#1A1A1A')
@@ -2415,6 +2416,7 @@ class UserAccount:
         if answer:
             messagebox.showinfo('Log Out', 'You have successfully Logged Out!')
             self.controller.show_frame(LoginPage)
+
 
 
 if __name__ == "__main__":

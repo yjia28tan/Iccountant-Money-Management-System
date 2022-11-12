@@ -16,7 +16,7 @@ import smtplib  # to send email
 import requests  # to verify email
 
 customtkinter.set_appearance_mode("dark")
-connect = sqlite3.connect('Iccountant')
+connect = sqlite3.connect('Iccountant.db')
 cursor = connect.cursor()
 
 
@@ -29,6 +29,7 @@ class windows(Tk):
         self.height = self.winfo_screenheight()
         self.geometry('1280x720')
         self.config(bg='black')
+        self.state('zoomed')
         self.resizable(FALSE, FALSE)
 
         # Creating the sharing variables across classes
@@ -47,14 +48,6 @@ class windows(Tk):
         # We will now create a dictionary of frames
         self.frames = {}
 
-        # we'll create the frames themselves later but let's add the components to the dictionary.
-        # for F in (LoginPage, RegisterPage, ForgotPassword, Dashboard, Account): # , Category, Transaction,
-        #     frame = F(container, self)
-        #
-        #     # the windows class acts as the root window for the frames.
-        #     self.frames[F] = frame
-        #     frame.grid(row=0, column=0, sticky="nsew")
-
         # Using a method to switch frames
         self.show_frame(LoginPage)
 
@@ -62,8 +55,8 @@ class windows(Tk):
         if controller not in self.frames:
             self.frames[controller] = frame = controller(self.container, self)
             frame.grid(row=0, column=0, sticky="nsew")
-            # frame.grid_size()
         frame = self.frames[controller]
+
         # raises the current frame to the top
         frame.tkraise()
 
@@ -73,15 +66,13 @@ class LoginPage(tk.Frame):
         self.controller = controller
         self.hide_button = None
         Frame.__init__(self, window)
-
         self.LoginFrame = tk.Frame.__init__(self, window, bg="black")
-
         self.logo_frame = Frame(self, bg='black')
         self.logo_frame.pack(side='left',  fill='both', expand=True)
         self.lgn_frame = Frame(self, bg='black')
         self.lgn_frame.pack(side='right',  fill='both', expand=True)
-
         tk.Label(self.logo_frame, text='', bg='black').pack(pady=50)
+
         # import picture
         self.logo = ImageTk.PhotoImage(Image.open("logo_refined.png").resize((500, 381), resample=Image.LANCZOS))
         self.logo1 = Label(self.logo_frame, image=self.logo, bg='black')
@@ -164,8 +155,8 @@ class LoginPage(tk.Frame):
                 messagebox.showinfo('Success!', "Login Success!")
                 cur = connect.execute(
                     'SELECT user_id from user WHERE username ="%s" and password="%s"' % (self.uname_email, self.pwd))
-                USER_ID = cur.fetchone()  # output: (1,)
-                userid = USER_ID[0]  # output: 1
+                USER_ID = cur.fetchone()
+                userid = USER_ID[0]
                 self.controller.shared_user_id['userID'].set(int(userid))
                 self.controller.shared_user_id['userID'].get()
                 self.controller.show_frame(Dashboard)
@@ -177,8 +168,8 @@ class LoginPage(tk.Frame):
                     messagebox.showinfo('Success!', "Login Success!")
                     cur = connect.execute('SELECT user_id from user WHERE email="%s" and password="%s"' %
                                           (self.uname_email, self.pwd))
-                    USER_ID = cur.fetchone()  # output: (1,)
-                    userid = USER_ID[0]  # output: 1
+                    USER_ID = cur.fetchone()
+                    userid = USER_ID[0]
                     self.controller.shared_user_id['userID'].set(int(userid))
                     self.controller.shared_user_id['userID'].get()
                     self.controller.show_frame(Dashboard)
@@ -191,7 +182,6 @@ class RegisterPage(tk.Frame):
         Frame.__init__(self, root)
         self.hide_button = None
         self.controller = controller
-
         self.pg1 = Frame(self, bg='black')
         self.pg1.pack(fill=BOTH)
 
@@ -542,7 +532,7 @@ class ForgotPassword(tk.Frame):
             messagebox.showerror('Error!', "Please match both password and confirm password!")
         else:
             cursor.execute('SELECT email from user where email="%s"' % self.r_email)
-            self.Email = cursor.fetchone() # fetch data
+            self.Email = cursor.fetchone()
             self.email = self.Email[0]
             if self.r_email != self.email:
                 messagebox.showerror('Error!', "Please enter the email that is registered in the system!")
@@ -804,15 +794,9 @@ class Account(tk.Frame):
         cursor.execute("SELECT acc_name, acc_amount FROM account WHERE user_id = ? ",
                        (self.controller.shared_user_id['userID'].get(), ))
         rows = cursor.fetchall()
-        # print(rows)
-        # column1 = [tple[1] for tple in rows]
-        # print(column1)
-        # introw01 = str(column1)
-        # print(introw01)
-        # list = [[(rows[0], round(introw01, 2)) for rows in lin] for lin in rows]
-        # print(list)
         global count
         count = 0
+
         # loop to display account
         for row in rows:
             if count % 2 == 0:
@@ -890,9 +874,11 @@ class Account(tk.Frame):
 
     # ========== Edit Account ===========
     def editAccountWindow(self, Toplevel):
-        if not self.Account.selection():  # if not select any row
+        # if not select any row
+        if not self.Account.selection():
             tk.messagebox.showerror("Error", "Please select an account to edit")
         else:
+
             # after selected a row
             selected = self.Account.focus()
             values = self.Account.item(selected)
@@ -902,7 +888,6 @@ class Account(tk.Frame):
                                                                       self.controller.shared_user_id['userID'].get(),))
             self.AccID = cursor.fetchall()
             self.accID = self.AccID[0][0]
-            # print(self.accID)
             self.acc_name = selection[0]
             self.acc_amount = selection[1]
 
@@ -970,6 +955,7 @@ class Account(tk.Frame):
 
                 # close Edit window
                 self.editWindow.destroy()
+
             except ValueError:
                 messagebox.showerror('Error', "Amount must be a number!")
 
@@ -1176,7 +1162,7 @@ class Category(tk.Frame):
             messagebox.showerror('Error', "Please fill in all the fields!")
         else:
             try:
-                cursor.execute("INSERT INTO category (cat_name, user_id) VALUES(?,?) ", 
+                cursor.execute("INSERT INTO category (cat_name, user_id) VALUES(?,?) ",
                 (self.AddCategoryNameEntry.get(), self.controller.shared_user_id['userID'].get()))
                 connect.commit()
                 messagebox.showinfo('Record added', f"{self.AddCategoryNameEntry.get()} was successfully added")
@@ -1249,8 +1235,10 @@ class Category(tk.Frame):
             # commit changes
             connect.commit()
             messagebox.showinfo('Update', f"{self.EditCategoryNameEntry.get()} was successfully edited.")
+
             # display updated value
             self.updatetree()
+
             # close Edit window
             self.editWindow.destroy()
 
@@ -1367,11 +1355,14 @@ class Transaction(tk.Frame):
                                                      .resize((55, 30), resample=Image.LANCZOS))
         self.transaction_filter = ImageTk.PhotoImage(Image.open('trans_filter.png')
                                                      .resize((85, 30), resample=Image.LANCZOS))
+
         # Buttons
-        self.add_b = tk.Button(self.side_frame, image=self.transaction_add, bg='#1A1A1A', relief='flat', command=self.add)
+        self.add_b = tk.Button(self.side_frame, image=self.transaction_add, bg='#1A1A1A', relief='flat',
+                               command=self.add)
         self.add_b.place(x=20, y=60)
 
-        self.edit_b = tk.Button(self.side_frame, image=self.transaction_edit, bg='#1A1A1A', relief='flat', command=self.edit)
+        self.edit_b = tk.Button(self.side_frame, image=self.transaction_edit, bg='#1A1A1A', relief='flat',
+                                command=self.edit)
         self.edit_b.place(x=70, y=60)
 
         self.delete_b = tk.Button(self.side_frame, image=self.transaction_delete, bg='#1A1A1A', relief='flat',
@@ -1383,7 +1374,8 @@ class Transaction(tk.Frame):
         self.filter_b.place(x=980, y=60)
 
         # total income label
-        self.total_in_l = Label(self.side_frame, font=('lato', 12), bg='#1A1A1A', text='Total Income: ', fg='lightgreen')
+        self.total_in_l = Label(self.side_frame, font=('lato', 12), bg='#1A1A1A', text='Total Income: ',
+                                fg='lightgreen')
         self.total_in_l.place(x=500, y=65)
 
         self.total_in_a = Label(self.side_frame, font=('lato', 12), bg='#1A1A1A', fg='lightgreen')
@@ -1445,7 +1437,7 @@ class Transaction(tk.Frame):
         self.transaction_list.column("Amount", anchor=CENTER, width=200)
         self.transaction_list.column("Remark", anchor=CENTER, width=250)
 
-        #style for treeview
+        # style for treeview
         self.style = ttk.Style()
         self.style.theme_use("default")
         self.style.configure("Treeview", background="#666666", foreground="black", fieldbackground="#666666",
@@ -1700,7 +1692,7 @@ class Transaction(tk.Frame):
                 connect.commit()
                 messagebox.showinfo('Information', 'Record successfully updated.')
 
-                # validate the condition to update the amount of the acoount in database
+                # validate the condition to update the amount of the account in database
                 # if the user did not change the account
                 if self.oriacc == self.accountid:
 
@@ -1995,7 +1987,8 @@ class Transaction(tk.Frame):
         else:
             # get the category id that the user input
             cursor.execute("SELECT c.cat_id FROM category c, user u WHERE c.user_id = u.user_id AND c.user_id = ? AND "
-                           "c.cat_name = ?", (self.controller.shared_user_id['userID'].get(), self.category_cbox.get(),))
+                           "c.cat_name = ?", (self.controller.shared_user_id['userID'].get(),
+                                              self.category_cbox.get(),))
             self.categoryID = cursor.fetchall()
             self.categoryid = self.categoryID[0][0]
             self.query = self.query + "AND c.cat_id = ? "
@@ -2177,18 +2170,6 @@ class Transaction(tk.Frame):
                         except:
                             pass
 
-        # if self.total_in_Amount == None:
-        #     self.total_in_amount.set(0)
-        # else:
-        #     self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
-        #     self.total_in_a.config(text=str(self.total_in_amount))
-
-        # if self.total_ex_Amount == None:
-        #     self.total_ex_amount.set(0)
-        # else:
-        #     self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
-        #     self.total_ex_a.config(text=str(self.total_ex_amount))
-
         # loop to display all the transaction in treeview
         global count
         count = 0
@@ -2246,7 +2227,8 @@ class Transaction(tk.Frame):
         self.year_l.grid(row=4, column=0)
         self.year_get = pd.read_sql_query("SELECT strftime('%Y', t.date) AS Year FROM transactions t, user u WHERE "
                                           "u.user_id = t.user_id AND t.user_id IN ('{}') GROUP BY "
-                                          "strftime('%Y', t.date)".format(self.controller.shared_user_id['userID'].get()), connect)
+                                          "strftime('%Y', t.date)".format
+                                          (self.controller.shared_user_id['userID'].get()), connect)
         self.year_df = pd.DataFrame(self.year_get)
         self.year_list = self.year_df['Year'].values.tolist()
         self.year_list.insert(0, 'None')
@@ -2336,11 +2318,12 @@ class UserAccount:
 
         # ============================== User Account Display Frame =========================================
 
-        cursor.execute("SELECT username FROM user WHERE user_id = 1")  # change  to user_id=?
+        cursor.execute("SELECT username FROM user WHERE user_id = ? ",
+                       (self.controller.shared_user_id['userID'].get(),))
         username = cursor.fetchone()
         username_get = username[0]
 
-        cursor.execute("SELECT email FROM user WHERE user_id = 1")  # change to user_id=?
+        cursor.execute("SELECT email FROM user WHERE user_id = ? ", (self.controller.shared_user_id['userID'].get(),))
         email = cursor.fetchone()
         email_get = email[0]
 

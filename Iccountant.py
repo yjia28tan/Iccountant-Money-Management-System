@@ -1,22 +1,22 @@
-import tkinter as tk
 from tkinter import *
+from tkinter import messagebox
 from tkinter import ttk
+import tkinter as tk
+import tkinter.font as tkFont
+import sqlite3
+import customtkinter
 from PIL import Image, ImageTk
 import os
-import sqlite3
-from tkinter import messagebox
-import pandas as pd
-from datetime import datetime
-from tkcalendar import DateEntry
-import tkinter.font as tkFont
-import customtkinter
 import math
 import random  # to create otp
 import smtplib  # to send email
 import requests  # to verify email
-import matplotlib.pyplot as plt  # Built-in Matplotlib
+from datetime import datetime
+import pandas as pd
 import seaborn as sns  # For graphical
+import matplotlib.pyplot as plt  # Built-in Matplotlib
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+from tkcalendar import DateEntry
 
 customtkinter.set_appearance_mode("dark")
 # plt.figure(facecolor='#1A1A1A')
@@ -25,7 +25,7 @@ connect = sqlite3.connect('Iccountant')
 cursor = connect.cursor()
 
 
-class windows(Tk):
+class windows(tk.Tk):
     def __init__(self, *args, **kwargs):
         Tk.__init__(self, *args, **kwargs)
         # Adding a title to the window
@@ -36,7 +36,7 @@ class windows(Tk):
         self.config(bg='black')
         # self.state('zoomed')
         self.resizable(FALSE, FALSE)
-        self.iconphoto(False, tk.PhotoImage(file="logo_refined.png"))
+        self.iconphoto(False, tk.PhotoImage(file='logo_refined.png'))
 
         # Creating the sharing variables across classes
         self.shared_user_id = {'userID': IntVar()}
@@ -140,6 +140,7 @@ class LoginPage(tk.Frame):
                                               command=lambda: self.controller.show_frame(ForgotPassword))
         self.fgpbtn.pack(pady=5)
 
+    # =================================== Functions ===============================
     def show_password(self):
         if self.btn_value.get() == 1:
             self.password_lb_entry.config(show='')
@@ -287,6 +288,7 @@ class RegisterPage(tk.Frame):
         tk.Label(self.pg1, text='', bg='black').pack(pady=30)
         tk.Label(self.pg1, text='', bg='black').pack(pady=30)
 
+    # =================================== Functions ===============================
     def show_password(self):
         if self.btn_value.get() == 1:
             self.password_lb_entry.config(show='')
@@ -496,6 +498,7 @@ class ForgotPassword(tk.Frame):
         self.backbtn1.place(x=150, y=80)
         tk.Label(self.fgt_frame, text='', bg='black').pack(anchor=CENTER, pady=100)
 
+    # =================================== Functions ===============================
     def show_password(self):
         if self.btn_value.get() == 1:
             self.newpassword_lb_entry.config(show='')
@@ -688,7 +691,7 @@ class Dashboard(tk.Frame):
                                   command=self.filter)
         self.filter_b.place(x=980, y=60)
 
-        # ============================== charts ===========================================
+        # ============================== charts 1 Total Category ===========================================
         plt.figure(facecolor='#1A1A1A')
 
         category_in_total_amount = pd.read_sql_query(
@@ -733,7 +736,208 @@ class Dashboard(tk.Frame):
         toolb = NavigationToolbar2Tk(can, self.side_frame)
         toolb.update()
         toolb.place(x=15, y=100)
+        """
+        # edit line 745 & 7954
+        # ============================== charts 2 Category in year ===========================================
+        category_in_year_amount = pd.read_sql_query(
+            "SELECT ty.type_name AS Type, c.cat_name AS Category, sum(t.amount) AS Amount FROM transactions t, "
+            "category c, type ty WHERE c.cat_id = t.cat_id AND t.user_id = c.user_id AND t.type_id = ty.type_id "
+            "AND t.type_id = 1 AND t.user_id IN ('{}') AND strftime('%Y', t.date) = '2022' GROUP BY t.cat_id".format
+            (self.controller.shared_user_id['userID'].get()), connect)
+        dataframe = pd.DataFrame(category_in_year_amount)
+        type_in_year = dataframe['Type'].values.tolist()
+        category_in_year = dataframe['Category'].values.tolist()
+        amount_in_year = dataframe['Amount'].values.tolist()
+        category_ex_year_amount = pd.read_sql_query(
+            "SELECT ty.type_name AS Type, c.cat_name AS Category, sum(t.amount) AS Amount FROM transactions t, "
+            "category c, type ty WHERE c.cat_id = t.cat_id AND t.user_id = c.user_id AND t.type_id = ty.type_id "
+            "AND t.type_id = 2 AND t.user_id IN ('{}') AND strftime('%Y', t.date) = '2022' GROUP BY t.cat_id".format
+            (self.controller.shared_user_id['userID'].get()), connect)
+        datafram = pd.DataFrame(category_ex_year_amount)
+        type_ex_year = datafram['Type'].values.tolist()
+        category_ex_year = datafram['Category'].values.tolist()
+        amount_ex_year = datafram['Amount'].values.tolist()
+        type_year_combine = type_in_year + type_ex_year
+        category_year_combine = category_in_year + category_ex_year
+        amount_year_combine = amount_in_year + amount_ex_year
+        datafra = pd.DataFrame(list(zip(type_year_combine, category_year_combine, amount_year_combine)),
+                               columns =['Type', 'Category', 'Amount'])
+        inner = datafra.groupby('Type').sum()
+        outer = datafra.groupby(['Type', 'Category']).sum()
+        outer_labels = outer.index.get_level_values(1)
+        fig, ax = plt.subplots(figsize=(10, 8), dpi=100)
+        plt.axis('equal')
+        color = sns.color_palette("Pastel1")
+        colors = sns.color_palette("Accent")
+        ax.pie(inner.values.flatten(), radius=0.7, labels=inner.index, autopct='%1.1f%%', labeldistance=0.1,
+               pctdistance=0.75, colors=colors, wedgeprops=dict(width=0.3, edgecolor='w'))
+        ax.pie(outer.values.flatten(), radius=1, labels=outer_labels, autopct='%1.1f%%', pctdistance=0.85,
+               colors=color, wedgeprops=dict(width=0.3, edgecolor='w'))
+        plt.title("Category In Year", fontsize=18)
+        plt.legend()
+        plt.show()
 
+        # edit line 784 & 793
+        # ============================== charts 3 Category in month ===========================================
+        category_in_month_amount = pd.read_sql_query(
+            "SELECT ty.type_name AS Type, c.cat_name AS Category, sum(t.amount) AS Amount FROM transactions t, "
+            "category c, type ty WHERE c.cat_id = t.cat_id AND t.user_id = c.user_id AND t.type_id = ty.type_id AND "
+            "t.type_id = 1 AND t.user_id IN ('{}') AND strftime('%Y', t.date) = '2022' AND strftime('%m', t.date) = '08' "
+            "GROUP BY t.cat_id".format(self.controller.shared_user_id['userID'].get()), connect)
+        dataframe = pd.DataFrame(category_in_month_amount)
+        type_in_month = dataframe['Type'].values.tolist()
+        category_in_month = dataframe['Category'].values.tolist()
+        amount_in_month = dataframe['Amount'].values.tolist()
+        category_ex_month_amount = pd.read_sql_query("SELECT ty.type_name AS Type, c.cat_name AS Category, sum(t.amount) AS Amount"
+                                                     "FROM transactions t, category c, type ty WHERE c.cat_id = t.cat_id AND"
+                                                     "t.user_id = c.user_id AND t.type_id = ty.type_id AND t.type_id = 2 AND"
+                                                     "t.user_id IN ('{}') AND strftime('%Y', t.date) = '2022' AND strftime('%m', t.date) = '08'"
+                                                     "GROUP BY t.cat_id".format(self.controller.shared_user_id['userID'].get()), connect)
+        datafram = pd.DataFrame(category_ex_month_amount)
+        type_ex_month = datafram['Type'].values.tolist()
+        category_ex_month = datafram['Category'].values.tolist()
+        amount_ex_month = datafram['Amount'].values.tolist()
+        type_month_combine = type_in_month + type_ex_month
+        category_month_combine = category_in_month + category_ex_month
+        amount_month_combine = amount_in_month + amount_ex_month
+        datafra = pd.DataFrame(list(zip(type_month_combine, category_month_combine, amount_month_combine)),
+                               columns =['Type', 'Category', 'Amount'])
+        inner = datafra.groupby('Type').sum()
+        outer = datafra.groupby(['Type', 'Category']).sum()
+        outer_labels = outer.index.get_level_values(1)
+        fig, ax = plt.subplots(figsize=(10, 8), dpi=100)
+        plt.axis('equal')
+        color = sns.color_palette("Pastel1")
+        colors = sns.color_palette("Accent")
+        ax.pie(inner.values.flatten(), radius=0.7, labels=inner.index, autopct='%1.1f%%', labeldistance=0.1,
+               pctdistance=0.75, colors=colors, wedgeprops=dict(width=0.3, edgecolor='w'))
+        ax.pie(outer.values.flatten(), radius=1, labels=outer_labels, autopct='%1.1f%%', pctdistance=0.85,
+               colors=color, wedgeprops=dict(width=0.3, edgecolor='w'))
+        plt.title("Category In Month", fontsize=18)
+        plt.legend()
+        plt.show()
+
+        # edit line 822 & 830
+        # ============================== charts 4 Account (total) ===========================================
+        account_in_total_amount = pd.read_sql_query(
+            "SELECT ty.type_name AS Type, a.acc_name AS Account, sum(t.amount) AS Amount FROM type ty, account a,"
+            "transactions t, user u WHERE ty.type_id = t.type_id AND a.acc_id = t.acc_id AND a.user_id = t.user_id = u.user_id"
+            "AND ty.type_id = 1 AND t.user_id IN ('{}') GROUP BY t.acc_id".format(self.controller.shared_user_id['userID'].get()), connect)
+        datafr = pd.DataFrame(account_in_total_amount)
+        type_in_total = datafr['Type'].values.tolist()
+        account_in_total = datafr['Account'].values.tolist()
+        amount_in_total = datafr['Amount'].values.tolist()
+        category_ex_total_amount = pd.read_sql_query(
+            "SELECT ty.type_name AS Type, a.acc_name AS Account, sum(t.amount) AS Amount FROM type ty, "
+            "account a, transactions t, user u WHERE ty.type_id = t.type_id AND a.acc_id = t.acc_id AND "
+            "a.user_id = t.user_id = u.user_id AND ty.type_id = 2 AND t.user_id IN ('{}') GROUP BY t.acc_id".format
+            (self.controller.shared_user_id['userID'].get()), connect)
+        dataf = pd.DataFrame(category_ex_total_amount)
+        type_ex_total = dataf['Type'].values.tolist()
+        account_ex_total = dataf['Account'].values.tolist()
+        amount_ex_total = dataf['Amount'].values.tolist()
+        type_total_combine = type_in_total + type_ex_total
+        account_total_combine = account_in_total + account_ex_total
+        amount_total_combine = amount_in_total + amount_ex_total
+        data = pd.DataFrame(list(zip(type_total_combine, account_total_combine, amount_total_combine)),
+                            columns =['Type', 'Account', 'Amount'])
+        inner = data.groupby('Type').sum()
+        outer = data.groupby(['Type', 'Account']).sum()
+        outer_labels = outer.index.get_level_values(1)
+        fig1, ax = plt.subplots(figsize=(10, 8), dpi=100)
+        plt.axis('equal')
+        color = sns.color_palette("Pastel1")
+        colors = sns.color_palette("Accent")
+        ax.pie(inner.values.flatten(), radius=0.7, labels=inner.index, autopct='%1.1f%%', labeldistance=0.1,
+               pctdistance=0.75, colors=colors, wedgeprops=dict(width=0.3, edgecolor='w'))
+        ax.pie(outer.values.flatten(), radius=1, labels=outer_labels, autopct='%1.1f%%', pctdistance=0.85,
+               colors=color, wedgeprops=dict(width=0.3, edgecolor='w'))
+        plt.title("Account Total Amount", fontsize=18)
+        plt.legend()
+        plt.show()
+
+        # edit line 864 & 873
+        # ============================== charts 5 Account in Year ===========================================
+        account_in_year_amount = pd.read_sql_query(
+            "SELECT ty.type_name AS Type, a.acc_name AS Account, sum(t.amount) AS Amount FROM type ty, account a, "
+            "transactions t, user u WHERE ty.type_id = t.type_id AND a.acc_id = t.acc_id AND a.user_id = t.user_id = u.user_id "
+            "AND ty.type_id = 1 AND t.user_id IN ('{}') AND strftime('%Y', t.date) = '2022' GROUP BY t.acc_id".format
+            (self.controller.shared_user_id['userID'].get()), connect)
+        datafr = pd.DataFrame(account_in_year_amount)
+        type_in_year = datafr['Type'].values.tolist()
+        account_in_year = datafr['Account'].values.tolist()
+        amount_in_year = datafr['Amount'].values.tolist()
+        category_ex_year_amount = pd.read_sql_query(
+            "SELECT ty.type_name AS Type, a.acc_name AS Account, sum(t.amount) AS Amount FROM type ty, account a,"
+            "transactions t, user u WHERE ty.type_id = t.type_id AND a.acc_id = t.acc_id AND a.user_id = t.user_id = u.user_id"
+            "AND ty.type_id = 2 AND t.user_id IN ('{}') AND strftime('%Y', t.date) = '2022' GROUP BY t.acc_id".format
+            (self.controller.shared_user_id['userID'].get()), connect)
+        dataf = pd.DataFrame(category_ex_year_amount)
+        type_ex_year = dataf['Type'].values.tolist()
+        account_ex_year = dataf['Account'].values.tolist()
+        amount_ex_year = dataf['Amount'].values.tolist()
+        type_year_combine = type_in_year + type_ex_year
+        account_year_combine = account_in_year + account_ex_year
+        amount_year_combine = amount_in_year + amount_ex_year
+        data = pd.DataFrame(list(zip(type_year_combine, account_year_combine, amount_year_combine)),
+                            columns =['Type', 'Account', 'Amount'])
+        inner = data.groupby('Type').sum()
+        outer = data.groupby(['Type', 'Account']).sum()
+        outer_labels = outer.index.get_level_values(1)
+        fig1, ax = plt.subplots(figsize=(10, 8), dpi=100)
+        plt.axis('equal')
+        color = sns.color_palette("Pastel1")
+        colors = sns.color_palette("Accent")
+        ax.pie(inner.values.flatten(), radius=0.7, labels=inner.index, autopct='%1.1f%%', labeldistance=0.1,
+               pctdistance=0.75, colors=colors, wedgeprops=dict(width=0.3, edgecolor='w'))
+        ax.pie(outer.values.flatten(), radius=1, labels=outer_labels, autopct='%1.1f%%', pctdistance=0.85,
+               colors=color, wedgeprops=dict(width=0.3, edgecolor='w'))
+        plt.title("Account In Year", fontsize=18)
+        plt.legend()
+        plt.show()
+
+        # edit line 904 & 913
+        # ============================== charts 6 Account in Month ===========================================
+        account_in_month_amount = pd.read_sql_query(
+            "SELECT ty.type_name AS Type, a.acc_name AS Account, sum(t.amount) AS Amount FROM type ty, account a,"
+            "transactions t, user u WHERE ty.type_id = t.type_id AND a.acc_id = t.acc_id AND a.user_id = t.user_id = u.user_id"
+            "AND ty.type_id = 1 AND t.user_id IN ('{}') AND strftime('%Y', t.date) = '2022' AND strftime('%m', t.date) = '08'"
+            "GROUP BY t.acc_id".format(self.controller.shared_user_id['userID'].get()), connect)
+        datafr = pd.DataFrame(account_in_month_amount)
+        type_in_month = datafr['Type'].values.tolist()
+        account_in_month = datafr['Account'].values.tolist()
+        amount_in_month = datafr['Amount'].values.tolist()
+        category_ex_month_amount = pd.read_sql_query(
+            "SELECT ty.type_name AS Type, a.acc_name AS Account, sum(t.amount) AS Amount FROM type ty, account a,"
+            "transactions t, user u WHERE ty.type_id = t.type_id AND a.acc_id = t.acc_id AND a.user_id = t.user_id = u.user_id"
+            "AND ty.type_id = 2 AND t.user_id IN ('{}') AND strftime('%Y', t.date) = '2022' AND strftime('%m', t.date) = '08'"
+            "GROUP BY t.acc_id".format(self.controller.shared_user_id['userID'].get()), connect)
+        dataf = pd.DataFrame(category_ex_month_amount)
+        type_ex_month = dataf['Type'].values.tolist()
+        account_ex_month = dataf['Account'].values.tolist()
+        amount_ex_month = dataf['Amount'].values.tolist()
+        type_month_combine = type_in_month + type_ex_month
+        account_month_combine = account_in_month + account_ex_month
+        amount_month_combine = amount_in_month + amount_ex_month
+        data = pd.DataFrame(list(zip(type_month_combine, account_month_combine, amount_month_combine)),
+                            columns =['Type', 'Account', 'Amount'])
+        inner = data.groupby('Type').sum()
+        outer = data.groupby(['Type', 'Account']).sum()
+        outer_labels = outer.index.get_level_values(1)
+        fig1, ax = plt.subplots(figsize=(10, 8), dpi=100)
+        plt.axis('equal')
+        color = sns.color_palette("Pastel1")
+        colors = sns.color_palette("Accent")
+        ax.pie(inner.values.flatten(), radius=0.7, labels=inner.index, autopct='%1.1f%%', labeldistance=0.1,
+               pctdistance=0.75, colors=colors, wedgeprops=dict(width=0.3, edgecolor='w'))
+        ax.pie(outer.values.flatten(), radius=1, labels=outer_labels, autopct='%1.1f%%', pctdistance=0.85,
+               colors=color, wedgeprops=dict(width=0.3, edgecolor='w'))
+        plt.title("Account In Month", fontsize=18)
+        plt.legend()
+        plt.show()"""
+
+        
+    # =================================== Functions ===============================
     def sort(self):
         # verify conditions to filter out data
         # if user does not filter anything
@@ -959,7 +1163,6 @@ class Dashboard(tk.Frame):
                                   command=self.root.destroy)
         self.cancel_b.grid(row=3, column=1)
 
-    # =================================== Functions ===============================
     def con(self):
         os.system('CurrencyConverter.py')
 
@@ -1455,7 +1658,7 @@ class Category(tk.Frame):
             messagebox.showerror('Error', "Please fill in all the fields!")
         else:
             try:
-                cursor.execute("INSERT INTO category (cat_name, user_id) VALUES(?,?) ",
+                cursor.execute("INSERT INTO category (cat_name, user_id) VALUES(?,?) ", 
                 (self.AddCategoryNameEntry.get(), self.controller.shared_user_id['userID'].get()))
                 connect.commit()
                 messagebox.showinfo('Record added', f"{self.AddCategoryNameEntry.get()} was successfully added")
@@ -1559,6 +1762,7 @@ class Category(tk.Frame):
                 # redisplay the data
                 self.displayCategory1()
 
+    # ===== call function =======
     def con(self):
         os.system('CurrencyConverter.py')
 
@@ -2605,7 +2809,7 @@ class UserAccount(tk.Frame):
         # So that it does not depend on the widgets inside the frame
         self.menuFrame.grid_propagate(False)
 
-        # ============================== User Account Display Frame =========================================
+        # ============================== User Account Display Frame ========================================='
         cursor.execute("SELECT username FROM user WHERE user_id = ?", (self.controller.shared_user_id['userID'].get(),))
         username = cursor.fetchone()
         username_get = username[0]
@@ -2650,12 +2854,30 @@ class UserAccount(tk.Frame):
         self.editPassword_button.place(x=210, y=250)
 
     def editUsername(self):
+        cursor.execute("SELECT username FROM user WHERE user_id = ?", (self.controller.shared_user_id['userID'].get(),))
+        username = cursor.fetchone()
+        username_get = username[0]
+        
         self.editUsernameWindow = tk.Toplevel()
         self.editUsernameWindow.title("Edit Username")
         self.editUsernameWindow.configure(bg='#1A1A1A')
         self.editUsernameWindow.iconphoto(False, tk.PhotoImage(file="logo_refined.png"))
         self.editUsernameWindow.geometry('1000x600')
+        
+        # Labels
+        self.EditUsernameHeading = Label(self.editUsernameWindow, text='Edit Username', fg='white', bg='#1A1A1A',
+                                           font=tkFont.Font(family='calibri', size=20))
+        self.EditUsernameHeading.pack(pady=10)
+        self.EditUsernameLabel = Label(self.editUsernameWindow, text='New Userame', fg='white', bg='#1A1A1A',
+                                               font=tkFont.Font(family='calibri', size=15))
+        self.EditUsernameLabel.pack(pady=10)
 
+        # Entries
+        self.EditUsernameEntry = Entry(self.editUsernameWindow, width=30, fg='white', bg='#1A1A1A', justify=CENTER,relief=FLAT)
+        self.EditUsernameEntry.pack(pady=5)
+        self.EditUsername_line = Canvas(self.editUsernameWindow, width=200, height=2.0, bg="#bdb9b1", highlightthickness=0)
+        self.EditUsername_line.pack()
+        
         # Buttons
         self.addConfirm = customtkinter.CTkButton(self.editUsernameWindow, text='OK', width=50, height=30,
                                                   fg_color="#464E63",
@@ -2666,9 +2888,25 @@ class UserAccount(tk.Frame):
                                               fg_color="#464E63",
                                               hover_color="#667190", command=lambda: self.editUsernameWindow.destroy())
         self.cancel.pack(pady=10)
+        
+        # display record in Entry box
+        self.EditUsernameEntry.insert(0, username_get)
 
+    # update new username
     def editusername(self):
-        pass
+        if not self.EditUsernameEntry.get():
+            messagebox.showerror('Error', "Please fill in all the fields!")
+        else:
+            # edit values in database
+            cursor.execute("UPDATE user SET username = ? WHERE user_id =?", (self.EditUsernameEntry.get(),
+                                                                                (self.controller.shared_user_id['userID'].get())))
+            # commit changes
+            connect.commit()
+            messagebox.showinfo('Update', f"{self.EditUsernameEntry.get()} was successfully edited.")
+            # display updated value
+            self.username_l.config(text=str(self.EditUsernameEntry.get()))
+            # close Edit window
+            self.editUsernameWindow.destroy()
 
     def editPassword(self):
         self.editPasswordWindow = tk.Toplevel()
@@ -2676,6 +2914,8 @@ class UserAccount(tk.Frame):
         self.editPasswordWindow.configure(bg='#1A1A1A')
         self.editPasswordWindow.iconphoto(False, tk.PhotoImage(file="logo_refined.png"))
         self.editPasswordWindow.geometry('1000x600')
+
+        # ============ ENTER THE ENTRY BOX BLA BLA BLA AT HERE ==========#
 
         # Buttons
         self.addConfirm = customtkinter.CTkButton(self.editPasswordWindow, text='OK', width=50, height=30,
@@ -2689,7 +2929,9 @@ class UserAccount(tk.Frame):
         self.cancel.pack(pady=10)
 
     def editpassword(self):
-        pass
+        # ============== ENTER THE VALIDATION AT HERE ===========#
+        # close Edit window
+        self.editPasswordWindow.destroy()
 
     def con(self):
         os.system('CurrencyConverter.py')

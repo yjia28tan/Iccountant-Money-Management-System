@@ -2257,7 +2257,7 @@ class Transaction(tk.Frame):
                                   command=self.root.destroy)
         self.cancel_b.grid(row=6, column=1)
 
-
+class UserAccount(tk.Frame):
     def __init__(self, master, controller):
         self.controller = controller
         # self.hide_button = None

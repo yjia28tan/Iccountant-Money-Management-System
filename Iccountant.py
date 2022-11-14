@@ -14,6 +14,7 @@ import requests  # to verify email
 from datetime import datetime
 import pandas as pd
 import seaborn as sns  # For graphical
+import matplotlib
 import matplotlib.pyplot as plt  # Built-in Matplotlib
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from tkcalendar import DateEntry
@@ -35,7 +36,7 @@ class windows(tk.Tk):
         self.geometry('1280x720')
         self.config(bg='black')
         # self.state('zoomed')
-        self.resizable(FALSE, FALSE)
+        # self.resizable(FALSE, FALSE)
         self.iconphoto(False, tk.PhotoImage(file='logo_refined.png'))
 
         # Creating the sharing variables across classes
@@ -676,23 +677,49 @@ class Dashboard(tk.Frame):
 
         # So that it does not depend on the widgets inside the frame
         self.menuFrame.grid_propagate(False)
-
+        
         # side frame
         self.side_frame = Frame(self, bg='#1A1A1A', width=1280, height=720)
         self.side_frame.place(x=180, y=0)
 
         # heading
-        overview_l = Label(self.side_frame, font=('lato', 24), bg='#1A1A1A', text='Overview', fg='white')
-        overview_l.place(x=20, y=20)
-
+        self.overview_l = Label(self.side_frame, font=('lato', 24), bg='#1A1A1A', text='Overview', fg='white')
+        self.overview_l.place(x=20, y=20)
+        
+        # button
         self.dashboard_filter = ImageTk.PhotoImage(Image.open('trans_filter.png').resize((85, 30),
                                                                                          resample=Image.LANCZOS))
         self.filter_b = tk.Button(self.side_frame, image=self.dashboard_filter, bg='#1A1A1A', relief='flat',
                                   command=self.filter)
         self.filter_b.place(x=980, y=60)
+        
+        # Create A Canvas
+        self.my_canvas = Canvas(self.side_frame, bg='red')
+        self.my_canvas.pack(fill="both", expand=True)
+        
+        # Add A Scrollbar To The Canvas
+        self.my_scrollbar = ttk.Scrollbar(self.side_frame, orient=VERTICAL, command=self.my_canvas.yview)
+        self.my_scrollbar.pack(side=RIGHT, fill=Y)
+
+        # Create ANOTHER Frame INSIDE the Canvas
+        self.scroll_frame = Frame(self.my_canvas, bg='#1A1A1A')
+        self.scroll_frame.bind('<Configure>', lambda e: self.my_canvas.configure(scrollregion = self.scroll_frame.bbox("all")))
+        # Add that New frame To a Window In The Canvas
+        self.my_canvas.create_window((0,0), window=self.scroll_frame, anchor="nw")
+        # Configure The Canvas
+        self.my_canvas['yscrollcommand'] = self.my_scrollbar.set
+        self.my_canvas.bind('<Configure>', lambda e: self.my_canvas.configure(scrollregion = self.my_canvas.bbox("all")))
+
+
+        
+        
+        
+          
+
+
 
         # ============================== charts 1 Total Category ===========================================
-        plt.figure(facecolor='#1A1A1A')
+        #plt.figure(facecolor='#1A1A1A')
 
         category_in_total_amount = pd.read_sql_query(
             "SELECT ty.type_name AS Type, c.cat_name AS Category, sum(t.amount) AS Amount FROM transactions t, "
@@ -724,18 +751,72 @@ class Dashboard(tk.Frame):
         plt.axis('equal')
         color = sns.color_palette("Pastel1")
         colors = sns.color_palette("Accent")
-        ax.pie(inner.values.flatten(), radius=0.7, labels=inner.index, autopct='%1.1f%%', labeldistance=0.1,
-               pctdistance=0.75, colors=colors, wedgeprops=dict(width=0.3, edgecolor='w'))
-        ax.pie(outer.values.flatten(), radius=1, labels=outer_labels, autopct='%1.1f%%', pctdistance=0.85, colors=color,
-               wedgeprops=dict(width=0.3, edgecolor='w'))
-        plt.title("Category Total Amount", fontsize=18)
+        patches, texts, pcts = ax.pie(inner.values.flatten(), radius=0.7, labels=inner.index, autopct='%1.1f%%', labeldistance=0.05,
+               pctdistance=0.75, colors=colors, wedgeprops=dict(width=0.3, edgecolor='w'), textprops=dict(fontsize=12))
+        for i, patch in enumerate(patches):
+            texts[i].set_color(patch.get_facecolor())
+        patche, texts, pcts = ax.pie(outer.values.flatten(), radius=1, labels=outer_labels, autopct='%1.1f%%', pctdistance=0.85, colors=color,
+               wedgeprops=dict(width=0.3, edgecolor='w'), textprops=dict(fontsize=12))
+        for i, patch in enumerate(patche):
+            texts[i].set_color(patch.get_facecolor())
+        plt.title("Category Total Amount", fontsize=18, color='#b6d7a8')
         plt.legend()
-        can = FigureCanvasTkAgg(fig, self.side_frame)
-        can.draw()
-        can.get_tk_widget().place(x=15, y=100)
-        toolb = NavigationToolbar2Tk(can, self.side_frame)
-        toolb.update()
-        toolb.place(x=15, y=100)
+        canva = FigureCanvasTkAgg(fig, self.scroll_frame)
+        canva.draw()
+        canva.get_tk_widget().place(x=15, y=100)
+        fig.patch.set_facecolor('#1A1A1A')
+        toolbar = NavigationToolbar2Tk(canva, self.scroll_frame)
+        toolbar.update()
+        toolbar.place(x=385, y=680)
+
+        # ============================== charts 2 Account (total) ===========================================
+        account_in_total_amount = pd.read_sql_query(
+            "SELECT ty.type_name AS Type, a.acc_name AS Account, sum(t.amount) AS Amount FROM type ty, account a,"
+            "transactions t, user u WHERE ty.type_id = t.type_id AND a.acc_id = t.acc_id AND a.user_id = t.user_id = u.user_id "
+            "AND ty.type_id = 1 AND t.user_id IN ('{}') GROUP BY t.acc_id".format(self.controller.shared_user_id['userID'].get()), connect)
+        datafr = pd.DataFrame(account_in_total_amount)
+        type_in_total = datafr['Type'].values.tolist()
+        account_in_total = datafr['Account'].values.tolist()
+        amount_in_total = datafr['Amount'].values.tolist()
+        category_ex_total_amount = pd.read_sql_query(
+            "SELECT ty.type_name AS Type, a.acc_name AS Account, sum(t.amount) AS Amount FROM type ty, "
+            "account a, transactions t, user u WHERE ty.type_id = t.type_id AND a.acc_id = t.acc_id AND "
+            "a.user_id = t.user_id = u.user_id AND ty.type_id = 2 AND t.user_id IN ('{}') GROUP BY t.acc_id".format
+            (self.controller.shared_user_id['userID'].get()), connect)
+        dataf = pd.DataFrame(category_ex_total_amount)
+        type_ex_total = dataf['Type'].values.tolist()
+        account_ex_total = dataf['Account'].values.tolist()
+        amount_ex_total = dataf['Amount'].values.tolist()
+        type_total_combine = type_in_total + type_ex_total
+        account_total_combine = account_in_total + account_ex_total
+        amount_total_combine = amount_in_total + amount_ex_total
+        data = pd.DataFrame(list(zip(type_total_combine, account_total_combine, amount_total_combine)),
+                            columns =['Type', 'Account', 'Amount'])
+        inner = data.groupby('Type').sum()
+        outer = data.groupby(['Type', 'Account']).sum()
+        outer_labels = outer.index.get_level_values(1)
+        fig1, ax = plt.subplots(figsize=(10.5, 6), dpi=100)
+        plt.axis('equal')
+        color = sns.color_palette("Pastel1")
+        colors = sns.color_palette("Accent")
+        patches, texts, pcts = ax.pie(inner.values.flatten(), radius=0.7, labels=inner.index, autopct='%1.1f%%', labeldistance=0.05,
+               pctdistance=0.75, colors=colors, wedgeprops=dict(width=0.3, edgecolor='w'), textprops=dict(fontsize=12))
+        for i, patch in enumerate(patches):
+            texts[i].set_color(patch.get_facecolor())
+        patche, texts, pcts = ax.pie(outer.values.flatten(), radius=1, labels=outer_labels, autopct='%1.1f%%', pctdistance=0.85,
+               colors=color, wedgeprops=dict(width=0.3, edgecolor='w'), textprops=dict(fontsize=12))
+        for i, patch in enumerate(patche):
+            texts[i].set_color(patch.get_facecolor())
+        plt.title("Account Total Amount", fontsize=18, color='#b6d7a8')
+        plt.legend()
+        canv = FigureCanvasTkAgg(fig1, self.scroll_frame)
+        canv.draw()
+        canv.get_tk_widget().place(x=15, y=720)
+        fig.patch.set_facecolor('#1A1A1A')
+        toolba = NavigationToolbar2Tk(canv, self.scroll_frame)
+        toolba.update()
+        toolba.place(x=385, y=1300)
+        
         """
         # edit line 745 & 7954
         # ============================== charts 2 Category in year ===========================================

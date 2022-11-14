@@ -694,21 +694,25 @@ class Dashboard(tk.Frame):
         self.filter_b.place(x=980, y=60)
         
         # Create A Canvas
-        self.my_canvas = Canvas(self.side_frame, bg='red')
-        self.my_canvas.pack(fill="both", expand=True)
+        self.my_canvas = Canvas(self.side_frame, bg='red', width=1075, height=1500)
+        self.my_canvas.pack(side=LEFT, fill=BOTH, expand=1)
         
         # Add A Scrollbar To The Canvas
         self.my_scrollbar = ttk.Scrollbar(self.side_frame, orient=VERTICAL, command=self.my_canvas.yview)
         self.my_scrollbar.pack(side=RIGHT, fill=Y)
 
+        # Configure The Canvas
+        self.my_canvas.configure(yscrollcommand=self.my_scrollbar.set)
+        self.my_canvas.bind('<Configure>', lambda e: self.my_canvas.configure(scrollregion = self.my_canvas.bbox("all")))
+
         # Create ANOTHER Frame INSIDE the Canvas
         self.scroll_frame = Frame(self.my_canvas, bg='#1A1A1A')
-        self.scroll_frame.bind('<Configure>', lambda e: self.my_canvas.configure(scrollregion = self.scroll_frame.bbox("all")))
         # Add that New frame To a Window In The Canvas
         self.my_canvas.create_window((0,0), window=self.scroll_frame, anchor="nw")
+        self.my_canvas.bind("<MouseWheel>", lambda e: MouseScrollWheel)
         # Configure The Canvas
         self.my_canvas['yscrollcommand'] = self.my_scrollbar.set
-        self.my_canvas.bind('<Configure>', lambda e: self.my_canvas.configure(scrollregion = self.my_canvas.bbox("all")))
+        #self.my_canvas.bind('<Configure>', lambda e: self.my_canvas.configure(scrollregion = self.my_canvas.bbox("all")))
 
 
         
@@ -761,11 +765,11 @@ class Dashboard(tk.Frame):
             texts[i].set_color(patch.get_facecolor())
         plt.title("Category Total Amount", fontsize=18, color='#b6d7a8')
         plt.legend()
-        canva = FigureCanvasTkAgg(fig, self.scroll_frame)
+        canva = FigureCanvasTkAgg(fig, self.my_canvas)
         canva.draw()
         canva.get_tk_widget().place(x=15, y=100)
         fig.patch.set_facecolor('#1A1A1A')
-        toolbar = NavigationToolbar2Tk(canva, self.scroll_frame)
+        toolbar = NavigationToolbar2Tk(canva, self.my_canvas)
         toolbar.update()
         toolbar.place(x=385, y=680)
 
@@ -799,21 +803,21 @@ class Dashboard(tk.Frame):
         plt.axis('equal')
         color = sns.color_palette("Pastel1")
         colors = sns.color_palette("Accent")
-        patches, texts, pcts = ax.pie(inner.values.flatten(), radius=0.7, labels=inner.index, autopct='%1.1f%%', labeldistance=0.05,
+        patch, texts, pcts = ax.pie(inner.values.flatten(), radius=0.7, labels=inner.index, autopct='%1.1f%%', labeldistance=0.05,
                pctdistance=0.75, colors=colors, wedgeprops=dict(width=0.3, edgecolor='w'), textprops=dict(fontsize=12))
-        for i, patch in enumerate(patches):
+        for i, patch in enumerate(patch):
             texts[i].set_color(patch.get_facecolor())
-        patche, texts, pcts = ax.pie(outer.values.flatten(), radius=1, labels=outer_labels, autopct='%1.1f%%', pctdistance=0.85,
+        patc, texts, pcts = ax.pie(outer.values.flatten(), radius=1, labels=outer_labels, autopct='%1.1f%%', pctdistance=0.85,
                colors=color, wedgeprops=dict(width=0.3, edgecolor='w'), textprops=dict(fontsize=12))
-        for i, patch in enumerate(patche):
+        for i, patch in enumerate(patc):
             texts[i].set_color(patch.get_facecolor())
         plt.title("Account Total Amount", fontsize=18, color='#b6d7a8')
         plt.legend()
-        canv = FigureCanvasTkAgg(fig1, self.scroll_frame)
+        canv = FigureCanvasTkAgg(fig1, self.my_canvas)
         canv.draw()
         canv.get_tk_widget().place(x=15, y=720)
-        fig.patch.set_facecolor('#1A1A1A')
-        toolba = NavigationToolbar2Tk(canv, self.scroll_frame)
+        #fig1.patch.set_facecolor('#1A1A1A')
+        toolba = NavigationToolbar2Tk(canv, self.my_canvas)
         toolba.update()
         toolba.place(x=385, y=1300)
         

@@ -16,16 +16,16 @@ Presentation on 2nd December
   - Account (done)
   - Category (done)
 - Statistic **
-  - Pie chart -- income vs expenses
+  - Pie chart -- income vs expenses (done but not yet edit)
   - Line graph -- income vs expenses
   - Bar chart -- income vs expenses
 - Dashboard ** (put chart inside)
 -	Personal customer support *
 - Tips *
-- User Account (left edit function)
+- User Account (left edit password function)
 
-**Combine code (left statistic dashboard, tips, customer support)
+**Combine code (left statistic, dashboard, tips, customer support)
 
 
-**remember to change userID = ? 
+**remember to change userID = ? // For graph only 
 

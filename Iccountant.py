@@ -11,7 +11,7 @@ import math
 import random  # to create otp
 import smtplib  # to send email
 import requests  # to verify email
-import datetime
+from datetime import datetime
 import pandas as pd
 import seaborn as sns  # For graphical
 import matplotlib.pyplot as plt  # Built-in Matplotlib
@@ -20,7 +20,7 @@ from tkcalendar import DateEntry
 import webbrowser
 
 customtkinter.set_appearance_mode("dark")
-connect = sqlite3.connect('Iccountant.db')
+connect = sqlite3.connect('Iccountant')
 cursor = connect.cursor()
 
 
@@ -34,7 +34,6 @@ class windows(tk.Tk):
         self.height = self.winfo_screenheight()
         self.geometry('1280x720')
         self.config(bg='black')
-        self.state('zoomed')
         self.resizable(FALSE, FALSE)
         self.iconphoto(False, tk.PhotoImage(file='logo_refined.png'))
 
@@ -674,11 +673,11 @@ class Dashboard(tk.Frame):
         self.menuFrame.grid_propagate(False)
 
         # side frame
-        self.side_frame = Frame(self, bg='#1A1A1A', width=1280, height=720)
+        self.side_frame = Frame(self, bg='#1A1A1A', width=1100, height=720)
         self.side_frame.place(x=180, y=0)
 
         # Create A Canvas
-        self.my_canvas = Canvas(self.side_frame, bg='#1A1A1A', width=1075, height=720)
+        self.my_canvas = Canvas(self.side_frame, bg='#1A1A1A', width=1100, height=720)
         self.my_canvas.pack(side=LEFT, fill=BOTH, expand=1)
 
         # Add A Scrollbar To The Canvas
@@ -690,7 +689,7 @@ class Dashboard(tk.Frame):
         self.my_canvas.bind('<Configure>', lambda e: self.my_canvas.configure(scrollregion=self.my_canvas.bbox("all")))
 
         # Create ANOTHER Frame INSIDE the Canvas
-        self.scroll_frame = Frame(self.my_canvas, bg='#1A1A1A', width=1075, height=1340)
+        self.scroll_frame = Frame(self.my_canvas, bg='#1A1A1A', width=1100, height=1340)
         self.my_canvas.create_window((0, 0), window=self.scroll_frame, anchor="nw")
         self.my_canvas['yscrollcommand'] = self.my_scrollbar.set
 
@@ -1344,13 +1343,13 @@ class Dashboard(tk.Frame):
 
     def filter(self):
         self.root = Toplevel()
-        self.root.geometry("400x125")
+        self.root.geometry("415x140")
         self.root.title("Iccountant - Filter Dashboard")
         self.root.configure(bg='#1A1A1A')
         self.root.iconphoto(False, tk.PhotoImage(file="logo_refined.png"))
-        self.title_l = Label(self.root, font=('lato', 15), bg='#1A1A1A', text='Filter Dashboard', fg='white')
+        self.title_l = Label(self.root, font=tkFont.Font(family='calibri', size=18), bg='#1A1A1A', text='Filter Dashboard', fg='white')
         self.title_l.grid(row=0, column=0)
-        self.year_l = Label(self.root, font=('lato', 12), bg='#1A1A1A', text='Year :', fg='white')
+        self.year_l = Label(self.root, font=tkFont.Font(family='calibri', size=13), bg='#1A1A1A', text='Year :', fg='white')
         self.year_l.grid(row=1, column=0)
         self.year_get = pd.read_sql_query("SELECT strftime('%Y', t.date) AS Year FROM transactions t, user u WHERE "
                                           "u.user_id = t.user_id AND t.user_id IN ('{}') GROUP BY "
@@ -1359,14 +1358,14 @@ class Dashboard(tk.Frame):
         self.year_df = pd.DataFrame(self.year_get)
         self.year_list = self.year_df['Year'].values.tolist()
         self.year_list.insert(0, 'All')
-        self.year_cbox = ttk.Combobox(self.root, values=self.year_list, font=('lato', 12), state='readonly',
+        self.year_cbox = ttk.Combobox(self.root, values=self.year_list, font=tkFont.Font(family='calibri', size=13), state='readonly',
                                       justify='center')
         self.year_cbox.grid(row=1, column=1)
         self.year_cbox.set("All")
-        self.month_l = Label(self.root, font=('lato', 12), bg='#1A1A1A', text='Month :', fg='white')
+        self.month_l = Label(self.root, font=tkFont.Font(family='calibri', size=13), bg='#1A1A1A', text='Month :', fg='white')
         self.month_l.grid(row=2, column=0)
         self.month_list = ['All', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
-        self.month_cbox = ttk.Combobox(self.root, values=self.month_list, font=('lato', 12), state='readonly',
+        self.month_cbox = ttk.Combobox(self.root, values=self.month_list, font=tkFont.Font(family='calibri', size=13), state='readonly',
                                        justify='center')
         self.month_cbox.grid(row=2, column=1)
         self.month_cbox.set("All")
@@ -1392,7 +1391,7 @@ class Dashboard(tk.Frame):
             messagebox.showinfo('Log Out', 'You have successfully Logged Out!')
             self.controller.show_frame(LoginPage)
 
-
+# ==================== Total ========================
 class Statistic1(tk.Frame):
     def __init__(self, master, controller):
         self.controller = controller
@@ -1651,7 +1650,7 @@ class Statistic1(tk.Frame):
             messagebox.showinfo('Log Out', 'You have successfully Logged Out!')
             self.controller.show_frame(LoginPage)
 
-
+# ==================== Yearly ========================
 class Statistic2(tk.Frame):
     def __init__(self, master, controller):
         self.controller = controller
@@ -1714,7 +1713,7 @@ class Statistic2(tk.Frame):
         self.menuFrame.grid_propagate(False)
 
         # side frame
-        self.side_frame = Frame(self, bg='#1A1A1A', width=1280, height=720)
+        self.side_frame = Frame(self, bg='#1A1A1A', width=1100, height=720)
         self.side_frame.place(x=180, y=0)
 
         # Create A Canvas
@@ -1730,7 +1729,7 @@ class Statistic2(tk.Frame):
         self.my_canvas.bind('<Configure>', lambda e: self.my_canvas.configure(scrollregion=self.my_canvas.bbox("all")))
 
         # Create ANOTHER Frame INSIDE the Canvas
-        self.scroll_frame = Frame(self.my_canvas, bg='#1A1A1A', width=1075, height=2580)
+        self.scroll_frame = Frame(self.my_canvas, bg='#1A1A1A', width=1075, height=3200)
         self.my_canvas.create_window((0, 0), window=self.scroll_frame, anchor="nw")
         self.my_canvas['yscrollcommand'] = self.my_scrollbar.set
 
@@ -1760,9 +1759,72 @@ class Statistic2(tk.Frame):
         self.filter_b.place(x=1020, y=58)
 
         # get current year
-        date = datetime.datetime.now()
+        date = datetime.now()
         self.year_choose = date.strftime('%Y')
 
+        # ================== Bar chart for yearly ==========================
+        # income yearly
+        yearlyBarIncome = pd.read_sql_query("SELECT strftime('%m', t.date) AS Month, ty.type_name AS Type, sum(t.amount) AS Amount "
+                                            " FROM transactions t, user u, type ty WHERE u.user_id = t.user_id AND t.type_id = ty.type_id"
+                                            " AND t.user_id IN ('{}') AND t.type_id = 1 AND strftime('%Y', t.date) IN ('{}') GROUP BY"
+                                            " strftime('%m', t.date)".format
+                                            (self.controller.shared_user_id['userID'].get(), self.year_choose), connect)
+        dfBarIn = pd.DataFrame(yearlyBarIncome)
+
+        monthIn_total = dfBarIn['Month'].values.tolist()
+        TypeIn_total = dfBarIn['Type'].values.tolist()
+        AmountIn_total = dfBarIn['Amount'].values.tolist()
+
+        # expense yearly
+        yearlyBarExpense = pd.read_sql_query("SELECT strftime('%m', t.date) AS Month, ty.type_name AS Type, sum(t.amount) "
+                                             " AS Amount FROM transactions t, user u, type ty WHERE u.user_id = t.user_id AND"
+                                             " t.type_id = ty.type_id AND t.type_id = 2 AND t.user_id IN ('{}') AND"
+                                             " strftime('%Y', t.date) IN ('{}') GROUP BY strftime('%m', t.date)".format
+                                             (self.controller.shared_user_id['userID'].get(), self.year_choose), connect)
+        dfBarEX = pd.DataFrame(yearlyBarExpense)
+
+        monthEx_total = dfBarEX['Month'].values.tolist()
+        TypeEx_total = dfBarEX['Type'].values.tolist()
+        AmountEx_total = dfBarEX['Amount'].values.tolist()
+
+        type_total_combine = TypeIn_total + TypeEx_total
+        month_total_combine = monthIn_total + monthEx_total
+        amount_total_combine = AmountIn_total + AmountEx_total
+        df1 = pd.DataFrame(list(zip(month_total_combine, type_total_combine, amount_total_combine)), columns =['Month', 'Type', 'Amount'])
+
+        fig, ax = plt.subplots(figsize=(10.5, 6), dpi=100)
+        # set various colors
+        ax.set_facecolor("#1A1A1A")
+        ax.spines['bottom'].set_color('white')
+        ax.spines['bottom'].set_linewidth(2)
+        ax.spines['top'].set_color('white')
+        ax.spines['top'].set_linewidth(1)
+        ax.spines['right'].set_color('white')
+        ax.spines['right'].set_linewidth(1)
+        ax.spines['left'].set_color('white')
+        ax.spines['left'].set_lw(1)
+        ax.xaxis.label.set_color('white')
+        ax.yaxis.label.set_color('white')
+        ax.tick_params(colors='white', which='both')
+        barplot = sns.barplot(x='Month', y='Amount', data=df1, hue='Type', palette="Pastel1", ci=None)
+        for c in ax.containers:
+            ax.bar_label(c, fmt='%.2f', color='white')
+        plt.ylabel("Amount (RM)", fontsize=15, color='#ffffff')
+        plt.xlabel("Month", fontsize=15, color='#ffffff')
+        plt.title("Income and Expense in a Year", fontsize=18, color='#ffd966')
+        plt.legend(loc='center right', borderaxespad=0)
+        
+        # embed the chart to tkinter
+        canvass = FigureCanvasTkAgg(fig, self.scroll_frame)
+        canvass.draw()
+        canvass.get_tk_widget().place(x=20, y=100)
+        fig.patch.set_facecolor('#1A1A1A')
+        
+        toolbar = NavigationToolbar2Tk(canvass, self.scroll_frame)
+        toolbar.update()
+        toolbar.place(x=385, y=660)
+        canvass.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
+        
         # ============================== charts 1 Year Income in Category ===========================================
         # get total year income in category from database
         category_in_year_amount = pd.read_sql_query("SELECT c.cat_name AS Category, sum(t.amount) AS Amount FROM "
@@ -1793,20 +1855,20 @@ class Statistic2(tk.Frame):
         # embed the chart to tkinter
         canva = FigureCanvasTkAgg(figure, self.scroll_frame)
         canva.draw()
-        canva.get_tk_widget().place(x=15, y=100)
+        canva.get_tk_widget().place(x=15, y=720)
         figure.patch.set_facecolor('#1A1A1A')
         toolbar = NavigationToolbar2Tk(canva, self.scroll_frame)
         toolbar.update()
-        toolbar.place(x=385, y=660)
+        toolbar.place(x=385, y=1280)
         canva.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
         # ============================== charts 2 Year Expense in Category ===========================================
         # get total year expense in category from database
         category_ex_year_amount = pd.read_sql_query("SELECT c.cat_name AS Category, sum(t.amount) AS Amount FROM "
-                                                    "transactions t, category c, type ty WHERE c.cat_id = t.cat_id AND "
-                                                    "t.user_id = c.user_id AND t.type_id = ty.type_id AND t.type_id = 2"
+                                                    " transactions t, category c, type ty WHERE c.cat_id = t.cat_id AND "
+                                                    " t.user_id = c.user_id AND t.type_id = ty.type_id AND t.type_id = 2"
                                                     " AND t.user_id IN ('{}') AND strftime('%Y', t.date) IN ('{}') "
-                                                    "GROUP BY t.cat_id".format
+                                                    " GROUP BY t.cat_id".format
                                                     (self.controller.shared_user_id['userID'].get(), self.year_choose),
                                                     connect)
 
@@ -1830,11 +1892,11 @@ class Statistic2(tk.Frame):
         # embed the chart to tkinter
         canv = FigureCanvasTkAgg(figur, self.scroll_frame)
         canv.draw()
-        canv.get_tk_widget().place(x=15, y=720)
+        canv.get_tk_widget().place(x=15, y=1340)
         figur.patch.set_facecolor('#1A1A1A')
         toolba = NavigationToolbar2Tk(canv, self.scroll_frame)
         toolba.update()
-        toolba.place(x=385, y=1280)
+        toolba.place(x=385, y=1900)
         canv.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
         # ============================== charts 3 Year Income in Account ===========================================
@@ -1867,11 +1929,11 @@ class Statistic2(tk.Frame):
         # embed the chart to tkinter
         can = FigureCanvasTkAgg(figu, self.scroll_frame)
         can.draw()
-        can.get_tk_widget().place(x=15, y=1340)
+        can.get_tk_widget().place(x=15, y=1960)
         figu.patch.set_facecolor('#1A1A1A')
         toolb = NavigationToolbar2Tk(can, self.scroll_frame)
         toolb.update()
-        toolb.place(x=385, y=1900)
+        toolb.place(x=385, y=2520)
         can.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
         # ============================== charts 4 Year Expense in Account ===========================================
@@ -1904,11 +1966,11 @@ class Statistic2(tk.Frame):
         # embed the chart to tkinter
         ca = FigureCanvasTkAgg(fig, self.scroll_frame)
         ca.draw()
-        ca.get_tk_widget().place(x=15, y=1960)
+        ca.get_tk_widget().place(x=15, y=2580)
         fig.patch.set_facecolor('#1A1A1A')
         tool = NavigationToolbar2Tk(ca, self.scroll_frame)
         tool.update()
-        tool.place(x=385, y=2520)
+        tool.place(x=385, y=3140)
         ca.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
     def sort(self):
@@ -1916,6 +1978,69 @@ class Statistic2(tk.Frame):
         # if user does not filter anything
         if self.year_cbox.get() == 'All':
             messagebox.showerror('Error', 'You did not filter out the data in any year.')
+            
+            # ================== Bar chart for yearly ==========================
+            # income yearly
+            yearlyBarIncome = pd.read_sql_query("SELECT strftime('%m', t.date) AS Month, ty.type_name AS Type, sum(t.amount) AS Amount "
+                                                " FROM transactions t, user u, type ty WHERE u.user_id = t.user_id AND t.type_id = ty.type_id"
+                                                " AND t.user_id IN ('{}') AND t.type_id = 1 AND strftime('%Y', t.date) IN ('{}') GROUP BY"
+                                                " strftime('%m', t.date)".format
+                                                (self.controller.shared_user_id['userID'].get(), self.year_choose), connect)
+            dfBarIn = pd.DataFrame(yearlyBarIncome)
+
+            monthIn_total = dfBarIn['Month'].values.tolist()
+            TypeIn_total = dfBarIn['Type'].values.tolist()
+            AmountIn_total = dfBarIn['Amount'].values.tolist()
+
+            # expense yearly
+            yearlyBarExpense = pd.read_sql_query("SELECT strftime('%m', t.date) AS Month, ty.type_name AS Type, sum(t.amount) "
+                                                 " AS Amount FROM transactions t, user u, type ty WHERE u.user_id = t.user_id AND"
+                                                 " t.type_id = ty.type_id AND t.type_id = 2 AND t.user_id IN ('{}') AND"
+                                                 " strftime('%Y', t.date) IN ('{}') GROUP BY strftime('%m', t.date)".format
+                                                 (self.controller.shared_user_id['userID'].get(), self.year_choose), connect)
+            dfBarEX = pd.DataFrame(yearlyBarExpense)
+
+            monthEx_total = dfBarEX['Month'].values.tolist()
+            TypeEx_total = dfBarEX['Type'].values.tolist()
+            AmountEx_total = dfBarEX['Amount'].values.tolist()
+
+            type_total_combine = TypeIn_total + TypeEx_total
+            month_total_combine = monthIn_total + monthEx_total
+            amount_total_combine = AmountIn_total + AmountEx_total
+            df1 = pd.DataFrame(list(zip(month_total_combine, type_total_combine, amount_total_combine)), columns =['Month', 'Type', 'Amount'])
+
+            fig, ax = plt.subplots(figsize=(10.5, 6), dpi=100)
+            # set various colors
+            ax.set_facecolor("#1A1A1A")
+            ax.spines['bottom'].set_color('white')
+            ax.spines['bottom'].set_linewidth(2)
+            ax.spines['top'].set_color('white')
+            ax.spines['top'].set_linewidth(1)
+            ax.spines['right'].set_color('white')
+            ax.spines['right'].set_linewidth(1)
+            ax.spines['left'].set_color('white')
+            ax.spines['left'].set_lw(1)
+            ax.xaxis.label.set_color('white')
+            ax.yaxis.label.set_color('white')
+            ax.tick_params(colors='white', which='both')
+            barplot = sns.barplot(x='Month', y='Amount', data=df1, hue='Type', palette="Pastel1", ci=None)
+            for c in ax.containers:
+                ax.bar_label(c, fmt='%.2f', color='white')
+            plt.ylabel("Amount (RM)", fontsize=15, color='#ffffff')
+            plt.xlabel("Month", fontsize=15, color='#ffffff')
+            plt.title("Income and Expense in a Year", fontsize=18, color='#ffd966')
+            plt.legend(loc='center right', borderaxespad=0)
+            
+            # embed the chart to tkinter
+            canvass = FigureCanvasTkAgg(fig, self.scroll_frame)
+            canvass.draw()
+            canvass.get_tk_widget().place(x=15, y=100)
+            fig.patch.set_facecolor('#1A1A1A')
+            
+            toolbar = NavigationToolbar2Tk(canvass, self.scroll_frame)
+            toolbar.update()
+            toolbar.place(x=385, y=660)
+            canvass.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
             # ============================== charts 1 Year Income in Category ==========================================
             # get total year income in category from database
@@ -1947,11 +2072,11 @@ class Statistic2(tk.Frame):
             # embed the chart to tkinter
             canva = FigureCanvasTkAgg(figure, self.scroll_frame)
             canva.draw()
-            canva.get_tk_widget().place(x=15, y=100)
+            canva.get_tk_widget().place(x=15, y=720)
             figure.patch.set_facecolor('#1A1A1A')
             toolbar = NavigationToolbar2Tk(canva, self.scroll_frame)
             toolbar.update()
-            toolbar.place(x=385, y=660)
+            toolbar.place(x=385, y=1280)
             canva.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
             # ============================== charts 2 Year Expense in Category =========================================
@@ -1984,11 +2109,11 @@ class Statistic2(tk.Frame):
             # embed the chart to tkinter
             canv = FigureCanvasTkAgg(figur, self.scroll_frame)
             canv.draw()
-            canv.get_tk_widget().place(x=15, y=720)
+            canv.get_tk_widget().place(x=15, y=1340)
             figur.patch.set_facecolor('#1A1A1A')
             toolba = NavigationToolbar2Tk(canv, self.scroll_frame)
             toolba.update()
-            toolba.place(x=385, y=1280)
+            toolba.place(x=385, y=1900)
             canv.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
             # ============================== charts 3 Year Income in Account ===========================================
@@ -2021,11 +2146,11 @@ class Statistic2(tk.Frame):
             # embed the chart to tkinter
             can = FigureCanvasTkAgg(figu, self.scroll_frame)
             can.draw()
-            can.get_tk_widget().place(x=15, y=1340)
+            can.get_tk_widget().place(x=15, y=1960)
             figu.patch.set_facecolor('#1A1A1A')
             toolb = NavigationToolbar2Tk(can, self.scroll_frame)
             toolb.update()
-            toolb.place(x=385, y=1900)
+            toolb.place(x=385, y=2520)
             can.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
             # ============================== charts 4 Year Expense in Account ==========================================
@@ -2058,14 +2183,77 @@ class Statistic2(tk.Frame):
             # embed the chart to tkinter
             ca = FigureCanvasTkAgg(fig, self.scroll_frame)
             ca.draw()
-            ca.get_tk_widget().place(x=15, y=1960)
+            ca.get_tk_widget().place(x=15, y=2580)
             fig.patch.set_facecolor('#1A1A1A')
             tool = NavigationToolbar2Tk(ca, self.scroll_frame)
             tool.update()
-            tool.place(x=385, y=2520)
+            tool.place(x=385, y=3140)
             ca.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
         else:
+            # ================== Bar chart for yearly ==========================
+            # income yearly
+            yearlyBarIncome = pd.read_sql_query("SELECT strftime('%m', t.date) AS Month, ty.type_name AS Type, sum(t.amount) AS Amount "
+                                                " FROM transactions t, user u, type ty WHERE u.user_id = t.user_id AND t.type_id = ty.type_id"
+                                                " AND t.user_id IN ('{}') AND t.type_id = 1 AND strftime('%Y', t.date) IN ('{}') GROUP BY"
+                                                " strftime('%m', t.date)".format
+                                                (self.controller.shared_user_id['userID'].get(), self.year_cbox.get()), connect)
+            dfBarIn = pd.DataFrame(yearlyBarIncome)
+
+            monthIn_total = dfBarIn['Month'].values.tolist()
+            TypeIn_total = dfBarIn['Type'].values.tolist()
+            AmountIn_total = dfBarIn['Amount'].values.tolist()
+
+            # expense yearly
+            yearlyBarExpense = pd.read_sql_query("SELECT strftime('%m', t.date) AS Month, ty.type_name AS Type, sum(t.amount) "
+                                                 " AS Amount FROM transactions t, user u, type ty WHERE u.user_id = t.user_id AND"
+                                                 " t.type_id = ty.type_id AND t.type_id = 2 AND t.user_id IN ('{}') AND"
+                                                 " strftime('%Y', t.date) IN ('{}') GROUP BY strftime('%m', t.date)".format
+                                                 (self.controller.shared_user_id['userID'].get(), self.year_cbox.get()), connect)
+            dfBarEX = pd.DataFrame(yearlyBarExpense)
+
+            monthEx_total = dfBarEX['Month'].values.tolist()
+            TypeEx_total = dfBarEX['Type'].values.tolist()
+            AmountEx_total = dfBarEX['Amount'].values.tolist()
+
+            type_total_combine = TypeIn_total + TypeEx_total
+            month_total_combine = monthIn_total + monthEx_total
+            amount_total_combine = AmountIn_total + AmountEx_total
+            df1 = pd.DataFrame(list(zip(month_total_combine, type_total_combine, amount_total_combine)), columns =['Month', 'Type', 'Amount'])
+
+            fig, ax = plt.subplots(figsize=(10.5, 6), dpi=100)
+            # set various colors
+            ax.set_facecolor("#1A1A1A")
+            ax.spines['bottom'].set_color('white')
+            ax.spines['bottom'].set_linewidth(2)
+            ax.spines['top'].set_color('white')
+            ax.spines['top'].set_linewidth(1)
+            ax.spines['right'].set_color('white')
+            ax.spines['right'].set_linewidth(1)
+            ax.spines['left'].set_color('white')
+            ax.spines['left'].set_lw(1)
+            ax.xaxis.label.set_color('white')
+            ax.yaxis.label.set_color('white')
+            ax.tick_params(colors='white', which='both')
+            barplot = sns.barplot(x='Month', y='Amount', data=df1, hue='Type', palette="Pastel1", ci=None)
+            for c in ax.containers:
+                ax.bar_label(c, fmt='%.2f', color='white')
+            plt.ylabel("Amount (RM)", fontsize=15, color='#ffffff')
+            plt.xlabel("Month", fontsize=15, color='#ffffff')
+            plt.title("Income and Expense in a Year", fontsize=18, color='#ffd966')
+            plt.legend(loc='center right', borderaxespad=0)
+            
+            # embed the chart to tkinter
+            canvass = FigureCanvasTkAgg(fig, self.scroll_frame)
+            canvass.draw()
+            canvass.get_tk_widget().place(x=15, y=100)
+            fig.patch.set_facecolor('#1A1A1A')
+            
+            toolbar = NavigationToolbar2Tk(canvass, self.scroll_frame)
+            toolbar.update()
+            toolbar.place(x=385, y=660)
+            canvass.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
+            
             # ============================== charts 1 Year Income in Category ==========================================
             # get total year income in category from database
             category_in_year_amount = pd.read_sql_query("SELECT c.cat_name AS Category, sum(t.amount) AS Amount FROM "
@@ -2096,11 +2284,11 @@ class Statistic2(tk.Frame):
             # embed the chart to tkinter
             canva = FigureCanvasTkAgg(figure, self.scroll_frame)
             canva.draw()
-            canva.get_tk_widget().place(x=15, y=100)
+            canva.get_tk_widget().place(x=15, y=720)
             figure.patch.set_facecolor('#1A1A1A')
             toolbar = NavigationToolbar2Tk(canva, self.scroll_frame)
             toolbar.update()
-            toolbar.place(x=385, y=660)
+            toolbar.place(x=385, y=1280)
             canva.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
             # ============================== charts 2 Year Expense in Category =========================================
@@ -2133,11 +2321,11 @@ class Statistic2(tk.Frame):
             # embed the chart to tkinter
             canv = FigureCanvasTkAgg(figur, self.scroll_frame)
             canv.draw()
-            canv.get_tk_widget().place(x=15, y=720)
+            canv.get_tk_widget().place(x=15, y=1340)
             figur.patch.set_facecolor('#1A1A1A')
             toolba = NavigationToolbar2Tk(canv, self.scroll_frame)
             toolba.update()
-            toolba.place(x=385, y=1280)
+            toolba.place(x=385, y=1900)
             canv.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
             # ============================== charts 3 Year Income in Account ===========================================
@@ -2170,11 +2358,11 @@ class Statistic2(tk.Frame):
             # embed the chart to tkinter
             can = FigureCanvasTkAgg(figu, self.scroll_frame)
             can.draw()
-            can.get_tk_widget().place(x=15, y=1340)
+            can.get_tk_widget().place(x=15, y=1960)
             figu.patch.set_facecolor('#1A1A1A')
             toolb = NavigationToolbar2Tk(can, self.scroll_frame)
             toolb.update()
-            toolb.place(x=385, y=1900)
+            toolb.place(x=385, y=2520)
             can.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
             # ============================== charts 4 Year Expense in Account ==========================================
@@ -2207,11 +2395,11 @@ class Statistic2(tk.Frame):
             # embed the chart to tkinter
             ca = FigureCanvasTkAgg(fig, self.scroll_frame)
             ca.draw()
-            ca.get_tk_widget().place(x=15, y=1960)
+            ca.get_tk_widget().place(x=15, y=2580)
             fig.patch.set_facecolor('#1A1A1A')
             tool = NavigationToolbar2Tk(ca, self.scroll_frame)
             tool.update()
-            tool.place(x=385, y=2520)
+            tool.place(x=385, y=3140)
             ca.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
         self.root.destroy()
 
@@ -2221,9 +2409,9 @@ class Statistic2(tk.Frame):
         self.root.title("Iccountant - Filter Statisitic")
         self.root.configure(bg='#1A1A1A')
         self.root.iconphoto(False, tk.PhotoImage(file="logo_refined.png"))
-        self.title_l = Label(self.root, font=('lato', 15), bg='#1A1A1A', text='Filter Statisitic', fg='white')
+        self.title_l = Label(self.root, font=tkFont.Font(family='calibri', size=18), bg='#1A1A1A', text='Filter Statisitic', fg='white')
         self.title_l.grid(row=0, column=0)
-        self.year_l = Label(self.root, font=('lato', 12), bg='#1A1A1A', text='Year :', fg='white')
+        self.year_l = Label(self.root, font=tkFont.Font(family='calibri', size=13), bg='#1A1A1A', text='Year :', fg='white')
         self.year_l.grid(row=1, column=0)
         self.year_get = pd.read_sql_query("SELECT strftime('%Y', t.date) AS Year FROM transactions t, user u WHERE "
                                           "u.user_id = t.user_id AND t.user_id IN ('{}') GROUP BY "
@@ -2232,7 +2420,7 @@ class Statistic2(tk.Frame):
         self.year_df = pd.DataFrame(self.year_get)
         self.year_list = self.year_df['Year'].values.tolist()
         self.year_list.insert(0, 'All')
-        self.year_cbox = ttk.Combobox(self.root, values=self.year_list, font=('lato', 12), state='readonly',
+        self.year_cbox = ttk.Combobox(self.root, values=self.year_list, font=tkFont.Font(family='calibri', size=13), state='readonly',
                                       justify='center')
         self.year_cbox.grid(row=1, column=1)
         self.year_cbox.set("All")
@@ -2258,7 +2446,7 @@ class Statistic2(tk.Frame):
             messagebox.showinfo('Log Out', 'You have successfully Logged Out!')
             self.controller.show_frame(LoginPage)
 
-
+# ==================== Monthly ========================
 class Statistic3(tk.Frame):
     def __init__(self, master, controller):
         self.controller = controller
@@ -2321,11 +2509,11 @@ class Statistic3(tk.Frame):
         self.menuFrame.grid_propagate(False)
 
         # side frame
-        self.side_frame = Frame(self, bg='#1A1A1A', width=1280, height=720)
+        self.side_frame = Frame(self, bg='#1A1A1A', width=1110, height=720)
         self.side_frame.place(x=180, y=0)
 
         # Create A Canvas
-        self.my_canvas = Canvas(self.side_frame, bg='#1A1A1A', width=1075, height=720)
+        self.my_canvas = Canvas(self.side_frame, bg='#1A1A1A', width=1100, height=720)
         self.my_canvas.pack(side=LEFT, fill=BOTH, expand=1)
 
         # Add A Scrollbar To The Canvas
@@ -2337,7 +2525,7 @@ class Statistic3(tk.Frame):
         self.my_canvas.bind('<Configure>', lambda e: self.my_canvas.configure(scrollregion=self.my_canvas.bbox("all")))
 
         # Create ANOTHER Frame INSIDE the Canvas
-        self.scroll_frame = Frame(self.my_canvas, bg='#1A1A1A', width=1075, height=2580)
+        self.scroll_frame = Frame(self.my_canvas, bg='#1A1A1A', width=1100, height=3200)
         self.my_canvas.create_window((0, 0), window=self.scroll_frame, anchor="nw")
         self.my_canvas['yscrollcommand'] = self.my_scrollbar.set
 
@@ -2367,9 +2555,75 @@ class Statistic3(tk.Frame):
         self.filter_b.place(x=1020, y=58)
 
         # get current year and month
-        date = datetime.datetime.now()
+        date = datetime.now()
         self.year_choose = date.strftime('%Y')
         self.month_choose = date.strftime('%m')
+        
+        # ============================= Bar chart for montly ====================================
+        # income for monthly
+        monthlyBarIncome = pd.read_sql_query("SELECT strftime('%d', t.date) AS Day, ty.type_name AS Type,"
+                                             " sum(t.amount) AS Amount FROM transactions t, user u, type ty"
+                                             " WHERE u.user_id = t.user_id AND t.type_id = ty.type_id AND"
+                                             " t.type_id = 1 AND t.user_id IN ('{}') AND strftime('%Y', t.date) IN ('{}')"
+                                             " AND strftime('%m', t.date) IN ('{}') GROUP BY strftime('%d', t.date)".format
+                                             (self.controller.shared_user_id['userID'].get(), self.year_choose,
+                                              self.month_choose), connect)
+        dfBarInMonth = pd.DataFrame(monthlyBarIncome)
+        dayIn_total = dfBarInMonth['Day'].values.tolist()
+        TypeIn_total = dfBarInMonth['Type'].values.tolist()
+        AmountIn_total = dfBarInMonth['Amount'].values.tolist()
+        
+        # expense for monthly
+        monthlyBarExpense = pd.read_sql_query("SELECT strftime('%d', t.date) AS Day, ty.type_name AS Type,"
+                                              " sum(t.amount) AS Amount FROM transactions t, user u, type ty"
+                                              " WHERE u.user_id = t.user_id AND t.type_id = ty.type_id "  
+                                              " AND t.type_id = 2 AND t.user_id IN ('{}') AND strftime('%Y', t.date) IN ('{}')"
+                                              " AND strftime('%m', t.date) IN ('{}') GROUP BY strftime('%d', t.date)".format
+                                              (self.controller.shared_user_id['userID'].get(), self.year_choose,
+                                               self.month_choose), connect)
+        dfBarEXMonth = pd.DataFrame(monthlyBarExpense)
+        dayEx_total = dfBarEXMonth['Day'].values.tolist()
+        TypeEx_total = dfBarEXMonth['Type'].values.tolist()
+        AmountEx_total = dfBarEXMonth['Amount'].values.tolist()
+        
+        type_total_combine = TypeIn_total + TypeEx_total
+        month_total_combine = dayEx_total + dayIn_total
+        amount_total_combine = AmountEx_total + AmountIn_total
+        dfbar2 = pd.DataFrame(list(zip(month_total_combine, type_total_combine, amount_total_combine)), 
+                              columns =['Day', 'Type', 'Amount'])
+
+        fig, ax = plt.subplots(figsize=(10.5, 6), dpi=100)
+        # set various colors
+        ax.set_facecolor("#1A1A1A")
+        ax.spines['bottom'].set_color('white')
+        ax.spines['bottom'].set_linewidth(2)
+        ax.spines['top'].set_color('white')
+        ax.spines['top'].set_linewidth(1)
+        ax.spines['right'].set_color('white')
+        ax.spines['right'].set_linewidth(1)
+        ax.spines['left'].set_color('white')
+        ax.spines['left'].set_lw(1)
+        ax.xaxis.label.set_color('white')
+        ax.yaxis.label.set_color('white')
+        ax.tick_params(colors='white', which='both')
+        barplot = sns.barplot(x='Day', y='Amount', data=dfbar2, hue='Type', palette="Pastel1", ci=None)
+        for c in ax.containers:
+            ax.bar_label(c, fmt='%.2f', color='white')
+        plt.ylabel("Amount (RM)", fontsize=15, color='#ffffff')
+        plt.xlabel("Day", fontsize=15, color='#ffffff')
+        plt.title("Income and Expense in a Month", fontsize=18, color='#ffd966')
+        plt.legend(loc='center right', borderaxespad=0)
+        
+        # embed the chart to tkinter
+        canvass = FigureCanvasTkAgg(fig, self.scroll_frame)
+        canvass.draw()
+        canvass.get_tk_widget().place(x=15, y=100)
+        fig.patch.set_facecolor('#1A1A1A')
+        
+        toolbar = NavigationToolbar2Tk(canvass, self.scroll_frame)
+        toolbar.update()
+        toolbar.place(x=385, y=660)
+        canvass.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
         # ============================== charts 1 Month Income in Category ===========================================
         # get total month income in category from database
@@ -2401,11 +2655,11 @@ class Statistic3(tk.Frame):
         # embed the chart to tkinter
         canva = FigureCanvasTkAgg(figure, self.scroll_frame)
         canva.draw()
-        canva.get_tk_widget().place(x=15, y=100)
+        canva.get_tk_widget().place(x=15, y=720)
         figure.patch.set_facecolor('#1A1A1A')
         toolbar = NavigationToolbar2Tk(canva, self.scroll_frame)
         toolbar.update()
-        toolbar.place(x=385, y=660)
+        toolbar.place(x=385, y=1280)
         canva.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
         # ============================== charts 2 Month Expense in Category ===========================================
@@ -2438,11 +2692,11 @@ class Statistic3(tk.Frame):
         # embed the chart to tkinter
         canv = FigureCanvasTkAgg(figur, self.scroll_frame)
         canv.draw()
-        canv.get_tk_widget().place(x=15, y=720)
+        canv.get_tk_widget().place(x=15, y=1340)
         figur.patch.set_facecolor('#1A1A1A')
         toolba = NavigationToolbar2Tk(canv, self.scroll_frame)
         toolba.update()
-        toolba.place(x=385, y=1280)
+        toolba.place(x=385, y=1900)
         canv.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
         # ============================== charts 3 Month Income in Account ===========================================
@@ -2475,11 +2729,11 @@ class Statistic3(tk.Frame):
         # embed the chart to tkinter
         can = FigureCanvasTkAgg(figu, self.scroll_frame)
         can.draw()
-        can.get_tk_widget().place(x=15, y=1340)
+        can.get_tk_widget().place(x=15, y=1960)
         figu.patch.set_facecolor('#1A1A1A')
         toolb = NavigationToolbar2Tk(can, self.scroll_frame)
         toolb.update()
-        toolb.place(x=385, y=1900)
+        toolb.place(x=385, y=2520)
         can.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
         # ============================== charts 4 Month Expense in Account ===========================================
@@ -2512,11 +2766,11 @@ class Statistic3(tk.Frame):
         # embed the chart to tkinter
         ca = FigureCanvasTkAgg(fig, self.scroll_frame)
         ca.draw()
-        ca.get_tk_widget().place(x=15, y=1960)
+        ca.get_tk_widget().place(x=15, y=2580)
         fig.patch.set_facecolor('#1A1A1A')
         tool = NavigationToolbar2Tk(ca, self.scroll_frame)
         tool.update()
-        tool.place(x=385, y=2520)
+        tool.place(x=385, y=3140)
         ca.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
     def sort(self):
@@ -2524,6 +2778,74 @@ class Statistic3(tk.Frame):
         # if user does not filter anything
         if self.year_cbox.get() == 'All' and self.month_cbox.get() == 'All':
             messagebox.showerror('Error', 'You did not filter out the data in any duration.')
+            
+            # ============================= Bar chart for montly ====================================
+            # income for monthly
+            monthlyBarIncome = pd.read_sql_query("SELECT strftime('%d', t.date) AS Day, ty.type_name AS Type, "
+                                                 " sum(t.amount) AS Amount FROM transactions t, user u, type ty "
+                                                 " WHERE u.user_id = t.user_id AND t.type_id = ty.type_id "
+                                                 " AND t.type_id = 1 AND t.user_id IN ('{}') AND "
+                                                 " strftime('%Y', t.date) IN ('{}') AND strftime('%m', t.date) IN ('{}')"
+                                                 " GROUP BY strftime('%d', t.date)".format
+                                                 (self.controller.shared_user_id['userID'].get(), self.year_choose,
+                                                  self.month_choose), connect)
+            dfBarInMonth = pd.DataFrame(monthlyBarIncome)
+            dayIn_total = dfBarInMonth['Day'].values.tolist()
+            TypeIn_total = dfBarInMonth['Type'].values.tolist()
+            AmountIn_total = dfBarInMonth['Amount'].values.tolist()
+            
+            # expense for monthly
+            monthlyBarExpense = pd.read_sql_query("SELECT strftime('%d', t.date) AS Day, ty.type_name AS Type, "
+                                                  " sum(t.amount) AS Amount FROM transactions t, user u, type ty "
+                                                  " WHERE u.user_id = t.user_id AND t.type_id = ty.type_id "  
+                                                  " AND t.type_id = 2 AND t.user_id IN ('{}') AND " 
+                                                  " strftime('%Y', t.date) IN ('{}') AND strftime('%m', t.date) IN ('{}')"
+                                                  " GROUP BY strftime('%d', t.date)".format
+                                                  (self.controller.shared_user_id['userID'].get(), self.year_choose,
+                                                   self.month_choose), connect)
+            dfBarEXMonth = pd.DataFrame(monthlyBarExpense)
+            dayEx_total = dfBarEXMonth['Day'].values.tolist()
+            TypeEx_total = dfBarEXMonth['Type'].values.tolist()
+            AmountEx_total = dfBarEXMonth['Amount'].values.tolist()
+            
+            type_total_combine = TypeIn_total + TypeEx_total
+            month_total_combine = dayIn_total + dayEx_total
+            amount_total_combine = AmountIn_total + AmountEx_total
+            dfbar2 = pd.DataFrame(list(zip(month_total_combine, type_total_combine, amount_total_combine)), 
+                                  columns =['Day', 'Type', 'Amount'])
+
+            fig, ax = plt.subplots(figsize=(10.5, 6), dpi=100)
+            # set various colors
+            ax.set_facecolor("#1A1A1A")
+            ax.spines['bottom'].set_color('white')
+            ax.spines['bottom'].set_linewidth(2)
+            ax.spines['top'].set_color('white')
+            ax.spines['top'].set_linewidth(1)
+            ax.spines['right'].set_color('white')
+            ax.spines['right'].set_linewidth(1)
+            ax.spines['left'].set_color('white')
+            ax.spines['left'].set_lw(1)
+            ax.xaxis.label.set_color('white')
+            ax.yaxis.label.set_color('white')
+            ax.tick_params(colors='white', which='both')
+            barplot = sns.barplot(x='Day', y='Amount', data=dfbar2, hue='Type', palette="Pastel1", ci=None)
+            for c in ax.containers:
+                ax.bar_label(c, fmt='%.2f', color='white')
+            plt.ylabel("Amount (RM)", fontsize=15, color='#ffffff')
+            plt.xlabel("Day", fontsize=15, color='#ffffff')
+            plt.title("Income and Expense in a Month", fontsize=18, color='#ffd966')
+            plt.legend(loc='center right', borderaxespad=0)
+            
+            # embed the chart to tkinter
+            canvass = FigureCanvasTkAgg(fig, self.scroll_frame)
+            canvass.draw()
+            canvass.get_tk_widget().place(x=15, y=100)
+            fig.patch.set_facecolor('#1A1A1A')
+            
+            toolbar = NavigationToolbar2Tk(canvass, self.scroll_frame)
+            toolbar.update()
+            toolbar.place(x=385, y=660)
+            canvass.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
             # ============================== charts 1 Month Income in Category =========================================
             # get total month income in category from database
@@ -2556,11 +2878,11 @@ class Statistic3(tk.Frame):
             # embed the chart to tkinter
             canva = FigureCanvasTkAgg(figure, self.scroll_frame)
             canva.draw()
-            canva.get_tk_widget().place(x=15, y=100)
+            canva.get_tk_widget().place(x=15, y=720)
             figure.patch.set_facecolor('#1A1A1A')
             toolbar = NavigationToolbar2Tk(canva, self.scroll_frame)
             toolbar.update()
-            toolbar.place(x=385, y=660)
+            toolbar.place(x=385, y=1280)
             canva.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
             # ============================== charts 2 Month Expense in Category ========================================
@@ -2594,11 +2916,11 @@ class Statistic3(tk.Frame):
             # embed the chart to tkinter
             canv = FigureCanvasTkAgg(figur, self.scroll_frame)
             canv.draw()
-            canv.get_tk_widget().place(x=15, y=720)
+            canv.get_tk_widget().place(x=15, y=1340)
             figur.patch.set_facecolor('#1A1A1A')
             toolba = NavigationToolbar2Tk(canv, self.scroll_frame)
             toolba.update()
-            toolba.place(x=385, y=1280)
+            toolba.place(x=385, y=1900)
             canv.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
             # ============================== charts 3 Month Income in Account ==========================================
@@ -2632,11 +2954,11 @@ class Statistic3(tk.Frame):
             # embed the chart to tkinter
             can = FigureCanvasTkAgg(figu, self.scroll_frame)
             can.draw()
-            can.get_tk_widget().place(x=15, y=1340)
+            can.get_tk_widget().place(x=15, y=1960)
             figu.patch.set_facecolor('#1A1A1A')
             toolb = NavigationToolbar2Tk(can, self.scroll_frame)
             toolb.update()
-            toolb.place(x=385, y=1900)
+            toolb.place(x=385, y=2520)
             can.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
             # ============================== charts 4 Month Expense in Account =========================================
@@ -2670,11 +2992,11 @@ class Statistic3(tk.Frame):
             # embed the chart to tkinter
             ca = FigureCanvasTkAgg(fig, self.scroll_frame)
             ca.draw()
-            ca.get_tk_widget().place(x=15, y=1960)
+            ca.get_tk_widget().place(x=15, y=2580)
             fig.patch.set_facecolor('#1A1A1A')
             tool = NavigationToolbar2Tk(ca, self.scroll_frame)
             tool.update()
-            tool.place(x=385, y=2520)
+            tool.place(x=385, y=3140)
             ca.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
         # if the user only select a year
@@ -2687,6 +3009,74 @@ class Statistic3(tk.Frame):
 
         # if the user select both entry
         else:
+            # ============================= Bar chart for montly ====================================
+            # income for monthly
+            monthlyBarIncome = pd.read_sql_query("SELECT strftime('%d', t.date) AS Day, ty.type_name AS Type, "
+                                                 " sum(t.amount) AS Amount FROM transactions t, user u, type ty "
+                                                 " WHERE u.user_id = t.user_id AND t.type_id = ty.type_id "
+                                                 " AND t.type_id = 1 AND t.user_id IN ('{}') AND "
+                                                 " strftime('%Y', t.date) IN ('{}') AND strftime('%m', t.date) IN ('{}') "
+                                                 " GROUP BY strftime('%d', t.date)".format
+                                                 (self.controller.shared_user_id['userID'].get(),
+                                                  self.year_cbox.get(), self.month_cbox.get()), connect)
+            dfBarInMonth = pd.DataFrame(monthlyBarIncome)
+            dayIn_total = dfBarInMonth['Day'].values.tolist()
+            TypeIn_total = dfBarInMonth['Type'].values.tolist()
+            AmountIn_total = dfBarInMonth['Amount'].values.tolist()
+            
+            # expense for monthly
+            monthlyBarExpense = pd.read_sql_query("SELECT strftime('%d', t.date) AS Day, ty.type_name AS Type, "
+                                                  " sum(t.amount) AS Amount FROM transactions t, user u, type ty "
+                                                  " WHERE u.user_id = t.user_id AND t.type_id = ty.type_id "  
+                                                  " AND t.type_id = 2 AND t.user_id IN ('{}') AND "
+                                                  "strftime('%Y', t.date) IN ('{}') AND strftime('%m', t.date) IN ('{}')"
+                                                  " GROUP BY strftime('%d', t.date)".format
+                                                  (self.controller.shared_user_id['userID'].get(),
+                                                   self.year_cbox.get(), self.month_cbox.get()), connect)
+            dfBarEXMonth = pd.DataFrame(monthlyBarExpense)       
+            dayEx_total = dfBarEXMonth['Day'].values.tolist()
+            TypeEx_total = dfBarEXMonth['Type'].values.tolist()
+            AmountEx_total = dfBarEXMonth['Amount'].values.tolist()
+            
+            type_total_combine = TypeIn_total + TypeEx_total
+            month_total_combine = dayIn_total + dayEx_total
+            amount_total_combine = AmountIn_total + AmountEx_total
+            dfbar2 = pd.DataFrame(list(zip(month_total_combine, type_total_combine, amount_total_combine)), 
+                                  columns =['Day', 'Type', 'Amount'])
+
+            fig, ax = plt.subplots(figsize=(10.5, 6), dpi=100)
+            # set various colors
+            ax.set_facecolor("#1A1A1A")
+            ax.spines['bottom'].set_color('white')
+            ax.spines['bottom'].set_linewidth(2)
+            ax.spines['top'].set_color('white')
+            ax.spines['top'].set_linewidth(1)
+            ax.spines['right'].set_color('white')
+            ax.spines['right'].set_linewidth(1)
+            ax.spines['left'].set_color('white')
+            ax.spines['left'].set_lw(1)
+            ax.xaxis.label.set_color('white')
+            ax.yaxis.label.set_color('white')
+            ax.tick_params(colors='white', which='both')
+            barplot = sns.barplot(x='Day', y='Amount', data=dfbar2, hue='Type', palette="Pastel1", ci=None)
+            for c in ax.containers:
+                ax.bar_label(c, fmt='%.2f', color='white')
+            plt.ylabel("Amount (RM)", fontsize=15, color='#ffffff')
+            plt.xlabel("Day", fontsize=15, color='#ffffff')
+            plt.title("Income and Expense in a Month", fontsize=18, color='#ffd966')
+            plt.legend(loc='center right', borderaxespad=0)
+            
+            # embed the chart to tkinter
+            canvass = FigureCanvasTkAgg(fig, self.scroll_frame)
+            canvass.draw()
+            canvass.get_tk_widget().place(x=15, y=100)
+            fig.patch.set_facecolor('#1A1A1A')
+            
+            toolbar = NavigationToolbar2Tk(canvass, self.scroll_frame)
+            toolbar.update()
+            toolbar.place(x=385, y=660)
+            canvass.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
+            
             # ============================== charts 1 Month Income in Category =========================================
             # get total month income in category from database
             category_in_month_amount = pd.read_sql_query("SELECT c.cat_name AS Category, sum(t.amount) AS Amount FROM "
@@ -2718,11 +3108,11 @@ class Statistic3(tk.Frame):
             # embed the chart to tkinter
             canva = FigureCanvasTkAgg(figure, self.scroll_frame)
             canva.draw()
-            canva.get_tk_widget().place(x=15, y=100)
+            canva.get_tk_widget().place(x=15, y=720)
             figure.patch.set_facecolor('#1A1A1A')
             toolbar = NavigationToolbar2Tk(canva, self.scroll_frame)
             toolbar.update()
-            toolbar.place(x=385, y=660)
+            toolbar.place(x=385, y=1280)
             canva.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
             # ============================== charts 2 Month Expense in Category ========================================
@@ -2756,11 +3146,11 @@ class Statistic3(tk.Frame):
             # embed the chart to tkinter
             canv = FigureCanvasTkAgg(figur, self.scroll_frame)
             canv.draw()
-            canv.get_tk_widget().place(x=15, y=720)
+            canv.get_tk_widget().place(x=15, y=1340)
             figur.patch.set_facecolor('#1A1A1A')
             toolba = NavigationToolbar2Tk(canv, self.scroll_frame)
             toolba.update()
-            toolba.place(x=385, y=1280)
+            toolba.place(x=385, y=1900)
             canv.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
             # ============================== charts 3 Month Income in Account ==========================================
@@ -2794,11 +3184,11 @@ class Statistic3(tk.Frame):
             # embed the chart to tkinter
             can = FigureCanvasTkAgg(figu, self.scroll_frame)
             can.draw()
-            can.get_tk_widget().place(x=15, y=1340)
+            can.get_tk_widget().place(x=15, y=1960)
             figu.patch.set_facecolor('#1A1A1A')
             toolb = NavigationToolbar2Tk(can, self.scroll_frame)
             toolb.update()
-            toolb.place(x=385, y=1900)
+            toolb.place(x=385, y=2520)
             can.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
             # ============================== charts 4 Month Expense in Account =========================================
@@ -2832,23 +3222,23 @@ class Statistic3(tk.Frame):
             # embed the chart to tkinter
             ca = FigureCanvasTkAgg(fig, self.scroll_frame)
             ca.draw()
-            ca.get_tk_widget().place(x=15, y=1960)
+            ca.get_tk_widget().place(x=15, y=2580)
             fig.patch.set_facecolor('#1A1A1A')
             tool = NavigationToolbar2Tk(ca, self.scroll_frame)
             tool.update()
-            tool.place(x=385, y=2520)
+            tool.place(x=385, y=3140)
             ca.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
         self.root.destroy()
 
     def filter(self):
         self.root = Toplevel()
-        self.root.geometry("400x125")
+        self.root.geometry("410x135")
         self.root.title("Iccountant - Filter Statisitic")
         self.root.configure(bg='#1A1A1A')
         self.root.iconphoto(False, tk.PhotoImage(file="logo_refined.png"))
-        self.title_l = Label(self.root, font=('lato', 15), bg='#1A1A1A', text='Filter Statisitic', fg='white')
+        self.title_l = Label(self.root, font=tkFont.Font(family='calibri', size=18), bg='#1A1A1A', text='Filter Statisitic', fg='white')
         self.title_l.grid(row=0, column=0)
-        self.year_l = Label(self.root, font=('lato', 12), bg='#1A1A1A', text='Year :', fg='white')
+        self.year_l = Label(self.root, font=tkFont.Font(family='calibri', size=13), bg='#1A1A1A', text='Year :', fg='white')
         self.year_l.grid(row=1, column=0)
         self.year_get = pd.read_sql_query("SELECT strftime('%Y', t.date) AS Year FROM transactions t, user u WHERE "
                                           "u.user_id = t.user_id AND t.user_id IN ('{}') GROUP BY "
@@ -2857,14 +3247,14 @@ class Statistic3(tk.Frame):
         self.year_df = pd.DataFrame(self.year_get)
         self.year_list = self.year_df['Year'].values.tolist()
         self.year_list.insert(0, 'All')
-        self.year_cbox = ttk.Combobox(self.root, values=self.year_list, font=('lato', 12), state='readonly',
+        self.year_cbox = ttk.Combobox(self.root, values=self.year_list, font=tkFont.Font(family='calibri', size=13), state='readonly',
                                       justify='center')
         self.year_cbox.grid(row=1, column=1)
         self.year_cbox.set("All")
-        self.month_l = Label(self.root, font=('lato', 12), bg='#1A1A1A', text='Month :', fg='white')
+        self.month_l = Label(self.root, font=tkFont.Font(family='calibri', size=13), bg='#1A1A1A', text='Month :', fg='white')
         self.month_l.grid(row=2, column=0)
         self.month_list = ['All', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
-        self.month_cbox = ttk.Combobox(self.root, values=self.month_list, font=('lato', 12), state='readonly',
+        self.month_cbox = ttk.Combobox(self.root, values=self.month_list, font=tkFont.Font(family='calibri', size=13), state='readonly',
                                        justify='center')
         self.month_cbox.grid(row=2, column=1)
         self.month_cbox.set("All")
@@ -2898,7 +3288,7 @@ class Account(tk.Frame):
         self.menuFrame = Frame(self, bg='#000000', width=180, height=master.winfo_height(),
                                highlightbackground='#1A1A1A')  # 000000
         self.menuFrame.pack(side=LEFT, fill=BOTH)
-        self.rightFrame = Frame(self, bg='#1A1A1A', width=1280, height=720)
+        self.rightFrame = Frame(self, bg='#1A1A1A', width=1100, height=720)
         self.rightFrame.place(x=180, y=0)
 
         # ====================================== Menubar ====================================================
@@ -3218,7 +3608,7 @@ class Category(tk.Frame):
         self.menuFrame = Frame(self, bg='#000000', width=180, height=master.winfo_height(),
                                highlightbackground='#1A1A1A')  # 000000
         self.menuFrame.pack(side=LEFT, fill=BOTH)
-        self.rightFrame = Frame(self, bg='#1A1A1A', width=1280, height=720)
+        self.rightFrame = Frame(self, bg='#1A1A1A', width=1100, height=720)
         self.rightFrame.place(x=180, y=0)
 
         # ====================================== Menubar ====================================================
@@ -3501,7 +3891,7 @@ class Transaction(tk.Frame):
         self.menuFrame = Frame(self, bg='#000000', width=180, height=master.winfo_height(),
                                highlightbackground='#1A1A1A')  # 000000
         self.menuFrame.pack(side=LEFT, fill=BOTH)
-        self.side_frame = Frame(self, bg='#1A1A1A', width=1280, height=720)
+        self.side_frame = Frame(self, bg='#1A1A1A', width=1100, height=720)
         self.side_frame.place(x=180, y=0)
 
         # Define and resize the icons to be shown in Menu bar
@@ -3586,17 +3976,17 @@ class Transaction(tk.Frame):
         self.filter_b.place(x=980, y=60)
 
         # total income label
-        self.total_in_l = Label(self.side_frame, font=('lato', 12), bg='#1A1A1A', text='Total Income: ',
+        self.total_in_l = Label(self.side_frame, font=tkFont.Font(family='calibri', size=15), bg='#1A1A1A', text='Total Income: ',
                                 fg='lightgreen')
         self.total_in_l.place(x=500, y=65)
 
-        self.total_in_a = Label(self.side_frame, font=('lato', 12), bg='#1A1A1A', fg='lightgreen')
+        self.total_in_a = Label(self.side_frame, font=tkFont.Font(family='calibri', size=15), bg='#1A1A1A', fg='lightgreen')
         self.total_in_a.place(x=600, y=65)
 
-        self.total_ex = Label(self.side_frame, font=('lato', 12), bg='#1A1A1A', text='Total Expense: ', fg='red')
+        self.total_ex = Label(self.side_frame, font=tkFont.Font(family='calibri', size=15), bg='#1A1A1A', text='Total Expense: ', fg='red')
         self.total_ex.place(x=725, y=65)
 
-        self.total_ex_a = Label(self.side_frame, font=('lato', 12), bg='#1A1A1A', fg='red')
+        self.total_ex_a = Label(self.side_frame, font=tkFont.Font(family='calibri', size=15), bg='#1A1A1A', fg='red')
         self.total_ex_a.place(x=835, y=65)
 
         # get total income from database
@@ -3695,117 +4085,105 @@ class Transaction(tk.Frame):
 
     def insert_transaction(self):
         # validate input
-        if self.account_cbox.get() == 'Select Account':
-            messagebox.showerror('Error', 'Please select an account.')
-            self.root.destroy()
+        if self.account_cbox.get() == 'Select Account' or self.category_cbox.get() == 'Select Category' or self.type_cbox.get() == 'Select Type' or self.amount_entry.get() == '':
+            messagebox.showerror('Error', 'Please enter all mandatory field.')
         else:
-            if self.category_cbox.get() == 'Select Category':
-                messagebox.showerror('Error', 'Please select a category.')
-                self.root.destroy()
-            else:
-                if self.type_cbox.get() == 'Select Type':
-                    messagebox.showerror('Error', 'Please select a type.')
-                    self.root.destroy()
+            try:
+                self.amount = round(float(self.amount_entry.get()), 2)
+
+                # get the latest id from database
+                cursor.execute("SELECT max(trans_id) FROM transactions")
+                self.id = cursor.fetchall()
+
+                # create new id
+                self.ID = int(self.id[0][0]) + 1
+
+                # get current date
+                today = datetime.now()
+
+                # get type id that user input from database
+                cursor.execute("SELECT type_id FROM type WHERE type_name = ?", (self.type_cbox.get(),))
+                self.typeID = cursor.fetchall()
+                self.typeid = self.typeID[0][0]
+
+                # get account id that user input from database
+                cursor.execute("SELECT a.acc_id FROM account a, user u WHERE a.user_id = u.user_id AND "
+                               "a.user_id = ? AND a.acc_name = ?",
+                               (self.controller.shared_user_id['userID'].get(), self.account_cbox.get(),))
+                self.accountID = cursor.fetchall()
+                self.accountid = self.accountID[0][0]
+
+                # get category id that user input from database
+                cursor.execute("SELECT c.cat_id FROM category c, user u WHERE c.user_id = u.user_id AND"
+                               " c.user_id = ? AND c.cat_name = ?",
+                               (self.controller.shared_user_id['userID'].get(), self.category_cbox.get(),))
+                self.categoryID = cursor.fetchall()
+                self.categoryid = self.categoryID[0][0]
+
+                # insert the data that user input to database
+                cursor.execute("INSERT INTO transactions (trans_id, amount, date, remark, user_id, type_id,"
+                               " acc_id, cat_id) VALUES (?,?,?,?,?,?,?,?)",
+                               (self.ID, self.amount, today.strftime("%Y-%m-%d"),
+                                self.remark_entry.get(), self.controller.shared_user_id['userID'].get(),
+                                self.typeid, self.accountid, self.categoryid))
+                connect.commit()
+                messagebox.showinfo('Information', 'Record successfully added.')
+
+                # validate income or expense
+                # update the income amount to the selected account in the database
+                if self.typeid == 1:
+                    cursor.execute("UPDATE account SET acc_amount = (acc_amount+?) WHERE acc_id = ?",
+                                   (self.amount, self.accountid,))
+                    connect.commit()
+
+                # update the expense amount to the selected account in the database
                 else:
-                    if self.amount_entry.get() == '':
-                        messagebox.showerror('Error', 'Please enter an amount.')
-                        self.root.destroy()
-                    else:
-                        try:
-                            self.amount = round(float(self.amount_entry.get()), 2)
+                    cursor.execute("UPDATE account SET acc_amount = (acc_amount-?) WHERE acc_id = ?",
+                                   (self.amount, self.accountid,))
+                    connect.commit()
+                self.root.destroy()
 
-                            # get the latest id from database
-                            cursor.execute("SELECT max(trans_id) FROM transactions")
-                            self.id = cursor.fetchall()
+                # empty the treeview
+                self.transaction_list.delete(*self.transaction_list.get_children())
+                self.display_all()
 
-                            # create new id
-                            self.ID = int(self.id[0][0]) + 1
+                # get total income from database
+                cursor.execute("SELECT sum(t.amount) FROM transactions t, user u, type ty WHERE t.user_id ="
+                               " u.user_id AND t.type_id = ty.type_id AND t.type_id = 1 AND u.user_id = ? ",
+                               (self.controller.shared_user_id['userID'].get(),))
+                self.total_in_Amount = cursor.fetchall()
+                if self.total_in_Amount is None:
+                    self.total_in_amount.set(0)
+                else:
+                    self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
+                    self.total_in_a.config(text=str(self.total_in_amount))
 
-                            # get current date
-                            today = datetime.now()
-
-                            # get type id that user input from database
-                            cursor.execute("SELECT type_id FROM type WHERE type_name = ?", (self.type_cbox.get(),))
-                            self.typeID = cursor.fetchall()
-                            self.typeid = self.typeID[0][0]
-
-                            # get account id that user input from database
-                            cursor.execute("SELECT a.acc_id FROM account a, user u WHERE a.user_id = u.user_id AND "
-                                           "a.user_id = ? AND a.acc_name = ?",
-                                           (self.controller.shared_user_id['userID'].get(), self.account_cbox.get(),))
-                            self.accountID = cursor.fetchall()
-                            self.accountid = self.accountID[0][0]
-
-                            # get category id that user input from database
-                            cursor.execute("SELECT c.cat_id FROM category c, user u WHERE c.user_id = u.user_id AND"
-                                           " c.user_id = ? AND c.cat_name = ?",
-                                           (self.controller.shared_user_id['userID'].get(), self.category_cbox.get(),))
-                            self.categoryID = cursor.fetchall()
-                            self.categoryid = self.categoryID[0][0]
-
-                            # insert the data that user input to database
-                            cursor.execute("INSERT INTO transactions (trans_id, amount, date, remark, user_id, type_id,"
-                                           " acc_id, cat_id) VALUES (?,?,?,?,?,?,?,?)",
-                                           (self.ID, self.amount, today.strftime("%Y-%m-%d"),
-                                            self.remark_entry.get(), self.controller.shared_user_id['userID'].get(),
-                                            self.typeid, self.accountid, self.categoryid))
-                            connect.commit()
-                            messagebox.showinfo('Information', 'Record successfully added.')
-
-                            # validate income or expense
-                            # update the income amount to the selected account in the database
-                            if self.typeid == 1:
-                                cursor.execute("UPDATE account SET acc_amount = (acc_amount+?) WHERE acc_id = ?",
-                                               (self.amount, self.accountid,))
-                                connect.commit()
-
-                            # update the expense amount to the selected account in the database
-                            else:
-                                cursor.execute("UPDATE account SET acc_amount = (acc_amount-?) WHERE acc_id = ?",
-                                               (self.amount, self.accountid,))
-                                connect.commit()
-                            self.root.destroy()
-
-                            # empty the treeview
-                            self.transaction_list.delete(*self.transaction_list.get_children())
-                            self.display_all()
-
-                            # get total income from database
-                            cursor.execute("SELECT sum(t.amount) FROM transactions t, user u, type ty WHERE t.user_id ="
-                                           " u.user_id AND t.type_id = ty.type_id AND t.type_id = 1 AND u.user_id = ? ",
-                                           (self.controller.shared_user_id['userID'].get(),))
-                            self.total_in_Amount = cursor.fetchall()
-                            if self.total_in_Amount is None:
-                                self.total_in_amount.set(0)
-                            else:
-                                self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
-                                self.total_in_a.config(text=str(self.total_in_amount))
-
-                            # get total expense from database
-                            cursor.execute("SELECT sum(t.amount) FROM transactions t, user u, type ty WHERE t.user_id ="
-                                           " u.user_id AND t.type_id = ty.type_id AND t.type_id = 2 AND u.user_id = ? ",
-                                           (self.controller.shared_user_id['userID'].get(),))
-                            self.total_ex_Amount = cursor.fetchall()
-                            if self.total_ex_Amount is None:
-                                self.total_ex_amount.set(0)
-                            else:
-                                self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
-                                self.total_ex_a.config(text=str(self.total_ex_amount))
-                            self.root.destroy()
-                        except ValueError:
-                            messagebox.showerror('Error', 'Please reenter the amount in number.')
+                # get total expense from database
+                cursor.execute("SELECT sum(t.amount) FROM transactions t, user u, type ty WHERE t.user_id ="
+                               " u.user_id AND t.type_id = ty.type_id AND t.type_id = 2 AND u.user_id = ? ",
+                               (self.controller.shared_user_id['userID'].get(),))
+                self.total_ex_Amount = cursor.fetchall()
+                if self.total_ex_Amount is None:
+                    self.total_ex_amount.set(0)
+                else:
+                    self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
+                    self.total_ex_a.config(text=str(self.total_ex_amount))
+                self.root.destroy()
+            except ValueError:
+                messagebox.showerror('Error', 'Please reenter the amount in number.')
+                            
 
     def add(self):
         self.root = Toplevel()
-        self.root.geometry("425x215")
+        self.root.geometry("425x225")
         self.root.title("Iccountant - Add New Transaction")
         self.root.configure(bg='#1A1A1A')
         self.root.iconphoto(False, tk.PhotoImage(file="logo_refined.png"))
 
-        self.title_l = Label(self.root, font=('lato', 15), bg='#1A1A1A', text='New Transaction', fg='white')
+        self.title_l = Label(self.root, font=tkFont.Font(family='calibri', size=20), bg='#1A1A1A', text='New Transaction', fg='white')
         self.title_l.grid(row=0, column=0)
 
-        self.account_l = Label(self.root, font=('lato', 12), bg='#1A1A1A', text='Account :', fg='white')
+        self.account_l = Label(self.root, font=tkFont.Font(family='calibri', size=15), bg='#1A1A1A', text='Account :', fg='white')
         self.account_l.grid(row=1, column=0)
 
         self.account_get = pd.read_sql_query("SELECT a.acc_name AS Account FROM account a, user u WHERE a.user_id = "
@@ -3813,37 +4191,37 @@ class Transaction(tk.Frame):
                                              (self.controller.shared_user_id['userID'].get()), connect)
         self.account_df = pd.DataFrame(self.account_get)
         self.account_list = self.account_df['Account'].values.tolist()
-        self.account_cbox = ttk.Combobox(self.root, values=self.account_list, font=('lato', 12), state='readonly',
+        self.account_cbox = ttk.Combobox(self.root, values=self.account_list, font=tkFont.Font(family='calibri', size=15), state='readonly',
                                          justify='center')
         self.account_cbox.grid(row=1, column=1)
         self.account_cbox.set("Select Account")
-        self.category_l = Label(self.root, font=('lato', 12), bg='#1A1A1A', text='Category :', fg='white')
+        self.category_l = Label(self.root, font=tkFont.Font(family='calibri', size=15), bg='#1A1A1A', text='Category :', fg='white')
         self.category_l.grid(row=2, column=0)
         self.category_get = pd.read_sql_query("SELECT c.cat_name AS Category FROM category c, user u "
                                               "WHERE c.user_id = u.user_id AND c.user_id IN ('{}') GROUP BY c.cat_id"
                                               .format(self.controller.shared_user_id['userID'].get()), connect)
         self.category_df = pd.DataFrame(self.category_get)
         self.category_list = self.category_df['Category'].values.tolist()
-        self.category_cbox = ttk.Combobox(self.root, values=self.category_list, font=('lato', 12), state='readonly',
+        self.category_cbox = ttk.Combobox(self.root, values=self.category_list, font=tkFont.Font(family='calibri', size=15), state='readonly',
                                           justify='center')
         self.category_cbox.grid(row=2, column=1)
         self.category_cbox.set("Select Category")
-        self.type_l = Label(self.root, font=('lato', 12), bg='#1A1A1A', text='Type :', fg='white')
+        self.type_l = Label(self.root, font=tkFont.Font(family='calibri', size=15), bg='#1A1A1A', text='Type :', fg='white')
         self.type_l.grid(row=3, column=0)
         self.type_get = pd.read_sql_query("SELECT type_name AS Type FROM type", connect)
         self.type_df = pd.DataFrame(self.type_get)
         self.type_list = self.type_df['Type'].values.tolist()
-        self.type_cbox = ttk.Combobox(self.root, values=self.type_list, font=('lato', 12), state='readonly',
+        self.type_cbox = ttk.Combobox(self.root, values=self.type_list, font=tkFont.Font(family='calibri', size=15), state='readonly',
                                       justify='center')
         self.type_cbox.grid(row=3, column=1)
         self.type_cbox.set("Select Type")
-        self.amount_l = Label(self.root, font=('lato', 12), bg='#1A1A1A', text='Amount :', fg='white')
+        self.amount_l = Label(self.root, font=tkFont.Font(family='calibri', size=15), bg='#1A1A1A', text='Amount :', fg='white')
         self.amount_l.grid(row=4, column=0)
-        self.amount_entry = Entry(self.root, font=('lato', 12), justify='center')
+        self.amount_entry = Entry(self.root, font=tkFont.Font(family='calibri', size=15), justify='center')
         self.amount_entry.grid(row=4, column=1)
-        self.remark_l = Label(self.root, font=('lato', 12), bg='#1A1A1A', text='Remark :', fg='white')
+        self.remark_l = Label(self.root, font=tkFont.Font(family='calibri', size=15), bg='#1A1A1A', text='Remark :', fg='white')
         self.remark_l.grid(row=5, column=0)
-        self.remark_entry = Entry(self.root, font=('lato', 12), justify='center')
+        self.remark_entry = Entry(self.root, font=tkFont.Font(family='calibri', size=15), justify='center')
         self.remark_entry.grid(row=5, column=1)
         self.confirm_pic = ImageTk.PhotoImage(Image.open('confirm button.png')
                                               .resize((75, 35), resample=Image.LANCZOS))
@@ -4012,14 +4390,14 @@ class Transaction(tk.Frame):
             self.oriamount = selection[4]
 
             self.root = Toplevel()
-            self.root.geometry("425x215")
+            self.root.geometry("425x2250")
             self.root.title("Iccountant - Edit Transaction")
             self.root.configure(bg='#1A1A1A')
             self.root.iconphoto(False, tk.PhotoImage(file="logo_refined.png"))
 
-            self.title_l = Label(self.root, font=('lato', 15), bg='#1A1A1A', text='Edit Transaction', fg='white')
+            self.title_l = Label(self.root, font=tkFont.Font(family='calibri', size=20), bg='#1A1A1A', text='Edit Transaction', fg='white')
             self.title_l.grid(row=0, column=0)
-            self.account_l = Label(self.root, font=('lato', 12), bg='#1A1A1A', text='Account :', fg='white')
+            self.account_l = Label(self.root, font=tkFont.Font(family='calibri', size=15), bg='#1A1A1A', text='Account :', fg='white')
             self.account_l.grid(row=1, column=0)
             self.account_get = pd.read_sql_query("SELECT a.acc_name AS Account FROM transactions t, account a, user u "
                                                  "WHERE a.acc_id = t.acc_id AND u.user_id = t.user_id AND t.user_id IN "
@@ -4027,11 +4405,11 @@ class Transaction(tk.Frame):
                                                  (self.controller.shared_user_id['userID'].get()), connect)
             self.account_df = pd.DataFrame(self.account_get)
             self.account_list = self.account_df['Account'].values.tolist()
-            self.account_cbox = ttk.Combobox(self.root, values=self.account_list, font=('lato', 12), state='readonly',
+            self.account_cbox = ttk.Combobox(self.root, values=self.account_list, font=tkFont.Font(family='calibri', size=15), state='readonly',
                                              justify='center')
             self.account_cbox.grid(row=1, column=1)
             self.account_cbox.set(selection[1])
-            self.category_l = Label(self.root, font=('lato', 12), bg='#1A1A1A', text='Category :', fg='white')
+            self.category_l = Label(self.root, font=tkFont.Font(family='calibri', size=15), bg='#1A1A1A', text='Category :', fg='white')
             self.category_l.grid(row=2, column=0)
             self.category_get = pd.read_sql_query("SELECT c.cat_name AS Category FROM category c, transactions t, user "
                                                   "u WHERE c.cat_id = t.cat_id AND t.user_id = u.user_id AND u.user_id "
@@ -4039,32 +4417,32 @@ class Transaction(tk.Frame):
                                                   (self.controller.shared_user_id['userID'].get()), connect)
             self.category_df = pd.DataFrame(self.category_get)
             self.category_list = self.category_df['Category'].values.tolist()
-            self.category_cbox = ttk.Combobox(self.root, values=self.category_list, font=('lato', 12), state='readonly',
+            self.category_cbox = ttk.Combobox(self.root, values=self.category_list, font=tkFont.Font(family='calibri', size=15), state='readonly',
                                               justify='center')
             self.category_cbox.grid(row=2, column=1)
             self.category_cbox.set(selection[2])
-            self.type_l = Label(self.root, font=('lato', 12), bg='#1A1A1A', text='Type :', fg='white')
+            self.type_l = Label(self.root, font=tkFont.Font(family='calibri', size=15), bg='#1A1A1A', text='Type :', fg='white')
             self.type_l.grid(row=3, column=0)
             self.type_get = pd.read_sql_query("SELECT type_name AS Type FROM type", connect)
             self.type_df = pd.DataFrame(self.type_get)
             self.type_list = self.type_df['Type'].values.tolist()
-            self.type_cbox = ttk.Combobox(self.root, values=self.type_list, font=('lato', 12), state='readonly',
+            self.type_cbox = ttk.Combobox(self.root, values=self.type_list, font=tkFont.Font(family='calibri', size=15), state='readonly',
                                           justify='center')
             self.type_cbox.grid(row=3, column=1)
             self.type_cbox.set(selection[3])
-            self.amount_l = Label(self.root, font=('lato', 12), bg='#1A1A1A', text='Amount :', fg='white')
+            self.amount_l = Label(self.root, font=tkFont.Font(family='calibri', size=15), bg='#1A1A1A', text='Amount :', fg='white')
             self.amount_l.grid(row=4, column=0)
-            self.amount_entry = Entry(self.root, font=('lato', 12), justify='center')
+            self.amount_entry = Entry(self.root, font=tkFont.Font(family='calibri', size=15), justify='center')
             self.amount_entry.grid(row=4, column=1)
             self.amount_entry.insert(0, selection[4])
-            self.remark_l = Label(self.root, font=('lato', 12), bg='#1A1A1A', text='Remark :', fg='white')
+            self.remark_l = Label(self.root, font=tkFont.Font(family='calibri', size=15), bg='#1A1A1A', text='Remark :', fg='white')
             self.remark_l.grid(row=5, column=0)
-            self.remark_entry = Entry(self.root, font=('lato', 12), justify='center')
+            self.remark_entry = Entry(self.root, font=tkFont.Font(family='calibri', size=15), justify='center')
             self.remark_entry.grid(row=5, column=1)
             self.remark_entry.insert(0, selection[5])
-            self.date_l = Label(self.root, font=('lato', 12), bg='#1A1A1A', text='Date :', fg='white')
+            self.date_l = Label(self.root, font=tkFont.Font(family='calibri', size=15), bg='#1A1A1A', text='Date :', fg='white')
             self.date_l.grid(row=6, column=0)
-            self.date_entry = DateEntry(self.root, selectmode='day', font=('lato', 12), date_pattern='YYYY-mm-dd',
+            self.date_entry = DateEntry(self.root, selectmode='day', font=tkFont.Font(family='calibri', size=15), date_pattern='YYYY-mm-dd',
                                         state='readonly')
             self.date_entry.grid(row=6, column=1)
             self.date_entry.set_date(selection[0])
@@ -4392,14 +4770,14 @@ class Transaction(tk.Frame):
 
     def filter(self):
         self.root = Toplevel()
-        self.root.geometry("425x215")
+        self.root.geometry("425x230")
         self.root.title("Iccountant - Filter Transaction")
         self.root.configure(bg='#1A1A1A')
         self.root.iconphoto(False, tk.PhotoImage(file="logo_refined.png"))
 
-        self.title_l = Label(self.root, font=('lato', 15), bg='#1A1A1A', text='Filter Transaction', fg='white')
+        self.title_l = Label(self.root, font=tkFont.Font(family='calibri', size=20), bg='#1A1A1A', text='Filter Transaction', fg='white')
         self.title_l.grid(row=0, column=0)
-        self.account_l = Label(self.root, font=('lato', 12), bg='#1A1A1A', text='Account :', fg='white')
+        self.account_l = Label(self.root, font=tkFont.Font(family='calibri', size=15), bg='#1A1A1A', text='Account :', fg='white')
         self.account_l.grid(row=1, column=0)
         self.account_get = pd.read_sql_query("SELECT a.acc_name AS Account FROM transactions t, account a, user u "
                                              "WHERE a.acc_id = t.acc_id AND u.user_id = t.user_id AND t.user_id IN "
@@ -4408,11 +4786,11 @@ class Transaction(tk.Frame):
         self.account_df = pd.DataFrame(self.account_get)
         self.account_list = self.account_df['Account'].values.tolist()
         self.account_list.insert(0, 'None')
-        self.account_cbox = ttk.Combobox(self.root, values=self.account_list, font=('lato', 12), state='readonly',
+        self.account_cbox = ttk.Combobox(self.root, values=self.account_list, font=tkFont.Font(family='calibri', size=14), state='readonly',
                                          justify='center')
         self.account_cbox.grid(row=1, column=1)
         self.account_cbox.set("None")
-        self.category_l = Label(self.root, font=('lato', 12), bg='#1A1A1A', text='Category :', fg='white')
+        self.category_l = Label(self.root, font=tkFont.Font(family='calibri', size=15), bg='#1A1A1A', text='Category :', fg='white')
         self.category_l.grid(row=2, column=0)
         self.category_get = pd.read_sql_query("SELECT c.cat_name AS Category FROM category c, transactions t, user "
                                               "u WHERE c.cat_id = t.cat_id AND t.user_id = u.user_id AND u.user_id "
@@ -4421,21 +4799,21 @@ class Transaction(tk.Frame):
         self.category_df = pd.DataFrame(self.category_get)
         self.category_list = self.category_df['Category'].values.tolist()
         self.category_list.insert(0, 'None')
-        self.category_cbox = ttk.Combobox(self.root, values=self.category_list, font=('lato', 12), state='readonly',
+        self.category_cbox = ttk.Combobox(self.root, values=self.category_list, font=tkFont.Font(family='calibri', size=14), state='readonly',
                                           justify='center')
         self.category_cbox.grid(row=2, column=1)
         self.category_cbox.set("None")
-        self.type_l = Label(self.root, font=('lato', 12), bg='#1A1A1A', text='Type :', fg='white')
+        self.type_l = Label(self.root, font=tkFont.Font(family='calibri', size=15), bg='#1A1A1A', text='Type :', fg='white')
         self.type_l.grid(row=3, column=0)
         self.type_get = pd.read_sql_query("SELECT type_name AS Type FROM type", connect)
         self.type_df = pd.DataFrame(self.type_get)
         self.type_list = self.type_df['Type'].values.tolist()
         self.type_list.insert(0, 'None')
-        self.type_cbox = ttk.Combobox(self.root, values=self.type_list, font=('lato', 12), state='readonly',
+        self.type_cbox = ttk.Combobox(self.root, values=self.type_list, font=tkFont.Font(family='calibri', size=14), state='readonly',
                                       justify='center')
         self.type_cbox.grid(row=3, column=1)
         self.type_cbox.set("None")
-        self.year_l = Label(self.root, font=('lato', 12), bg='#1A1A1A', text='Year :', fg='white')
+        self.year_l = Label(self.root, font=tkFont.Font(family='calibri', size=15), bg='#1A1A1A', text='Year :', fg='white')
         self.year_l.grid(row=4, column=0)
         self.year_get = pd.read_sql_query("SELECT strftime('%Y', t.date) AS Year FROM transactions t, user u WHERE "
                                           "u.user_id = t.user_id AND t.user_id IN ('{}') GROUP BY "
@@ -4444,14 +4822,14 @@ class Transaction(tk.Frame):
         self.year_df = pd.DataFrame(self.year_get)
         self.year_list = self.year_df['Year'].values.tolist()
         self.year_list.insert(0, 'None')
-        self.year_cbox = ttk.Combobox(self.root, values=self.year_list, font=('lato', 12), state='readonly',
+        self.year_cbox = ttk.Combobox(self.root, values=self.year_list, font=tkFont.Font(family='calibri', size=14), state='readonly',
                                       justify='center')
         self.year_cbox.grid(row=4, column=1)
         self.year_cbox.set("None")
-        self.month_l = Label(self.root, font=('lato', 12), bg='#1A1A1A', text='Month :', fg='white')
+        self.month_l = Label(self.root, font=tkFont.Font(family='calibri', size=15), bg='#1A1A1A', text='Month :', fg='white')
         self.month_l.grid(row=5, column=0)
         self.month_list = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
-        self.month_cbox = ttk.Combobox(self.root, values=self.month_list, font=('lato', 12), state='readonly',
+        self.month_cbox = ttk.Combobox(self.root, values=self.month_list, font=tkFont.Font(family='calibri', size=14), state='readonly',
                                        justify='center')
         self.month_cbox.grid(row=5, column=1)
         self.month_cbox.set("None")
@@ -4470,9 +4848,11 @@ class UserAccount(tk.Frame):
     def __init__(self, master, controller):
         self.controller = controller
         Frame.__init__(self, master)
+        
         self.menuFrame = Frame(self, bg='#000000', width=180, height=master.winfo_height(),
                                highlightbackground='#1A1A1A')
         self.menuFrame.pack(side=LEFT, fill=BOTH)
+        
         self.sideFrame = Frame(self, bg='#1A1A1A', width=self.winfo_screenwidth(), height=self.winfo_screenheight())
         self.sideFrame.pack(side=RIGHT, fill=BOTH, expand=TRUE)
 
@@ -4536,15 +4916,15 @@ class UserAccount(tk.Frame):
         email = cursor.fetchone()
         self.email_get = email[0]
 
-        self.title = Label(self.sideFrame, text='Profile', fg='white', bg='#1A1A1A',
-                           font=tkFont.Font(family='Lato', size=30))
+        self.title = Label(self.sideFrame, text='User Profile', fg='white', bg='#1A1A1A',
+                           font=tkFont.Font(family='Lato', size=20, weight="bold", slant="italic"))
         self.title.pack(pady=50, anchor=CENTER)
 
         self.center = Frame(self.sideFrame, bg='#1A1A1A')
         self.center.pack(anchor=CENTER)
 
         # Labels
-        self.UsernameLabel = Label(self.center, text='USERNAME ', fg='white', bg='#1A1A1A',
+        self.UsernameLabel = Label(self.center, text='USERNAME', fg='white', bg='#1A1A1A',
                                    font=tkFont.Font(family='Lato', size=15))
         self.UsernameLabel.pack(padx=10, pady=10, anchor=CENTER)
         self.username_l = Label(self.center, fg='white', bg='#333333', width=30,
@@ -4829,7 +5209,7 @@ class UserAccount(tk.Frame):
         self.check_btn.pack(pady=5)
 
         # send otp button
-        self.sendOTP = customtkinter.CTkButton(self.editPasswordWindow, text='send OTP', width=50, height=30,
+        self.sendOTP = customtkinter.CTkButton(self.editPasswordWindow, text='Send OTP', width=50, height=30,
                                                fg_color="#464E63", hover_color="#667190",
                                                command=lambda: self.data_validation())
         self.sendOTP.pack(pady=10)

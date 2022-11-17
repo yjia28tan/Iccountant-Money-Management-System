@@ -15,17 +15,12 @@ Presentation on 2nd December
 - Transaction (Expeses tracker) (done)
   - Account (done)
   - Category (done)
-- Statistic **
-  - Pie chart -- income vs expenses (done but not yet edit)
-  - Line graph -- income vs expenses
-  - Bar chart -- income vs expenses
-- Dashboard ** (put chart inside)
+- Statistic 
+  - Pie chart (done)
+  - Bar chart
+- Dashboard (done)
 -	Personal customer support *
 - Tips *
-- User Account (left edit password function)
+- User Account (done)
 
-**Combine code (left statistic, dashboard, tips, customer support)
-
-
-**remember to change userID = ? // For graph only 
-
+**Combine code (left tips, customer support)

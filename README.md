@@ -15,12 +15,12 @@ Presentation on 2nd December
 - Transaction (Expeses tracker) (done)
   - Account (done)
   - Category (done)
-- Statistic 
+- Statistic (done)
   - Pie chart (done)
-  - Bar chart
+  - Bar chart (done)
 - Dashboard (done)
+- User Account (done)
 -	Personal customer support *
 - Tips *
-- User Account (done)
 
 **Combine code (left tips, customer support)

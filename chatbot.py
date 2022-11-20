@@ -214,8 +214,7 @@ class Chatbot:
 
 def main(): 
     root = tk.Tk()
-    #root.iconphoto(False, tk.PhotoImage(file="robotpict.png"))
-    root.iconphoto(False, tk.PhotoImage(file="logo_refined.png"))
+    root.iconphoto(False, tk.PhotoImage(file="robotpict.png"))
     c = Chatbot(root)
     
     root.mainloop()

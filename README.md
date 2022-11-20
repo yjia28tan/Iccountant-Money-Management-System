@@ -2,7 +2,7 @@
 4007CEM COMPUTER SCIENCE ACTIVITY LED LEARNING PROJECT 2
 
 
-Money Management System 
+Iccountant: Money Management System 
 
 Everything should be done by 20/11
 Report by 30/11
@@ -20,7 +20,5 @@ Presentation on 2nd December
   - Bar chart (done)
 - Dashboard (done)
 - User Account (done)
--	Personal customer support *
-- Tips *
-
-**Combine code (left tips, customer support)
+-	Personal customer support (done)
+- Tips (done)

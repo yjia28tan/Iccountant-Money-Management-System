@@ -4,9 +4,14 @@
 
 Iccountant: Money Management System 
 
-Everything should be done by 20/11
+
+Development all done // combine code all done >.<`
+
+
 Report by 30/11
-Presentation on 2nd December
+
+
+Presentation on 1st December
 
 - Currency Converter (done)
 - Login, Register -OTP (done)

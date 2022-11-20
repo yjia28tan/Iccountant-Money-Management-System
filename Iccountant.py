@@ -20,7 +20,7 @@ from tkcalendar import DateEntry
 import webbrowser
 
 customtkinter.set_appearance_mode("dark")
-connect = sqlite3.connect('Iccountant.db')
+connect = sqlite3.connect('Iccountant')
 cursor = connect.cursor()
 
 
@@ -32,9 +32,8 @@ class windows(tk.Tk):
         self.title("Iccountant Money Management System")
         self.width = self.winfo_screenwidth()
         self.height = self.winfo_screenheight()
-        self.geometry('1280x720')
+        self.geometry('1282x720')
         self.config(bg='black')
-        self.state('zoomed')
         self.resizable(FALSE, FALSE)
         self.iconphoto(False, tk.PhotoImage(file='logo_refined.png'))
 
@@ -653,11 +652,14 @@ class Dashboard(tk.Frame):
         self.account_b = Button(self.menuFrame, image=self.account, bg='#000000', relief='flat',
                                 command=lambda: controller.show_frame(Account))
         self.account_b.grid(row=6)
-        self.currency_b = Button(self.menuFrame, image=self.currency, bg='#000000', relief='flat', command=self.con)
+        self.currency_b = Button(self.menuFrame, image=self.currency, bg='#000000', relief='flat', 
+                                 command=self.con)
         self.currency_b.grid(row=7)
-        self.calculator_b = Button(self.menuFrame, image=self.calculator, bg='#000000', relief='flat', command=self.cal)
+        self.calculator_b = Button(self.menuFrame, image=self.calculator, bg='#000000', relief='flat', 
+                                   command=self.cal)
         self.calculator_b.grid(row=8)
-        self.customer_b = Button(self.menuFrame, image=self.customer, bg='#000000', relief='flat')
+        self.customer_b = Button(self.menuFrame, image=self.customer, bg='#000000', relief='flat', 
+                                 command=self.chatbox)
         self.customer_b.grid(row=9)
         self.tips_b = Button(self.menuFrame, image=self.tips, bg='#000000', relief='flat',
                              command=lambda: self.controller.show_frame(Tips))
@@ -677,7 +679,7 @@ class Dashboard(tk.Frame):
         self.side_frame.place(x=180, y=0)
 
         # Create A Canvas
-        self.my_canvas = Canvas(self.side_frame, bg='#1A1A1A', width=1100, height=720)
+        self.my_canvas = Canvas(self.side_frame, bg='#1A1A1A', width=1075, height=720)
         self.my_canvas.pack(side=LEFT, fill=BOTH, expand=1)
 
         # Add A Scrollbar To The Canvas
@@ -689,7 +691,7 @@ class Dashboard(tk.Frame):
         self.my_canvas.bind('<Configure>', lambda e: self.my_canvas.configure(scrollregion=self.my_canvas.bbox("all")))
 
         # Create ANOTHER Frame INSIDE the Canvas
-        self.scroll_frame = Frame(self.my_canvas, bg='#1A1A1A', width=1100, height=1340)
+        self.scroll_frame = Frame(self.my_canvas, bg='#1A1A1A', width=1075, height=1340)
         self.my_canvas.create_window((0, 0), window=self.scroll_frame, anchor="nw")
         self.my_canvas['yscrollcommand'] = self.my_scrollbar.set
 
@@ -1389,6 +1391,9 @@ class Dashboard(tk.Frame):
 
     def cal(self):
         os.system('calculator.py')
+            
+    def chatbox(self):
+        os.system('C:/Users/User/PycharmProjects/csall2/chatbot.py')
 
     def logout_system(self):
         answer = messagebox.askyesno(title='Confirmation', message='Are you sure that you want to logout?')
@@ -1440,11 +1445,14 @@ class Statistic1(tk.Frame):
         self.account_b = Button(self.menuFrame, image=self.account, bg='#000000', relief='flat',
                                 command=lambda: controller.show_frame(Account))
         self.account_b.grid(row=6)
-        self.currency_b = Button(self.menuFrame, image=self.currency, bg='#000000', relief='flat', command=self.con)
+        self.currency_b = Button(self.menuFrame, image=self.currency, bg='#000000', relief='flat', 
+                                 command=self.con)
         self.currency_b.grid(row=7)
-        self.calculator_b = Button(self.menuFrame, image=self.calculator, bg='#000000', relief='flat', command=self.cal)
+        self.calculator_b = Button(self.menuFrame, image=self.calculator, bg='#000000', relief='flat', 
+                                   command=self.cal)
         self.calculator_b.grid(row=8)
-        self.customer_b = Button(self.menuFrame, image=self.customer, bg='#000000', relief='flat')
+        self.customer_b = Button(self.menuFrame, image=self.customer, bg='#000000', relief='flat', 
+                                 command=self.chatbox)
         self.customer_b.grid(row=9)
         self.tips_b = Button(self.menuFrame, image=self.tips, bg='#000000', relief='flat',
                              command=lambda: self.controller.show_frame(Tips))
@@ -1649,6 +1657,9 @@ class Statistic1(tk.Frame):
 
     def cal(self):
         os.system('calculator.py')
+        
+    def chatbox(self):
+        os.system('C:/Users/User/PycharmProjects/csall2/chatbot.py')
 
     def logout_system(self):
         answer = messagebox.askyesno(title='Confirmation', message='Are you sure that you want to logout?')
@@ -1683,6 +1694,7 @@ class Statistic2(tk.Frame):
         self.user = ImageTk.PhotoImage(Image.open('user.png').resize((145, 45), resample=Image.LANCZOS))
 
         # Defining the buttons for menu bar
+        # Defining the buttons for menu bar
         self.logo_l = Label(self.menuFrame, image=self.logo, bg='#000000')
         self.logo_l.grid(row=1)
         self.dashboard_b = Button(self.menuFrame, image=self.dashboard, bg='#000000', relief='flat',
@@ -1700,11 +1712,14 @@ class Statistic2(tk.Frame):
         self.account_b = Button(self.menuFrame, image=self.account, bg='#000000', relief='flat',
                                 command=lambda: controller.show_frame(Account))
         self.account_b.grid(row=6)
-        self.currency_b = Button(self.menuFrame, image=self.currency, bg='#000000', relief='flat', command=self.con)
+        self.currency_b = Button(self.menuFrame, image=self.currency, bg='#000000', relief='flat', 
+                                 command=self.con)
         self.currency_b.grid(row=7)
-        self.calculator_b = Button(self.menuFrame, image=self.calculator, bg='#000000', relief='flat', command=self.cal)
+        self.calculator_b = Button(self.menuFrame, image=self.calculator, bg='#000000', relief='flat', 
+                                   command=self.cal)
         self.calculator_b.grid(row=8)
-        self.customer_b = Button(self.menuFrame, image=self.customer, bg='#000000', relief='flat')
+        self.customer_b = Button(self.menuFrame, image=self.customer, bg='#000000', relief='flat', 
+                                 command=self.chatbox)
         self.customer_b.grid(row=9)
         self.tips_b = Button(self.menuFrame, image=self.tips, bg='#000000', relief='flat',
                              command=lambda: self.controller.show_frame(Tips))
@@ -1720,7 +1735,7 @@ class Statistic2(tk.Frame):
         self.menuFrame.grid_propagate(False)
 
         # side frame
-        self.side_frame = Frame(self, bg='#1A1A1A', width=1100, height=720)
+        self.side_frame = Frame(self, bg='#1A1A1A', width=1075, height=720)
         self.side_frame.place(x=180, y=0)
 
         # Create A Canvas
@@ -2950,6 +2965,9 @@ class Statistic2(tk.Frame):
 
     def cal(self):
         os.system('calculator.py')
+                
+    def chatbox(self):
+        os.system('C:/Users/User/PycharmProjects/csall2/chatbot.py')
 
     def logout_system(self):
         answer = messagebox.askyesno(title='Confirmation', message='Are you sure that you want to logout?')
@@ -3001,11 +3019,14 @@ class Statistic3(tk.Frame):
         self.account_b = Button(self.menuFrame, image=self.account, bg='#000000', relief='flat',
                                 command=lambda: controller.show_frame(Account))
         self.account_b.grid(row=6)
-        self.currency_b = Button(self.menuFrame, image=self.currency, bg='#000000', relief='flat', command=self.con)
+        self.currency_b = Button(self.menuFrame, image=self.currency, bg='#000000', relief='flat', 
+                                 command=self.con)
         self.currency_b.grid(row=7)
-        self.calculator_b = Button(self.menuFrame, image=self.calculator, bg='#000000', relief='flat', command=self.cal)
+        self.calculator_b = Button(self.menuFrame, image=self.calculator, bg='#000000', relief='flat', 
+                                   command=self.cal)
         self.calculator_b.grid(row=8)
-        self.customer_b = Button(self.menuFrame, image=self.customer, bg='#000000', relief='flat')
+        self.customer_b = Button(self.menuFrame, image=self.customer, bg='#000000', relief='flat', 
+                                 command=self.chatbox)
         self.customer_b.grid(row=9)
         self.tips_b = Button(self.menuFrame, image=self.tips, bg='#000000', relief='flat',
                              command=lambda: self.controller.show_frame(Tips))
@@ -3025,7 +3046,7 @@ class Statistic3(tk.Frame):
         self.side_frame.place(x=180, y=0)
 
         # Create A Canvas
-        self.my_canvas = Canvas(self.side_frame, bg='#1A1A1A', width=1100, height=720)
+        self.my_canvas = Canvas(self.side_frame, bg='#1A1A1A', width=1075, height=720)
         self.my_canvas.pack(side=LEFT, fill=BOTH, expand=1)
 
         # Add A Scrollbar To The Canvas
@@ -3037,7 +3058,7 @@ class Statistic3(tk.Frame):
         self.my_canvas.bind('<Configure>', lambda e: self.my_canvas.configure(scrollregion=self.my_canvas.bbox("all")))
 
         # Create ANOTHER Frame INSIDE the Canvas
-        self.scroll_frame = Frame(self.my_canvas, bg='#1A1A1A', width=1100, height=3200)
+        self.scroll_frame = Frame(self.my_canvas, bg='#1A1A1A', width=1075, height=3200)
         self.my_canvas.create_window((0, 0), window=self.scroll_frame, anchor="nw")
         self.my_canvas['yscrollcommand'] = self.my_scrollbar.set
 
@@ -4295,7 +4316,10 @@ class Statistic3(tk.Frame):
 
     def cal(self):
         os.system('calculator.py')
-
+        
+    def chatbox(self):
+        os.system('C:/Users/User/PycharmProjects/csall2/chatbot.py')
+        
     def logout_system(self):
         answer = messagebox.askyesno(title='Confirmation', message='Are you sure that you want to logout?')
         if answer:
@@ -4346,11 +4370,14 @@ class Account(tk.Frame):
         self.account_b = Button(self.menuFrame, image=self.account, bg='#000000', relief='flat',
                                 command=lambda: controller.show_frame(Account))
         self.account_b.grid(row=6)
-        self.currency_b = Button(self.menuFrame, image=self.currency, bg='#000000', relief='flat', command=self.con)
+        self.currency_b = Button(self.menuFrame, image=self.currency, bg='#000000', relief='flat', 
+                                 command=self.con)
         self.currency_b.grid(row=7)
-        self.calculator_b = Button(self.menuFrame, image=self.calculator, bg='#000000', relief='flat', command=self.cal)
+        self.calculator_b = Button(self.menuFrame, image=self.calculator, bg='#000000', relief='flat', 
+                                   command=self.cal)
         self.calculator_b.grid(row=8)
-        self.customer_b = Button(self.menuFrame, image=self.customer, bg='#000000', relief='flat')
+        self.customer_b = Button(self.menuFrame, image=self.customer, bg='#000000', relief='flat', 
+                                 command=self.chatbox)
         self.customer_b.grid(row=9)
         self.tips_b = Button(self.menuFrame, image=self.tips, bg='#000000', relief='flat',
                              command=lambda: self.controller.show_frame(Tips))
@@ -4614,6 +4641,10 @@ class Account(tk.Frame):
     # ========== Call calculator class =============
     def cal(self):
         os.system('python calculator.py')
+        
+    # ======= call customer support chat box =========            
+    def chatbox(self):
+        os.system('C:/Users/User/PycharmProjects/csall2/chatbot.py')
 
     # ========== Log out =============
     def logout_system(self):
@@ -4666,11 +4697,14 @@ class Category(tk.Frame):
         self.account_b = Button(self.menuFrame, image=self.account, bg='#000000', relief='flat',
                                 command=lambda: controller.show_frame(Account))
         self.account_b.grid(row=6)
-        self.currency_b = Button(self.menuFrame, image=self.currency, bg='#000000', relief='flat', command=self.con)
+        self.currency_b = Button(self.menuFrame, image=self.currency, bg='#000000', relief='flat', 
+                                 command=self.con)
         self.currency_b.grid(row=7)
-        self.calculator_b = Button(self.menuFrame, image=self.calculator, bg='#000000', relief='flat', command=self.cal)
+        self.calculator_b = Button(self.menuFrame, image=self.calculator, bg='#000000', relief='flat', 
+                                   command=self.cal)
         self.calculator_b.grid(row=8)
-        self.customer_b = Button(self.menuFrame, image=self.customer, bg='#000000', relief='flat')
+        self.customer_b = Button(self.menuFrame, image=self.customer, bg='#000000', relief='flat', 
+                                 command=self.chatbox)
         self.customer_b.grid(row=9)
         self.tips_b = Button(self.menuFrame, image=self.tips, bg='#000000', relief='flat',
                              command=lambda: self.controller.show_frame(Tips))
@@ -4898,6 +4932,9 @@ class Category(tk.Frame):
 
     def cal(self):
         os.system('python calculator.py')
+                
+    def chatbox(self):
+        os.system('C:/Users/User/PycharmProjects/csall2/chatbot.py')
 
     def logout_system(self):
         answer = messagebox.askyesno(title='Confirmation', message='Are you sure that you want to logout?')
@@ -4948,11 +4985,14 @@ class Transaction(tk.Frame):
         self.account_b = Button(self.menuFrame, image=self.account, bg='#000000', relief='flat',
                                 command=lambda: controller.show_frame(Account))
         self.account_b.grid(row=6)
-        self.currency_b = Button(self.menuFrame, image=self.currency, bg='#000000', relief='flat', command=self.con)
+        self.currency_b = Button(self.menuFrame, image=self.currency, bg='#000000', relief='flat', 
+                                 command=self.con)
         self.currency_b.grid(row=7)
-        self.calculator_b = Button(self.menuFrame, image=self.calculator, bg='#000000', relief='flat', command=self.cal)
+        self.calculator_b = Button(self.menuFrame, image=self.calculator, bg='#000000', relief='flat', 
+                                   command=self.cal)
         self.calculator_b.grid(row=8)
-        self.customer_b = Button(self.menuFrame, image=self.customer, bg='#000000', relief='flat')
+        self.customer_b = Button(self.menuFrame, image=self.customer, bg='#000000', relief='flat', 
+                                 command=self.chatbox)
         self.customer_b.grid(row=9)
         self.tips_b = Button(self.menuFrame, image=self.tips, bg='#000000', relief='flat',
                              command=lambda: self.controller.show_frame(Tips))
@@ -5080,6 +5120,9 @@ class Transaction(tk.Frame):
 
     def cal(self):
         os.system('calculator.py')
+                
+    def chatbox(self):
+        os.system('C:/Users/User/PycharmProjects/csall2/chatbot.py')
 
     def logout_system(self):
         answer = messagebox.askyesno(title='Confirmation', message='Are you sure that you want to logout?')
@@ -5943,11 +5986,14 @@ class UserAccount(tk.Frame):
         self.account_b = Button(self.menuFrame, image=self.account, bg='#000000', relief='flat',
                                 command=lambda: controller.show_frame(Account))
         self.account_b.grid(row=6)
-        self.currency_b = Button(self.menuFrame, image=self.currency, bg='#000000', relief='flat', command=self.con)
+        self.currency_b = Button(self.menuFrame, image=self.currency, bg='#000000', relief='flat', 
+                                 command=self.con)
         self.currency_b.grid(row=7)
-        self.calculator_b = Button(self.menuFrame, image=self.calculator, bg='#000000', relief='flat', command=self.cal)
+        self.calculator_b = Button(self.menuFrame, image=self.calculator, bg='#000000', relief='flat', 
+                                   command=self.cal)
         self.calculator_b.grid(row=8)
-        self.customer_b = Button(self.menuFrame, image=self.customer, bg='#000000', relief='flat')
+        self.customer_b = Button(self.menuFrame, image=self.customer, bg='#000000', relief='flat', 
+                                 command=self.chatbox)
         self.customer_b.grid(row=9)
         self.tips_b = Button(self.menuFrame, image=self.tips, bg='#000000', relief='flat',
                              command=lambda: self.controller.show_frame(Tips))
@@ -6280,6 +6326,9 @@ class UserAccount(tk.Frame):
 
     def cal(self):
         os.system('python calculator.py')
+                
+    def chatbox(self):
+        os.system('C:/Users/User/PycharmProjects/csall2/chatbot.py')
 
     def logout_system(self):
         answer = messagebox.askyesno(title='Confirmation', message='Are you sure that you want to logout?')
@@ -6330,11 +6379,14 @@ class Tips(tk.Frame):
         self.account_b = Button(self.menuFrame, image=self.account, bg='#000000', relief='flat',
                                 command=lambda: controller.show_frame(Account))
         self.account_b.grid(row=6)
-        self.currency_b = Button(self.menuFrame, image=self.currency, bg='#000000', relief='flat', command=self.con)
+        self.currency_b = Button(self.menuFrame, image=self.currency, bg='#000000', relief='flat', 
+                                 command=self.con)
         self.currency_b.grid(row=7)
-        self.calculator_b = Button(self.menuFrame, image=self.calculator, bg='#000000', relief='flat', command=self.cal)
+        self.calculator_b = Button(self.menuFrame, image=self.calculator, bg='#000000', relief='flat', 
+                                   command=self.cal)
         self.calculator_b.grid(row=8)
-        self.customer_b = Button(self.menuFrame, image=self.customer, bg='#000000', relief='flat')
+        self.customer_b = Button(self.menuFrame, image=self.customer, bg='#000000', relief='flat', 
+                                 command=self.chatbox)
         self.customer_b.grid(row=9)
         self.tips_b = Button(self.menuFrame, image=self.tips, bg='#000000', relief='flat',
                              command=lambda: self.controller.show_frame(Tips))
@@ -6349,116 +6401,117 @@ class Tips(tk.Frame):
         # So that it does not depend on the widgets inside the frame
         self.menuFrame.grid_propagate(False)
 
-        # attach Scrollbar to root window
-        self.v = Scrollbar(self.sideFrame)
-        self.v.pack(side=RIGHT, fill=Y)
+        self.my_canvas = Canvas(self.sideFrame,bg='#1A1A1A', highlightcolor = "#1A1A1A")
+        self.my_canvas.pack(side = LEFT, fill = BOTH, expand = 1)
 
-        # Label
-        """self.heading_label = Label(self.sideFrame, text='Tips', fg='white', bg='#1A1A1A')
-        self.heading_label.config(font=tkFont.Font(family='Lato', size=20, weight="bold", slant="italic"))
-        self.heading_label.place(x=15, y=15)"""
+        self.scrollbar = ttk.Scrollbar(self.sideFrame, orient = VERTICAL, command = self.my_canvas.yview)
+        self.scrollbar.pack(side = RIGHT, fill = Y)
 
-        # height depends on how many lines needed for Tips.
-        self.t = Text(self.sideFrame, height=300, wrap=NONE, font=tkFont.Font(family='Lato', size=10),
-                      yscrollcommand=self.v.set)
-        self.T = Text(self.sideFrame, height=300, wrap=NONE, font=tkFont.Font(family='Lato', size=20),
-                      yscrollcommand=self.v.set)
-        self.t.insert(END, "\n  The 50/30/20 rule simplifies budgeting by dividing your after-tax income into just "
-                           "three spending categories: needs, wants and savings or debts.\n")
-        self.t.insert(END, "\n\nSpend 50% of your money on needs\n")
-        self.t.insert(END, "Simply put, needs are expenses that you can’t avoid—payments for all the essentials that "
-                           "would be difficult to live without. 50% of your after-tax income should cover your most\n "
-                           "necessary costs.\n")
-        self.t.insert(END, "Needs may include:\nMonthly rent, electricity and gas bills, transportation, insurances, "
-                           "minimum loan payments, basic groceries\n")
-        self.t.insert(END, "This budget may differ from one person to another. If you find that your needs add up to "
-                           "much more than 50% of your take-home income, you may be able to make some changes to \n"
-                           "bring those expenses down a bit. ")
-        self.t.insert(END, "This could be as simple as swapping to a different energy provider or finding some new ways"
-                           " to save money while grocery shopping. It could also \nmean deeper life changes, such as "
-                           "looking for a less-expensive living situation.\n")
-        self.t.insert(END, "\n\nSpend 30% of your money on wants\n")
-        self.t.insert(END, "These may include:\nDining out, clothes shopping, holidays, gym membership, entertainment "
-                           "subscriptions, groceries\n")
-        self.t.insert(END, "Using the same example as above, if your monthly after-tax income is RM 2000, you can spend"
-                           " RM 600 for your wants. And if you discover that you’re spending too much on\nwhat you want"
-                           ", it’s worth thinking about which of those you could cut back on. ")
-        self.t.insert(END, "As a side note, following the 50/30/20 rule doesn’t mean not being able to enjoy your life."
-                           " It simply means \nbeing more conscious about your money by finding areas in your budget"
-                           " where you’re needlessly overspending. ")
-        self.t.insert(END, "If you’re confused about whether something is a need \nor a want, simply ask yourself, "
-                           "“Could I live without this?” If the answer is yes, that’s probably a want.\n")
-        self.t.insert(END, "\n\nStash 20% of your money for savings\n")
-        self.t.insert(END, "With 50% of your monthly income going towards your needs and 30% allocated to your wants, "
-                           "the remaining 20% can be put towards achieving your savings goals or paying back any "
-                           "outstanding debts. \n")
-        self.t.insert(END, "Although minimum repayments are considered needs, any extra repayments reduce your existing"
-                           " debt and future interest, so they are classified as savings.\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.T.insert(END, "yyyyyyyyyyyyyy\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-        self.t.insert(END, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
 
-        # hyperlink
-        self.hyperlink = Label(self.sideFrame, text='the hyperlink', fg='blue', bg='pink', height=2, width=22,
-                               cursor='hand2', font=('Times', 20, 'underline'))
-        self.hyperlink.pack(side=BOTTOM)
-        self.hyperlink.bind('<Button-1>',
-                            lambda x: webbrowser.open_new("https://n26.com/en-eu/blog/cost-of-buying-a-house"))
+        self.my_canvas.config(yscrollcommand = self.scrollbar.set)
+        self.my_canvas.bind('<Configure>', lambda e: self.my_canvas.config(scrollregion = self.my_canvas.bbox("all")))
+        self.second_frame= Frame(self.my_canvas,bg='#1A1A1A',highlightbackground='#1A1A1A', highlightcolor = "#1A1A1A" )
 
-        # attach Text widget to root window at top
-        self.t.pack(side=TOP, fill=X)
-        self.v.config(command=self.t.yview)
+        self.my_canvas.create_window((0,0), window = self.second_frame,anchor = "nw")
+
+        #page title
+        pgtitle = Label(self.second_frame, bg='#1A1A1A', text='Tips', fg='white',
+                              font=tkFont.Font(family='Lato', size=20, weight="bold", slant="italic"))
+        pgtitle.grid(row = 0, column = 0, sticky = 'w', padx = 15, pady = 15)
+
+        #50/30/20 calculator function
+        self.buttons()
+
+        #tips in image
+        self.budgetim = ImageTk.PhotoImage(Image.open("503020rule.png").resize((1062, 1258), resample=Image.LANCZOS))
+        self.budgetim2 = Label(self.second_frame, image=self.budgetim, bg = '#1A1A1A')
+        self.budgetim2.grid(row =3,column=0, pady = 20)
+
+                
+
+        #other sources label
+        self.linktitle = Label(self.second_frame, bg='#1A1A1A', text='Other sources to help budgeting in specific aspects:', fg='white',
+                              font=tkFont.Font(family='Lato', size=15, weight = 'bold',slant="italic"))
+        self.linktitle.grid(row = 4, column = 0, sticky = 'w', padx = 10, pady = 2)
+
+
+        #hyperlinks to other sources
+        self.hyperlink1 = Label(self.second_frame, text = 'Cost of buying a house', fg = '#00f7ff', bg = '#1A1A1A', height = 2, cursor = 'hand2',font = ('Lato',12, 'underline'))
+        self.hyperlink1.grid(row = 5, column = 0, sticky = 'w', padx = 10, pady = 2)
+        self.hyperlink1.bind('<Button-1>',lambda x :webbrowser.open_new("https://n26.com/en-eu/blog/cost-of-buying-a-house"))
+
+
+
+        self.hyperlink2 = Label(self.second_frame, text = 'How to save for retirement', fg = '#00f7ff', bg = '#1A1A1A', height = 2, cursor = 'hand2',font = ('Lato',12, 'underline'))
+        self.hyperlink2.grid(row = 6, column = 0, sticky = 'w', padx = 10, pady = 2)
+        self.hyperlink2.bind('<Button-1>',lambda x :webbrowser.open_new("https://n26.com/en-eu/blog/how-much-to-save-for-retirement"))
+
+
+        self.hyperlink3 = Label(self.second_frame, text = 'Cost of home renovation', fg = '#00f7ff', bg = '#1A1A1A', height = 2, cursor = 'hand2',font = ('Lato',12, 'underline'))
+        self.hyperlink3.grid(row = 7, column = 0, sticky = 'w', padx = 10, pady = 2)
+        self.hyperlink3.bind('<Button-1>',lambda x :webbrowser.open_new("https://n26.com/en-eu/blog/cost-of-home-renovation"))
+
+
+        self.hyperlink4 = Label(self.second_frame, text = 'Cost of owning a car', fg = '#00f7ff', bg = '#1A1A1A', height = 2, cursor = 'hand2',font = ('Lato',12, 'underline'))
+        self.hyperlink4.grid(row = 8, column = 0, sticky = 'w', padx = 10, pady = 2)
+        self.hyperlink4.bind('<Button-1>',lambda x :webbrowser.open_new("https://n26.com/en-eu/blog/cost-of-owning-a-car"))
+
+
+        self.hyperlink5 = Label(self.second_frame, text = 'Moving in together and manage monthly expenses', fg = '#00f7ff', bg = '#1A1A1A', height = 2, cursor = 'hand2',font = ('Lato',12, 'underline'))
+        self.hyperlink5.grid(row = 9, column = 0, sticky = 'w', padx = 10, pady = 2)
+        self.hyperlink5.bind('<Button-1>',lambda x :webbrowser.open_new("https://n26.com/en-eu/blog/moving-in-together-managing-monthly-expenses"))
+
+        self.hyperlink1 = Label(self.second_frame, text = '', fg = '#00f7ff',bg = '#1A1A1A')
+        self.hyperlink1.grid(row = 10, column = 0, sticky = 'w', padx = 10, pady = 6)
 
     # ==================================== Function =================================================
+    def buttons(self):
+        #display labels of 50/30/20 budget
+        self.frame = tk.Frame(self.second_frame, height=1, width=50, bg='#1A1A1A')
+        self.frame.grid(row=2, column=0)
+        
+        self.label = tk.Label(self.frame, text='Your 50/30/20 Rule Budget:', fg = 'white', bg='#1A1A1A',font=tkFont.Font(family='Lato', size=16, weight="bold") )
+        self.label.grid(row=0, column=0)
+        
+        self.entry = tk.Entry(self.frame, font=12)
+        self.entry.grid(row=1, column=0, pady =50)
+        
+        self.viewBudget = customtkinter.CTkButton(master=self.frame, text='View Budget Plan',width=20, height=40,
+                                                  fg_color="#464E63", hover_color="#667190", command=self.viewBudgetPlan)
+        self.viewBudget.grid(row=2, column=0)
+        
+        
+    def viewBudgetPlan(self):
+        #calculate result of 50/30/20 budget
+        self.budget = float(self.entry.get() or 0)
+        self.spending = self.budget * 0.5
+        self.savings = self.budget * 0.3
+        self.extra = self.budget - self.spending - self.savings
+        self.draw(f"\n\tTotal Budget\t\t: RM {'{:.2f}'.format(self.budget)}\n\tSpending Money\t\t: RM {'{:.2f}'.format(self.spending)} \
+            \n\tTo Save\t\t: RM {'{:.2f}'.format(self.savings)}\n\tExtra\t\t: RM {'{:.2f}'.format(self.extra)}")
+
+    def draw(self, msg):
+        #display result of 50/30/20 budget
+        self.textBox = tk.Text(self.frame, height=6, width=40, relief='flat',fg = 'white', bg='#1A1A1A', font=tkFont.Font(family='Lato', size=12, weight="bold"))
+        self.textBox.insert(1.0, msg)
+        self.textBox.config(state='disabled')
+        self.textBox.grid(row =1, column=1)
+
     def con(self):
         os.system('CurrencyConverter.py')
 
     def cal(self):
         os.system('python calculator.py')
+        
+    def chatbox(self):
+        os.system('C:/Users/User/PycharmProjects/csall2/chatbot.py')
 
     def logout_system(self):
         answer = messagebox.askyesno(title='Confirmation', message='Are you sure that you want to logout?')
         if answer:
             messagebox.showinfo('Log Out', 'You have successfully Logged Out!')
             self.controller.show_frame(LoginPage)
-
+  
 
 if __name__ == "__main__":
     app = windows()

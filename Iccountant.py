@@ -20,7 +20,7 @@ from tkcalendar import DateEntry
 import webbrowser
 
 customtkinter.set_appearance_mode("dark")
-connect = sqlite3.connect('Iccountant.db')
+connect = sqlite3.connect('Iccountant')
 cursor = connect.cursor()
 
 
@@ -34,7 +34,6 @@ class windows(tk.Tk):
         self.height = self.winfo_screenheight()
         self.geometry('1282x720')
         self.config(bg='black')
-        self.state('zoomed')
         self.resizable(FALSE, FALSE)
         self.iconphoto(False, tk.PhotoImage(file='logo_refined.png'))
 
@@ -6401,12 +6400,16 @@ class Tips(tk.Frame):
 
         # So that it does not depend on the widgets inside the frame
         self.menuFrame.grid_propagate(False)
+        
         self.my_canvas = Canvas(self.sideFrame, bg='#1A1A1A', highlightcolor="#1A1A1A")
         self.my_canvas.pack(side=LEFT, fill=BOTH, expand=1)
+        
         self.scrollbar = ttk.Scrollbar(self.sideFrame, orient=VERTICAL, command=self.my_canvas.yview)
         self.scrollbar.pack(side=RIGHT, fill=Y)
+        
         self.my_canvas.config(yscrollcommand=self.scrollbar.set)
         self.my_canvas.bind('<Configure>', lambda e: self.my_canvas.config(scrollregion=self.my_canvas.bbox("all")))
+        
         self.second_frame = Frame(self.my_canvas, bg='#1A1A1A', highlightbackground='#1A1A1A', highlightcolor="#1A1A1A")
         self.my_canvas.create_window((0, 0), window=self.second_frame, anchor="nw")
 

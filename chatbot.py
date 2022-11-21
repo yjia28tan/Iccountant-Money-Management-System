@@ -10,10 +10,11 @@ class Chatbot:
         self.root.resizable(0, 0)
         self.root.title("Chatbot")
         self.root.configure(bg="#383e4f")
+        
         self.v = Scrollbar(self.root)
-
         # attach Scrollbar to root window on the side
         self.v.grid(column=2, sticky=N + S + E)
+        
         self.txt = Text(self.root)
         self.txt.configure(fg='white', bg="#232731", width=100, wrap=NONE, font=tkFont.Font(family='Lato', size=11),
                            yscrollcommand=self.v.set)

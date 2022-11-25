@@ -20,7 +20,7 @@ from tkcalendar import DateEntry
 import webbrowser
 
 customtkinter.set_appearance_mode("dark")
-connect = sqlite3.connect('Iccountant')
+connect = sqlite3.connect('Iccountant.db')
 cursor = connect.cursor()
 
 
@@ -34,6 +34,7 @@ class windows(tk.Tk):
         self.height = self.winfo_screenheight()
         self.geometry('1282x720')
         self.config(bg='black')
+        self.state('zoomed')
         self.resizable(FALSE, FALSE)
         self.iconphoto(False, tk.PhotoImage(file='logo_refined.png'))
 
@@ -698,12 +699,20 @@ class Dashboard(tk.Frame):
         self.overview_l.place(x=15, y=15)
 
         # button
+        self.dashboard_refresh = ImageTk.PhotoImage(Image.open('refresh.png').resize((20, 20),
+                                                                                     resample=Image.LANCZOS))
+        self.refresh_b = tk.Button(self.scroll_frame, image=self.dashboard_refresh, bg='#1A1A1A', relief='flat',
+                                   command=self.plot)
+        self.refresh_b.place(x=20, y=65)
         self.dashboard_filter = ImageTk.PhotoImage(Image.open('trans_filter.png').resize((85, 30),
                                                                                          resample=Image.LANCZOS))
         self.filter_b = tk.Button(self.scroll_frame, image=self.dashboard_filter, bg='#1A1A1A', relief='flat',
                                   command=self.filter)
         self.filter_b.place(x=980, y=60)
+        self.plot()
 
+    # =================================== Functions ===============================
+    def plot(self):
         # ============================== charts 1 Total Category ===========================================
         # get total income in category from database
         category_in_total_amount = pd.read_sql_query("SELECT ty.type_name AS Type, c.cat_name AS Category, "
@@ -757,7 +766,7 @@ class Dashboard(tk.Frame):
         color = sns.color_palette("Pastel1")
         colors = sns.color_palette("Accent")
         patches, texts, pcts = ax.pie(inner.values.flatten(), radius=0.7, labels=inner.index, autopct='%1.1f%%',
-                                      labeldistance=0.05, pctdistance=0.75, colors=colors,
+                                      labeldistance=0.02, pctdistance=0.78, colors=colors,
                                       wedgeprops=dict(width=0.3, edgecolor='w'), textprops=dict(fontsize=12))
         for i, patch in enumerate(patches):
             texts[i].set_color(patch.get_facecolor())
@@ -832,9 +841,8 @@ class Dashboard(tk.Frame):
         color = sns.color_palette("Pastel1")
         colors = sns.color_palette("Accent")
         patch, texts, pcts = ax.pie(inner.values.flatten(), radius=0.7, labels=inner.index, autopct='%1.1f%%',
-                                    labeldistance=0.05,
-                                    pctdistance=0.75, colors=colors, wedgeprops=dict(width=0.3, edgecolor='w'),
-                                    textprops=dict(fontsize=12))
+                                    labeldistance=0.02, pctdistance=0.78, colors=colors,
+                                    wedgeprops=dict(width=0.3, edgecolor='w'), textprops=dict(fontsize=12))
         for i, patch in enumerate(patch):
             texts[i].set_color(patch.get_facecolor())
         patc, texts, pcts = ax.pie(outer.values.flatten(), radius=1, labels=outer_labels, autopct='%1.1f%%',
@@ -855,7 +863,6 @@ class Dashboard(tk.Frame):
         toolba.place(x=385, y=1280)
         canv.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
-    # =================================== Functions ===============================
     def sort(self):
         # verify conditions to filter out data
         # if user does not filter anything
@@ -915,7 +922,7 @@ class Dashboard(tk.Frame):
             color = sns.color_palette("Pastel1")
             colors = sns.color_palette("Accent")
             patches, texts, pcts = ax.pie(inner.values.flatten(), radius=0.7, labels=inner.index, autopct='%1.1f%%',
-                                          labeldistance=0.05, pctdistance=0.75, colors=colors,
+                                          labeldistance=0.02, pctdistance=0.78, colors=colors,
                                           wedgeprops=dict(width=0.3, edgecolor='w'), textprops=dict(fontsize=12))
             for i, patch in enumerate(patches):
                 texts[i].set_color(patch.get_facecolor())
@@ -990,9 +997,8 @@ class Dashboard(tk.Frame):
             color = sns.color_palette("Pastel1")
             colors = sns.color_palette("Accent")
             patch, texts, pcts = ax.pie(inner.values.flatten(), radius=0.7, labels=inner.index, autopct='%1.1f%%',
-                                        labeldistance=0.05,
-                                        pctdistance=0.75, colors=colors, wedgeprops=dict(width=0.3, edgecolor='w'),
-                                        textprops=dict(fontsize=12))
+                                        labeldistance=0.02, pctdistance=0.78, colors=colors,
+                                        wedgeprops=dict(width=0.3, edgecolor='w'), textprops=dict(fontsize=12))
             for i, patch in enumerate(patch):
                 texts[i].set_color(patch.get_facecolor())
             patc, texts, pcts = ax.pie(outer.values.flatten(), radius=1, labels=outer_labels, autopct='%1.1f%%',
@@ -1072,9 +1078,8 @@ class Dashboard(tk.Frame):
             color = sns.color_palette("Pastel1")
             colors = sns.color_palette("Accent")
             patches, texts, pcts = ax.pie(inner.values.flatten(), radius=0.7, labels=inner.index, autopct='%1.1f%%',
-                                          labeldistance=0.05,
-                                          pctdistance=0.75, colors=colors, wedgeprops=dict(width=0.3, edgecolor='w'),
-                                          textprops=dict(fontsize=12))
+                                          labeldistance=0.02, pctdistance=0.78, colors=colors,
+                                          wedgeprops=dict(width=0.3, edgecolor='w'), textprops=dict(fontsize=12))
             for i, patch in enumerate(patches):
                 texts[i].set_color(patch.get_facecolor())
             patche, texts, pcts = ax.pie(outer.values.flatten(), radius=1, labels=outer_labels, autopct='%1.1f%%',
@@ -1153,7 +1158,7 @@ class Dashboard(tk.Frame):
             color = sns.color_palette("Pastel1")
             colors = sns.color_palette("Accent")
             patches, texts, pcts = ax.pie(inner.values.flatten(), radius=0.7, labels=inner.index, autopct='%1.1f%%',
-                                          labeldistance=0.05, pctdistance=0.75, colors=colors,
+                                          labeldistance=0.02, pctdistance=0.78, colors=colors,
                                           wedgeprops=dict(width=0.3, edgecolor='w'), textprops=dict(fontsize=12))
             for i, patch in enumerate(patches):
                 texts[i].set_color(patch.get_facecolor())
@@ -1238,7 +1243,7 @@ class Dashboard(tk.Frame):
             color = sns.color_palette("Pastel1")
             colors = sns.color_palette("Accent")
             patches, texts, pcts = ax.pie(inner.values.flatten(), radius=0.7, labels=inner.index, autopct='%1.1f%%',
-                                          labeldistance=0.05, pctdistance=0.75, colors=colors,
+                                          labeldistance=0.02, pctdistance=0.78, colors=colors,
                                           wedgeprops=dict(width=0.3, edgecolor='w'), textprops=dict(fontsize=12))
             for i, patch in enumerate(patches):
                 texts[i].set_color(patch.get_facecolor())
@@ -1317,7 +1322,7 @@ class Dashboard(tk.Frame):
             color = sns.color_palette("Pastel1")
             colors = sns.color_palette("Accent")
             patches, texts, pcts = ax.pie(inner.values.flatten(), radius=0.7, labels=inner.index, autopct='%1.1f%%',
-                                          labeldistance=0.05, pctdistance=0.75, colors=colors,
+                                          labeldistance=0.02, pctdistance=0.78, colors=colors,
                                           wedgeprops=dict(width=0.3, edgecolor='w'), textprops=dict(fontsize=12))
             for i, patch in enumerate(patches):
                 texts[i].set_color(patch.get_facecolor())
@@ -1494,21 +1499,26 @@ class Statistic1(tk.Frame):
         self.statistics_l.place(x=15, y=15)
 
         # button
+        self.statistics1_refresh = ImageTk.PhotoImage(Image.open('refresh.png').resize((20, 20),
+                                                                                       resample=Image.LANCZOS))
+        self.statistics1_refresh_b = tk.Button(self.scroll_frame, image=self.statistics1_refresh, bg='#1A1A1A',
+                                               relief='flat', command=self.plot)
+        self.statistics1_refresh_b.place(x=130, y=23)
         self.total_b = customtkinter.CTkButton(self.scroll_frame, text='Total', width=50, height=30, text_color='black',
                                                fg_color="#ffd966", hover_color="#ffe599",
                                                command=lambda: self.controller.show_frame(Statistic1))
         self.total_b.place(x=15, y=58)
         self.yearly_b = customtkinter.CTkButton(self.scroll_frame, text='Yearly', width=50, height=30,
-                                                text_color='black',
-                                                fg_color="#ffd966", hover_color="#ffe599",
+                                                text_color='black', fg_color="#ffd966", hover_color="#ffe599",
                                                 command=lambda: self.controller.show_frame(Statistic2))
         self.yearly_b.place(x=75, y=58)
         self.monthly_b = customtkinter.CTkButton(self.scroll_frame, text='Monthly', width=50, height=30,
-                                                 text_color='black',
-                                                 fg_color="#ffd966", hover_color="#ffe599",
+                                                 text_color='black', fg_color="#ffd966", hover_color="#ffe599",
                                                  command=lambda: self.controller.show_frame(Statistic3))
         self.monthly_b.place(x=135, y=58)
+        self.plot()
 
+    def plot(self):
         # ============================== charts 1 Total Income in Category ===========================================
         # get total income in category from database
         category_in_total_amount = pd.read_sql_query("SELECT c.cat_name AS Category, sum(t.amount) AS Amount FROM "
@@ -1759,6 +1769,11 @@ class Statistic2(tk.Frame):
         self.statistics_l.place(x=15, y=15)
 
         # button
+        self.statistics2_refresh = ImageTk.PhotoImage(Image.open('refresh.png').resize((20, 20),
+                                                                                       resample=Image.LANCZOS))
+        self.statistics2_refresh_b = tk.Button(self.scroll_frame, image=self.statistics2_refresh, bg='#1A1A1A',
+                                               relief='flat', command=self.plot)
+        self.statistics2_refresh_b.place(x=130, y=23)
         self.total_b = customtkinter.CTkButton(self.scroll_frame, text='Total', width=50, height=30, text_color='black',
                                                fg_color="#ffd966", hover_color="#ffe599",
                                                command=lambda: self.controller.show_frame(Statistic1))
@@ -1777,7 +1792,9 @@ class Statistic2(tk.Frame):
                                                 text_color='black',
                                                 fg_color="#ffd966", hover_color="#ffe599", command=self.filter)
         self.filter_b.place(x=1020, y=58)
+        self.plot()
 
+    def plot(self):
         # get current year
         date = datetime.now()
         self.year_choose = date.strftime('%Y')
@@ -1823,7 +1840,7 @@ class Statistic2(tk.Frame):
 
             # create dataframe by combine list
             df1 = pd.DataFrame(list(zip(month_total_combine, type_total_combine, amount_total_combine)),
-                               columns=['Month', 'Type', 'Amount'])
+                               columns=['Month', 'Type', 'Amount']).sort_values('Month', ascending=True)
 
             # plot chart
             fig, ax = plt.subplots(figsize=(10.5, 6), dpi=100)
@@ -1841,7 +1858,7 @@ class Statistic2(tk.Frame):
             ax.xaxis.label.set_color('white')
             ax.yaxis.label.set_color('white')
             ax.tick_params(colors='white', which='both')
-            sns.barplot(x='Month', y='Amount', data=df1, hue='Type', palette="Pastel1", ci=None)
+            sns.barplot(x='Month', y='Amount', data=df1, hue='Type', palette="Pastel1", errorbar=None)
             for c in ax.containers:
                 ax.bar_label(c, fmt='%.2f', color='white')
             plt.ylabel("Amount (RM)", fontsize=15, color='#ffffff')
@@ -1852,11 +1869,11 @@ class Statistic2(tk.Frame):
             # embed the chart to tkinter
             canvass = FigureCanvasTkAgg(fig, self.scroll_frame)
             canvass.draw()
-            canvass.get_tk_widget().place(x=20, y=100)
+            canvass.get_tk_widget().place(x=15, y=100)
             fig.patch.set_facecolor('#1A1A1A')
             toolbar = NavigationToolbar2Tk(canvass, self.scroll_frame)
             toolbar.update()
-            toolbar.place(x=385, y=660)
+            toolbar.place(x=22, y=660)
             canvass.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
             # ============================== charts 1 Year Income in Category ==========================================
@@ -2204,7 +2221,7 @@ class Statistic2(tk.Frame):
 
                 # create dataframe by combine list
                 df1 = pd.DataFrame(list(zip(month_total_combine, type_total_combine, amount_total_combine)),
-                                   columns=['Month', 'Type', 'Amount'])
+                                   columns=['Month', 'Type', 'Amount']).sort_values('Month', ascending=True)
 
                 # plot chart
                 fig, ax = plt.subplots(figsize=(10.5, 6), dpi=100)
@@ -2222,7 +2239,7 @@ class Statistic2(tk.Frame):
                 ax.xaxis.label.set_color('white')
                 ax.yaxis.label.set_color('white')
                 ax.tick_params(colors='white', which='both')
-                sns.barplot(x='Month', y='Amount', data=df1, hue='Type', palette="Pastel1", ci=None)
+                sns.barplot(x='Month', y='Amount', data=df1, hue='Type', palette="Pastel1", errorbar=None)
                 for c in ax.containers:
                     ax.bar_label(c, fmt='%.2f', color='white')
                 plt.ylabel("Amount (RM)", fontsize=15, color='#ffffff')
@@ -2237,7 +2254,7 @@ class Statistic2(tk.Frame):
                 fig.patch.set_facecolor('#1A1A1A')
                 toolbar = NavigationToolbar2Tk(canvass, self.scroll_frame)
                 toolbar.update()
-                toolbar.place(x=385, y=660)
+                toolbar.place(x=22, y=660)
                 canvass.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
                 # ============================== charts 1 Year Income in Category ======================================
@@ -2357,7 +2374,7 @@ class Statistic2(tk.Frame):
                 account_ex_year_amount = pd.read_sql_query("SELECT a.acc_name AS Account, sum(t.amount) AS Amount FROM "
                                                            "type ty, account a, transactions t, user u WHERE ty.type_id"
                                                            " = t.type_id AND a.acc_id = t.acc_id AND a.user_id = "
-                                                           "t.user_id = u.user_id AND ty.type_id = 2 AND t.user_id= IN "
+                                                           "t.user_id = u.user_id AND ty.type_id = 2 AND t.user_id IN "
                                                            "('{}') AND strftime('%Y', t.date) IN ('{}') GROUP BY "
                                                            "t.acc_id".format
                                                            (self.controller.shared_user_id['userID'].get(),
@@ -2508,7 +2525,7 @@ class Statistic2(tk.Frame):
                 account_ex_year_amount = pd.read_sql_query("SELECT a.acc_name AS Account, sum(t.amount) AS Amount FROM "
                                                            "type ty, account a, transactions t, user u WHERE ty.type_id"
                                                            " = t.type_id AND a.acc_id = t.acc_id AND a.user_id = "
-                                                           "t.user_id = u.user_id AND ty.type_id = 2 AND t.user_id= IN "
+                                                           "t.user_id = u.user_id AND ty.type_id = 2 AND t.user_id IN "
                                                            "('{}') AND strftime('%Y', t.date) IN ('{}') GROUP BY "
                                                            "t.acc_id".format
                                                            (self.controller.shared_user_id['userID'].get(),
@@ -2585,7 +2602,7 @@ class Statistic2(tk.Frame):
 
                 # create dataframe by combine data
                 df1 = pd.DataFrame(list(zip(month_total_combine, type_total_combine, amount_total_combine)),
-                                   columns=['Month', 'Type', 'Amount'])
+                                   columns=['Month', 'Type', 'Amount']).sort_values('Month', ascending=True)
 
                 # plot chart
                 fig, ax = plt.subplots(figsize=(10.5, 6), dpi=100)
@@ -2603,7 +2620,7 @@ class Statistic2(tk.Frame):
                 ax.xaxis.label.set_color('white')
                 ax.yaxis.label.set_color('white')
                 ax.tick_params(colors='white', which='both')
-                sns.barplot(x='Month', y='Amount', data=df1, hue='Type', palette="Pastel1", ci=None)
+                sns.barplot(x='Month', y='Amount', data=df1, hue='Type', palette="Pastel1", errorbar=None)
                 for c in ax.containers:
                     ax.bar_label(c, fmt='%.2f', color='white')
                 plt.ylabel("Amount (RM)", fontsize=15, color='#ffffff')
@@ -2619,7 +2636,7 @@ class Statistic2(tk.Frame):
 
                 toolbar = NavigationToolbar2Tk(canvass, self.scroll_frame)
                 toolbar.update()
-                toolbar.place(x=385, y=660)
+                toolbar.place(x=22, y=660)
                 canvass.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
                 # ============================== charts 1 Year Income in Category ======================================
@@ -3067,25 +3084,30 @@ class Statistic3(tk.Frame):
         self.statistics_l.place(x=15, y=15)
 
         # button
+        self.statistics3_refresh = ImageTk.PhotoImage(Image.open('refresh.png').resize((20, 20),
+                                                                                       resample=Image.LANCZOS))
+        self.statistics3_refresh_b = tk.Button(self.scroll_frame, image=self.statistics3_refresh, bg='#1A1A1A',
+                                               relief='flat', command=self.plot)
+        self.statistics3_refresh_b.place(x=130, y=23)
         self.total_b = customtkinter.CTkButton(self.scroll_frame, text='Total', width=50, height=30, text_color='black',
                                                fg_color="#ffd966", hover_color="#ffe599",
                                                command=lambda: self.controller.show_frame(Statistic1))
         self.total_b.place(x=15, y=58)
         self.yearly_b = customtkinter.CTkButton(self.scroll_frame, text='Yearly', width=50, height=30,
-                                                text_color='black',
-                                                fg_color="#ffd966", hover_color="#ffe599",
+                                                text_color='black', fg_color="#ffd966", hover_color="#ffe599",
                                                 command=lambda: self.controller.show_frame(Statistic2))
         self.yearly_b.place(x=75, y=58)
         self.monthly_b = customtkinter.CTkButton(self.scroll_frame, text='Monthly', width=50, height=30,
-                                                 text_color='black',
-                                                 fg_color="#ffd966", hover_color="#ffe599",
+                                                 text_color='black', fg_color="#ffd966", hover_color="#ffe599",
                                                  command=lambda: self.controller.show_frame(Statistic3))
         self.monthly_b.place(x=135, y=58)
         self.filter_b = customtkinter.CTkButton(self.scroll_frame, text='Filter', width=50, height=30,
-                                                text_color='black',
-                                                fg_color="#ffd966", hover_color="#ffe599", command=self.filter)
+                                                text_color='black', fg_color="#ffd966", hover_color="#ffe599",
+                                                command=self.filter)
         self.filter_b.place(x=1020, y=58)
+        self.plot()
 
+    def plot(self):
         # get current year and month
         date = datetime.now()
         self.year_choose = date.strftime('%Y')
@@ -3129,12 +3151,12 @@ class Statistic3(tk.Frame):
 
             # combine data list
             type_total_combine = TypeIn_total + TypeEx_total
-            month_total_combine = dayEx_total + dayIn_total
-            amount_total_combine = AmountEx_total + AmountIn_total
+            month_total_combine = dayIn_total + dayEx_total
+            amount_total_combine = AmountIn_total + AmountEx_total
 
             # create dataframe by combine list
             dfbar2 = pd.DataFrame(list(zip(month_total_combine, type_total_combine, amount_total_combine)),
-                                  columns=['Day', 'Type', 'Amount'])
+                                  columns=['Day', 'Type', 'Amount']).sort_values('Day', ascending=True)
 
             # plot chart
             fig, ax = plt.subplots(figsize=(10.5, 6), dpi=100)
@@ -3152,7 +3174,7 @@ class Statistic3(tk.Frame):
             ax.xaxis.label.set_color('white')
             ax.yaxis.label.set_color('white')
             ax.tick_params(colors='white', which='both')
-            sns.barplot(x='Day', y='Amount', data=dfbar2, hue='Type', palette="Pastel1", ci=None)
+            sns.barplot(x='Day', y='Amount', data=dfbar2, hue='Type', palette="Pastel1", errorbar=None)
             for c in ax.containers:
                 ax.bar_label(c, fmt='%.2f', color='white')
             plt.ylabel("Amount (RM)", fontsize=15, color='#ffffff')
@@ -3167,7 +3189,7 @@ class Statistic3(tk.Frame):
             fig.patch.set_facecolor('#1A1A1A')
             toolbar = NavigationToolbar2Tk(canvass, self.scroll_frame)
             toolbar.update()
-            toolbar.place(x=385, y=660)
+            toolbar.place(x=22, y=660)
             canvass.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
             # ============================== charts 1 Month Income in Category =========================================
@@ -3526,7 +3548,7 @@ class Statistic3(tk.Frame):
 
                 # create dataframe by combine list
                 dfbar2 = pd.DataFrame(list(zip(month_total_combine, type_total_combine, amount_total_combine)),
-                                      columns=['Day', 'Type', 'Amount'])
+                                      columns=['Day', 'Type', 'Amount']).sort_values('Day', ascending=True)
 
                 # plot chart
                 fig, ax = plt.subplots(figsize=(10.5, 6), dpi=100)
@@ -3544,7 +3566,7 @@ class Statistic3(tk.Frame):
                 ax.xaxis.label.set_color('white')
                 ax.yaxis.label.set_color('white')
                 ax.tick_params(colors='white', which='both')
-                sns.barplot(x='Day', y='Amount', data=dfbar2, hue='Type', palette="Pastel1", ci=None)
+                sns.barplot(x='Day', y='Amount', data=dfbar2, hue='Type', palette="Pastel1", errorbar=None)
                 for c in ax.containers:
                     ax.bar_label(c, fmt='%.2f', color='white')
                 plt.ylabel("Amount (RM)", fontsize=15, color='#ffffff')
@@ -3559,7 +3581,7 @@ class Statistic3(tk.Frame):
                 fig.patch.set_facecolor('#1A1A1A')
                 toolbar = NavigationToolbar2Tk(canvass, self.scroll_frame)
                 toolbar.update()
-                toolbar.place(x=385, y=660)
+                toolbar.place(x=22, y=660)
                 canvass.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
                 # ============================== charts 1 Month Income in Category =====================================
@@ -3922,7 +3944,7 @@ class Statistic3(tk.Frame):
 
                 # create dataframe by combine list
                 dfbar2 = pd.DataFrame(list(zip(month_total_combine, type_total_combine, amount_total_combine)),
-                                      columns=['Day', 'Type', 'Amount'])
+                                      columns=['Day', 'Type', 'Amount']).sort_values('Day', ascending=True)
 
                 # plot chart
                 fig, ax = plt.subplots(figsize=(10.5, 6), dpi=100)
@@ -3940,7 +3962,7 @@ class Statistic3(tk.Frame):
                 ax.xaxis.label.set_color('white')
                 ax.yaxis.label.set_color('white')
                 ax.tick_params(colors='white', which='both')
-                sns.barplot(x='Day', y='Amount', data=dfbar2, hue='Type', palette="Pastel1", ci=None)
+                sns.barplot(x='Day', y='Amount', data=dfbar2, hue='Type', palette="Pastel1", errorbar=None)
                 for c in ax.containers:
                     ax.bar_label(c, fmt='%.2f', color='white')
                 plt.ylabel("Amount (RM)", fontsize=15, color='#ffffff')
@@ -3955,7 +3977,7 @@ class Statistic3(tk.Frame):
                 fig.patch.set_facecolor('#1A1A1A')
                 toolbar = NavigationToolbar2Tk(canvass, self.scroll_frame)
                 toolbar.update()
-                toolbar.place(x=385, y=660)
+                toolbar.place(x=22, y=660)
                 canvass.get_tk_widget().configure(highlightbackground='white', highlightthickness=3)
 
                 # ============================== charts 1 Month Income in Category =====================================
@@ -4423,6 +4445,11 @@ class Account(tk.Frame):
         self.updatetree()
 
         # ============= Buttons ===============
+        self.account_refresh = ImageTk.PhotoImage(Image.open('refresh.png').resize((20, 20),
+                                                                                       resample=Image.LANCZOS))
+        self.account_refresh_b = tk.Button(self.rightFrame, image=self.account_refresh, bg='#1A1A1A',
+                                           relief='flat', command=self.updatetree)
+        self.account_refresh_b.place(x=225, y=23)
         self.add_button = customtkinter.CTkButton(self.rightFrame, text='Add', width=50, height=30, text_color='black',
                                                   fg_color="#b4a7d6", hover_color="#ffffff",
                                                   command=lambda: self.addAccountWindow())
@@ -5043,14 +5070,14 @@ class Transaction(tk.Frame):
 
         self.total_in_a = Label(self.side_frame, font=tkFont.Font(family='calibri', size=15), bg='#1A1A1A',
                                 fg='lightgreen')
-        self.total_in_a.place(x=600, y=65)
+        self.total_in_a.place(x=620, y=65)
 
         self.total_ex = Label(self.side_frame, font=tkFont.Font(family='calibri', size=15), bg='#1A1A1A',
                               text='Total Expense: ', fg='red')
         self.total_ex.place(x=725, y=65)
 
         self.total_ex_a = Label(self.side_frame, font=tkFont.Font(family='calibri', size=15), bg='#1A1A1A', fg='red')
-        self.total_ex_a.place(x=835, y=65)
+        self.total_ex_a.place(x=850, y=65)
 
         # get total income from database
         cursor.execute("SELECT sum(t.amount) FROM transactions t, user u, type ty WHERE t.user_id = u.user_id AND "
@@ -5201,15 +5228,20 @@ class Transaction(tk.Frame):
 
                 # validate income or expense
                 # update the income amount to the selected account in the database
+                cursor.execute("SELECT acc_amount FROM account WHERE acc_id=?", (self.accountid,))
+                self.Balance = cursor.fetchall()
+                self.balance = self.Balance[0][0]
                 if self.typeid == 1:
-                    cursor.execute("UPDATE account SET acc_amount = (acc_amount+?) WHERE acc_id = ?",
-                                   (self.amount, self.accountid,))
+                    self.new_amount = round(float(self.balance + self.amount), 2)
+                    cursor.execute("UPDATE account SET acc_amount = ? WHERE acc_id = ?",
+                                   (self.new_amount, self.accountid,))
                     connect.commit()
 
                 # update the expense amount to the selected account in the database
                 else:
-                    cursor.execute("UPDATE account SET acc_amount = (acc_amount-?) WHERE acc_id = ?",
-                                   (self.amount, self.accountid,))
+                    self.new_amount = round(float(self.balance - self.amount), 2)
+                    cursor.execute("UPDATE account SET acc_amount = ? WHERE acc_id = ?",
+                                   (self.new_amount, self.accountid,))
                     connect.commit()
                 self.root.destroy()
 
@@ -5360,61 +5392,62 @@ class Transaction(tk.Frame):
 
                 # validate the condition to update the amount of the account in database
                 # if the user did not change the account
+                cursor.execute("SELECT acc_amount FROM account WHERE acc_id=?", (self.accountid,))
+                self.Balance = cursor.fetchall()
+                self.balance = self.Balance[0][0]
                 if self.oriacc == self.accountid:
                     # if the original type is income
                     if self.oritypeid == 1:
                         # if the user did not change the type
                         if self.typeid == 1:
-                            cursor.execute("UPDATE account SET acc_amount = (acc_amount-?+?) WHERE acc_id = ?",
-                                           (self.oriamount, self.amount_entry.get(), self.accountid,))
+                            self.new_amount = round(float(self.balance-self.oriamount+self.amount), 2)
                         # if the user change the type to expense
                         else:
-                            cursor.execute("UPDATE account SET acc_amount = (acc_amount-?-?) WHERE acc_id = ?",
-                                           (self.oriamount, self.amount_entry.get(), self.accountid,))
+                            self.new_amount = round(float(self.balance-self.oriamount-self.amount), 2)
 
                     # if the original type is expense
                     else:
                         # if the user change the type to income
                         if self.typeid == 1:
-                            cursor.execute("UPDATE account SET acc_amount = (acc_amount+?+?) WHERE acc_id = ?",
-                                           (self.oriamount, self.amount_entry.get(), self.accountid,))
+                            self.new_amount = round(float(self.balance+self.oriamount+self.amount), 2)
 
                         # if the user did not change the type
                         else:
-                            cursor.execute("UPDATE account SET acc_amount = (acc_amount+?-?) WHERE acc_id = ?",
-                                           (self.oriamount, self.amount_entry.get(), self.accountid,))
+                            self.new_amount = round(float(self.balance+self.oriamount-self.amount), 2)
 
                 # if the user change the account
                 else:
                     # if the original type is income
                     if self.oritypeid == 1:
+                        self.replace_amount = round(float(self.balance-self.oriamount), 2)
                         cursor.execute("UPDATE account SET acc_amount = (acc_amount-?) WHERE acc_id = ?",
                                        (self.oriamount, self.oriacc,))
+                        connect.commit()
 
                         # if the user did not change the type
                         if self.typeid == 1:
-                            cursor.execute("UPDATE account SET acc_amount = (acc_amount+?) WHERE acc_id = ?",
-                                           (self.amount_entry.get(), self.accountid,))
+                            self.new_amount = round(float(self.balance+self.amount), 2)
 
                         # if the user change the type to expense
                         else:
-                            cursor.execute("UPDATE account SET acc_amount = (acc_amount-?) WHERE acc_id = ?",
-                                           (self.amount_entry.get(), self.accountid,))
+                            self.new_amount = round(float(self.balance-self.amount), 2)
 
                     # if the original type is expense
                     else:
+                        self.replace_amount = round(float(self.balance+self.oriamount), 2)
                         cursor.execute("UPDATE account SET acc_amount = (acc_amount+?) WHERE acc_id = ?",
                                        (self.oriamount, self.oriacc,))
+                        connect.commit()
 
                         # if the user change the type to income
                         if self.typeid == 1:
-                            cursor.execute("UPDATE account SET acc_amount = (acc_amount+?) WHERE acc_id = ?",
-                                           (self.amount_entry.get(), self.accountid,))
+                            self.new_amount = round(float(self.balance+self.amount), 2)
 
                         # if the user did not change the type
                         else:
-                            cursor.execute("UPDATE account SET acc_amount = (acc_amount-?) WHERE acc_id = ?",
-                                           (self.amount_entry.get(), self.accountid,))
+                            self.new_amount = round(float(self.balance-self.amount), 2)
+                cursor.execute("UPDATE account SET acc_amount = ? WHERE acc_id = ?", (self.new_amount,
+                                                                                      self.accountid,))
                 connect.commit()
                 self.root.destroy()
 
@@ -5437,6 +5470,7 @@ class Transaction(tk.Frame):
                 cursor.execute("SELECT sum(t.amount) FROM transactions t, user u, type ty WHERE t.user_id = u.user_id "
                                "AND t.type_id = ty.type_id AND t.type_id = 2 AND u.user_id = ? ",
                                (self.controller.shared_user_id['userID'].get(),))
+                self.total_ex_Amount = cursor.fetchall()
                 if self.total_ex_Amount is None:
                     self.total_ex_amount.set(0)
                 else:
@@ -5465,10 +5499,9 @@ class Transaction(tk.Frame):
             self.transid = self.transID[0][0]
             self.oriaccount = selection[1]
             self.oritypeID = selection[3]
-            self.oriamount = selection[4]
-
+            self.oriamount = float(selection[4])
             self.root = Toplevel()
-            self.root.geometry("425x2250")
+            self.root.geometry("425x280")
             self.root.title("Iccountant - Edit Transaction")
             self.root.configure(bg='#1A1A1A')
             self.root.iconphoto(False, tk.PhotoImage(file="logo_refined.png"))
@@ -5561,7 +5594,7 @@ class Transaction(tk.Frame):
                 self.transaction_list.delete(selected)
 
                 # get account amount that selected
-                self.account_amount = selection[4]
+                self.account_amount = float(selection[4])
 
                 # get the transaction id of the selected row from the database
                 cursor.execute("SELECT t.trans_id FROM transactions t, type ty, account a, category c WHERE ty.type_id "
@@ -5585,14 +5618,17 @@ class Transaction(tk.Frame):
 
                 # verify conditions to update account table in database
                 # if the type of the selected row is income
+                cursor.execute("SELECT acc_amount FROM account WHERE acc_id=?", (self.accountid,))
+                self.Balance = cursor.fetchall()
+                self.balance = self.Balance[0][0]
                 if self.typeid == 1:
-                    cursor.execute("UPDATE account SET acc_amount = acc_amount-? WHERE acc_id = ?",
-                                   (self.account_amount, self.accountid,))
+                    self.new_amount = round(float(self.balance-self.account_amount), 2)
 
                 # if the type of the selected row is expense
                 else:
-                    cursor.execute("UPDATE account SET acc_amount = acc_amount+? WHERE acc_id = ?",
-                                   (self.account_amount, self.accountid,))
+                    self.new_amount = round(float(self.balance+self.account_amount), 2)
+                cursor.execute("UPDATE account SET acc_amount = ? WHERE acc_id = ?", (self.new_amount,
+                                                                                      self.accountid,))    
                 connect.commit()
 
                 # remove record in database
@@ -5608,7 +5644,6 @@ class Transaction(tk.Frame):
                                "AND t.type_id = ty.type_id AND t.type_id = 1 AND u.user_id = ? ",
                                (self.controller.shared_user_id['userID'].get(),))
                 self.total_in_Amount = cursor.fetchall()
-
                 if self.total_in_Amount is None:
                     self.total_in_amount.set(0)
                 else:
@@ -5645,6 +5680,7 @@ class Transaction(tk.Frame):
 
         # a list to store the condition variable
         self.variable_list = [self.controller.shared_user_id['userID'].get()]
+        self.variable_list1 = [self.controller.shared_user_id['userID'].get()]
 
         # verify the condition
         if self.account_cbox.get() == 'None':
@@ -5659,6 +5695,7 @@ class Transaction(tk.Frame):
             self.query1 = self.query1 + "AND t.acc_id = ? "
             self.query2 = self.query2 + "AND t.acc_id = ? "
             self.variable_list.append(self.accountid)
+            self.variable_list1.append(self.accountid)
         if self.category_cbox.get() == 'None':
             pass
         else:
@@ -5672,6 +5709,7 @@ class Transaction(tk.Frame):
             self.query1 = self.query1 + "AND c.cat_id = ? "
             self.query2 = self.query2 + "AND c.cat_id = ? "
             self.variable_list.append(self.categoryid)
+            self.variable_list1.append(self.categoryid)
         if self.type_cbox.get() == 'None':
             pass
         else:
@@ -5689,6 +5727,7 @@ class Transaction(tk.Frame):
                 self.query1 = self.query1 + "AND strftime('%Y', t.date) = ? "
                 self.query2 = self.query2 + "AND strftime('%Y', t.date) = ? "
                 self.variable_list.append(self.year_cbox.get())
+                self.variable_list1.append(self.year_cbox.get())
         else:
             if self.year_cbox.get() == 'None':
                 messagebox.showerror('Error', 'Please select the year of the month that you choose.')
@@ -5698,6 +5737,8 @@ class Transaction(tk.Frame):
                 self.query2 = self.query2 + "AND strftime('%Y', t.date) = ? AND strftime('%m', t.date) = ? "
                 self.variable_list.append(self.year_cbox.get())
                 self.variable_list.append(self.month_cbox.get())
+                self.variable_list1.append(self.year_cbox.get())
+                self.variable_list1.append(self.month_cbox.get())
 
         # verify if the user did not filter data with any condition
         if self.account_cbox.get() == 'None' and self.category_cbox.get() == 'None' and self.type_cbox.get() == 'None' \
@@ -5712,6 +5753,7 @@ class Transaction(tk.Frame):
             cursor.execute("SELECT sum(t.amount) FROM transactions t, user u, type ty WHERE t.user_id = u.user_id "
                            "AND t.type_id = ty.type_id AND t.type_id = 1 AND u.user_id = ? ",
                            (self.controller.shared_user_id['userID'].get(),))
+            self.total_in_Amount = cursor.fetchall()
             if self.total_in_Amount is None:
                 self.total_in_amount.set(0)
             else:
@@ -5722,6 +5764,7 @@ class Transaction(tk.Frame):
             cursor.execute("SELECT sum(t.amount) FROM transactions t, user u, type ty WHERE t.user_id = u.user_id "
                            "AND t.type_id = ty.type_id AND t.type_id = 2 AND u.user_id = ? ",
                            (self.controller.shared_user_id['userID'].get(),))
+            self.total_ex_Amount = cursor.fetchall()
             if self.total_ex_Amount is None:
                 self.total_ex_amount.set(0)
             else:
@@ -5733,14 +5776,19 @@ class Transaction(tk.Frame):
         for n, val in enumerate(self.variable_list):
             globals()["var%d" % n] = val
 
+        # assign new variable from the variable list 1
+        for n, val in enumerate(self.variable_list1):
+            globals()["Var%d" % n] = val
+
         # empty treeview
         self.transaction_list.delete(*self.transaction_list.get_children())
+        
         try:
             cursor.execute(self.query, (var0,))
             self.rows = cursor.fetchall()
 
             # get total income from database
-            cursor.execute(self.query1, (var0,))
+            cursor.execute(self.query1, (Var0,))
             self.total_in_Amount = cursor.fetchall()
             if self.total_in_Amount == None:
                 self.total_in_amount.set(0)
@@ -5749,7 +5797,7 @@ class Transaction(tk.Frame):
                 self.total_in_a.config(text=str(self.total_in_amount))
 
             # get total expense from database
-            cursor.execute(self.query2, (var0,))
+            cursor.execute(self.query2, (Var0,))
             self.total_ex_Amount = cursor.fetchall()
             if self.total_ex_Amount == None:
                 self.total_ex_amount.set(0)
@@ -5762,7 +5810,7 @@ class Transaction(tk.Frame):
                 self.rows = cursor.fetchall()
 
                 # get total income from database
-                cursor.execute(self.query1, (var0, var1,))
+                cursor.execute(self.query1, (Var0, Var1,))
                 self.total_in_Amount = cursor.fetchall()
                 if self.total_in_Amount == None:
                     self.total_in_amount.set(0)
@@ -5771,7 +5819,7 @@ class Transaction(tk.Frame):
                     self.total_in_a.config(text=str(self.total_in_amount))
 
                 # get total expense from database
-                cursor.execute(self.query2, (var0, var1,))
+                cursor.execute(self.query2, (Var0, Var1,))
                 self.total_ex_Amount = cursor.fetchall()
                 if self.total_ex_Amount == None:
                     self.total_ex_amount.set(0)
@@ -5784,7 +5832,7 @@ class Transaction(tk.Frame):
                     self.rows = cursor.fetchall()
 
                     # get total income from database
-                    cursor.execute(self.query1, (var0, var1,))
+                    cursor.execute(self.query1, (Var0, Var1, Var2,))
                     self.total_in_Amount = cursor.fetchall()
                     if self.total_in_Amount == None:
                         self.total_in_amount.set(0)
@@ -5793,7 +5841,7 @@ class Transaction(tk.Frame):
                         self.total_in_a.config(text=str(self.total_in_amount))
 
                     # get total expense from database
-                    cursor.execute(self.query2, (var0, var1,))
+                    cursor.execute(self.query2, (Var0, Var1, Var2,))
                     self.total_ex_Amount = cursor.fetchall()
                     if self.total_ex_Amount == None:
                         self.total_ex_amount.set(0)
@@ -5802,11 +5850,11 @@ class Transaction(tk.Frame):
                         self.total_ex_a.config(text=str(self.total_ex_amount))
                 except:
                     try:
-                        cursor.execute(self.query, (var0, var1, var3,))
+                        cursor.execute(self.query, (var0, var1, var2, var3,))
                         self.rows = cursor.fetchall()
 
                         # get total income from database
-                        cursor.execute(self.query1, (var0, var1, var3,))
+                        cursor.execute(self.query1, (Var0, Var1, Var2, Var3,))
                         self.total_in_Amount = cursor.fetchall()
                         if self.total_in_Amount == None:
                             self.total_in_amount.set(0)
@@ -5815,7 +5863,7 @@ class Transaction(tk.Frame):
                             self.total_in_a.config(text=str(self.total_in_amount))
 
                         # get total expense from database
-                        cursor.execute(self.query2, (var0, var1, var3,))
+                        cursor.execute(self.query2, (Var0, Var1, Var2, Var3,))
                         self.total_ex_Amount = cursor.fetchall()
                         if self.total_ex_Amount == None:
                             self.total_ex_amount.set(0)
@@ -5824,11 +5872,11 @@ class Transaction(tk.Frame):
                             self.total_ex_a.config(text=str(self.total_ex_amount))
                     except:
                         try:
-                            cursor.execute(self.query, (var0, var1, var3, var4,))
+                            cursor.execute(self.query, (var0, var1, var2, var3, var4,))
                             self.rows = cursor.fetchall()
 
                             # get total income from database
-                            cursor.execute(self.query1, (var0, var1, var3, var4,))
+                            cursor.execute(self.query1, (Var0, Var1, Var2, Var3, Var4,))
                             self.total_in_Amount = cursor.fetchall()
                             if self.total_in_Amount == None:
                                 self.total_in_amount.set(0)
@@ -5837,7 +5885,7 @@ class Transaction(tk.Frame):
                                 self.total_in_a.config(text=str(self.total_in_amount))
 
                             # get total expense from database
-                            cursor.execute(self.query2, (var0, var1, var3, var4,))
+                            cursor.execute(self.query2, (Var0, Var1, Var2, Var3, Var4,))
                             self.total_ex_Amount = cursor.fetchall()
                             if self.total_ex_Amount == None:
                                 self.total_ex_amount.set(0)
@@ -5845,8 +5893,142 @@ class Transaction(tk.Frame):
                                 self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
                                 self.total_ex_a.config(text=str(self.total_ex_amount))
                         except:
-                            pass
+                            try:
+                                cursor.execute(self.query, (var0, var1, var2, var3, var4, var5,))
+                                self.rows = cursor.fetchall()
 
+                                # get total income from database
+                                cursor.execute(self.query1, (Var0, Var1, Var2, Var3, Var4, Var5,))
+                                self.total_in_Amount = cursor.fetchall()
+                                if self.total_in_Amount == None:
+                                    self.total_in_amount.set(0)
+                                else:
+                                    self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
+                                    self.total_in_a.config(text=str(self.total_in_amount))
+
+                                # get total expense from database
+                                cursor.execute(self.query2, (Var0, Var1, Var2, Var3, Var4, Var5,))
+                                self.total_ex_Amount = cursor.fetchall()
+                                if self.total_ex_Amount == None:
+                                    self.total_ex_amount.set(0)
+                                else:
+                                    self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
+                                    self.total_ex_a.config(text=str(self.total_ex_amount))
+                            except:
+                                try:
+                                    cursor.execute(self.query, (var0, var1,))
+                                    self.rows = cursor.fetchall()
+
+                                    # get total income from database
+                                    cursor.execute(self.query1, (Var0,))
+                                    self.total_in_Amount = cursor.fetchall()
+                                    if self.total_in_Amount == None:
+                                        self.total_in_amount.set(0)
+                                    else:
+                                        self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
+                                        self.total_in_a.config(text=str(self.total_in_amount))
+
+                                    # get total expense from database
+                                    cursor.execute(self.query2, (Var0,))
+                                    self.total_ex_Amount = cursor.fetchall()
+                                    if self.total_ex_Amount == None:
+                                        self.total_ex_amount.set(0)
+                                    else:
+                                        self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
+                                        self.total_ex_a.config(text=str(self.total_ex_amount))
+                                except:
+                                    try:
+                                        cursor.execute(self.query, (var0, var1, var2,))
+                                        self.rows = cursor.fetchall()
+
+                                        # get total income from database
+                                        cursor.execute(self.query1, (Var0, Var1,))
+                                        self.total_in_Amount = cursor.fetchall()
+                                        if self.total_in_Amount == None:
+                                            self.total_in_amount.set(0)
+                                        else:
+                                            self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
+                                            self.total_in_a.config(text=str(self.total_in_amount))
+
+                                        # get total expense from database
+                                        cursor.execute(self.query2, (Var0, Var1,))
+                                        self.total_ex_Amount = cursor.fetchall()
+                                        if self.total_ex_Amount == None:
+                                            self.total_ex_amount.set(0)
+                                        else:
+                                            self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
+                                            self.total_ex_a.config(text=str(self.total_ex_amount))
+                                    except:
+                                        try:
+                                            cursor.execute(self.query, (var0, var1, var2, var3,))
+                                            self.rows = cursor.fetchall()
+
+                                            # get total income from database
+                                            cursor.execute(self.query1, (Var0, Var1, Var2,))
+                                            self.total_in_Amount = cursor.fetchall()
+                                            if self.total_in_Amount == None:
+                                                self.total_in_amount.set(0)
+                                            else:
+                                                self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
+                                                self.total_in_a.config(text=str(self.total_in_amount))
+
+                                            # get total expense from database
+                                            cursor.execute(self.query2, (Var0, Var1, Var2,))
+                                            self.total_ex_Amount = cursor.fetchall()
+                                            if self.total_ex_Amount == None:
+                                                self.total_ex_amount.set(0)
+                                            else:
+                                                self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
+                                                self.total_ex_a.config(text=str(self.total_ex_amount))
+                                        except:
+                                            try:
+                                                cursor.execute(self.query, (var0, var1, var2, var3, var4,))
+                                                self.rows = cursor.fetchall()
+
+                                                # get total income from database
+                                                cursor.execute(self.query1, (Var0, Var1, Var2, Var3,))
+                                                self.total_in_Amount = cursor.fetchall()
+                                                if self.total_in_Amount == None:
+                                                    self.total_in_amount.set(0)
+                                                else:
+                                                    self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
+                                                    self.total_in_a.config(text=str(self.total_in_amount))
+
+                                                # get total expense from database
+                                                cursor.execute(self.query2, (Var0, Var1, Var2, Var3,))
+                                                self.total_ex_Amount = cursor.fetchall()
+                                                if self.total_ex_Amount == None:
+                                                    self.total_ex_amount.set(0)
+                                                else:
+                                                    self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
+                                                    self.total_ex_a.config(text=str(self.total_ex_amount))
+                                            except:
+                                                cursor.execute(self.query, (var0, var1, var2, var3, var4, var5,))
+                                                self.rows = cursor.fetchall()
+
+                                                # get total income from database
+                                                cursor.execute(self.query1, (Var0, Var1, Var2, Var3, Var4,))
+                                                self.total_in_Amount = cursor.fetchall()
+                                                if self.total_in_Amount == None:
+                                                    self.total_in_amount.set(0)
+                                                else:
+                                                    self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
+                                                    self.total_in_a.config(text=str(self.total_in_amount))
+
+                                                # get total expense from database
+                                                cursor.execute(self.query2, (Var0, Var1, Var2, Var3, Var4,))
+                                                self.total_ex_Amount = cursor.fetchall()
+                                                if self.total_ex_Amount == None:
+                                                    self.total_ex_amount.set(0)
+                                                else:
+                                                    self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
+                                                    self.total_ex_a.config(text=str(self.total_ex_amount))
+        print(self.query)
+        print(self.variable_list)
+        print(self.query1)
+        print(self.variable_list1)
+        print(self.query2)
+        print(self.variable_list1)
         # loop to display all the transaction in treeview
         global count
         count = 0
@@ -5927,7 +6109,7 @@ class Transaction(tk.Frame):
         self.month_l = Label(self.root, font=tkFont.Font(family='calibri', size=15), bg='#1A1A1A', text='Month :',
                              fg='white')
         self.month_l.grid(row=5, column=0)
-        self.month_list = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
+        self.month_list = ['None', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
         self.month_cbox = ttk.Combobox(self.root, values=self.month_list, font=tkFont.Font(family='calibri', size=14),
                                        state='readonly',
                                        justify='center')
@@ -6386,7 +6568,7 @@ class Tips(tk.Frame):
         self.currency_b.grid(row=7)
         self.calculator_b = Button(self.menuFrame, image=self.calculator, bg='#000000', relief='flat', command=self.cal)
         self.calculator_b.grid(row=8)
-        self.customer_b = Button(self.menuFrame, image=self.customer, bg='#000000', relief='flat',command=self.chatbot)
+        self.customer_b = Button(self.menuFrame, image=self.customer, bg='#000000', relief='flat', command=self.chatbot)
         self.customer_b.grid(row=9)
         self.tips_b = Button(self.menuFrame, image=self.tips, bg='#000000', relief='flat',
                              command=lambda: self.controller.show_frame(Tips))
@@ -6480,21 +6662,28 @@ class Tips(tk.Frame):
         self.label = tk.Label(self.frame, text='Your 50/30/20 Rule Budget:', fg='white', bg='#1A1A1A',
                               font=tkFont.Font(family='Lato', size=16, weight="bold"))
         self.label.grid(row=0, column=0)
+        self.label1 = tk.Label(self.frame, text='(Enter your budget amount to calculate your budget)', fg='white',
+                               bg='#1A1A1A', font=tkFont.Font(family='Lato', size=12, weight="bold"))
+        self.label1.grid(row=1, column=0)
         self.entry = tk.Entry(self.frame, font=12)
-        self.entry.grid(row=1, column=0, pady=50)
+        self.entry.grid(row=2, column=0, pady=40)
         self.viewBudget = customtkinter.CTkButton(master=self.frame, text='View Budget Plan', width=20, height=40,
                                                   fg_color="#464E63", hover_color="#667190",
                                                   command=self.viewBudgetPlan)
-        self.viewBudget.grid(row=2, column=0)
+        self.viewBudget.grid(row=3, column=0)
 
     def viewBudgetPlan(self):
-        # calculate result of 50/30/20 budget
-        self.budget = float(self.entry.get() or 0)
-        self.spending = self.budget * 0.5
-        self.savings = self.budget * 0.3
-        self.extra = self.budget - self.spending - self.savings
-        self.draw(f"\n\tTotal Budget\t\t: RM {'{:.2f}'.format(self.budget)}\n\tSpending Money\t\t: RM {'{:.2f}'.format(self.spending)} \
-                    \n\tTo Save\t\t: RM {'{:.2f}'.format(self.savings)}\n\tExtra\t\t: RM {'{:.2f}'.format(self.extra)}")
+        try:
+            # calculate result of 50/30/20 budget
+            self.budget = float(self.entry.get())
+            self.spending = self.budget * 0.5
+            self.savings = self.budget * 0.3
+            self.extra = self.budget - self.spending - self.savings
+            self.draw(f"\n\tTotal Budget\t\t: RM {'{:.2f}'.format(self.budget)}\n\tSpending Money\t\t: RM {'{:.2f}'.format(self.spending)} \
+                        \tTo Save\t\t: RM {'{:.2f}'.format(self.savings)}\n\tExtra\t\t: RM {'{:.2f}'.format(self.extra)}")
+            
+        except:
+            messagebox.showerror('Error', "Please fill your budget amount in number.")
 
     def draw(self, msg):
         # display result of 50/30/20 budget
@@ -6502,7 +6691,7 @@ class Tips(tk.Frame):
                                font=tkFont.Font(family='Lato', size=12, weight="bold"))
         self.textBox.insert(1.0, msg)
         self.textBox.config(state='disabled')
-        self.textBox.grid(row=1, column=1)
+        self.textBox.grid(row=2, column=1)
 
     # ========== Call currency convertor class =============
     def con(self):
@@ -6526,3 +6715,5 @@ class Tips(tk.Frame):
 if __name__ == "__main__":
     app = windows()
     app.mainloop()
+
+

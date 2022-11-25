@@ -2659,7 +2659,8 @@ class Statistic2(tk.Frame):
                 # plot chart
                 colors = sns.color_palette("Pastel1")
                 figure = plt.figure(figsize=(10.5, 6), dpi=100)
-                patches, texts, pcts = plt.pie(amount_in_year, labels=category_in_year, autopct='%1.1f%%', colors=colors,
+                patches, texts, pcts = plt.pie(amount_in_year, labels=category_in_year, autopct='%1.1f%%',
+                                               colors=colors,
                                                textprops=dict(fontsize=12))
                 for i, patch in enumerate(patches):
                     texts[i].set_color(patch.get_facecolor())
@@ -4446,7 +4447,7 @@ class Account(tk.Frame):
 
         # ============= Buttons ===============
         self.account_refresh = ImageTk.PhotoImage(Image.open('refresh.png').resize((20, 20),
-                                                                                       resample=Image.LANCZOS))
+                                                                                   resample=Image.LANCZOS))
         self.account_refresh_b = tk.Button(self.rightFrame, image=self.account_refresh, bg='#1A1A1A',
                                            relief='flat', command=self.updatetree)
         self.account_refresh_b.place(x=225, y=23)
@@ -5182,7 +5183,8 @@ class Transaction(tk.Frame):
 
     def insert_transaction(self):
         # validate input
-        if self.account_cbox.get() == 'Select Account' or self.category_cbox.get() == 'Select Category' or self.type_cbox.get() == 'Select Type' or self.amount_entry.get() == '':
+        if self.account_cbox.get() == 'Select Account' or self.category_cbox.get() == 'Select Category' or \
+                self.type_cbox.get() == 'Select Type' or self.amount_entry.get() == '':
             messagebox.showerror('Error', 'Please enter all mandatory field.')
         else:
             try:
@@ -5400,52 +5402,52 @@ class Transaction(tk.Frame):
                     if self.oritypeid == 1:
                         # if the user did not change the type
                         if self.typeid == 1:
-                            self.new_amount = round(float(self.balance-self.oriamount+self.amount), 2)
+                            self.new_amount = round(float(self.balance - self.oriamount + self.amount), 2)
                         # if the user change the type to expense
                         else:
-                            self.new_amount = round(float(self.balance-self.oriamount-self.amount), 2)
+                            self.new_amount = round(float(self.balance - self.oriamount - self.amount), 2)
 
                     # if the original type is expense
                     else:
                         # if the user change the type to income
                         if self.typeid == 1:
-                            self.new_amount = round(float(self.balance+self.oriamount+self.amount), 2)
+                            self.new_amount = round(float(self.balance + self.oriamount + self.amount), 2)
 
                         # if the user did not change the type
                         else:
-                            self.new_amount = round(float(self.balance+self.oriamount-self.amount), 2)
+                            self.new_amount = round(float(self.balance + self.oriamount - self.amount), 2)
 
                 # if the user change the account
                 else:
                     # if the original type is income
                     if self.oritypeid == 1:
-                        self.replace_amount = round(float(self.balance-self.oriamount), 2)
+                        self.replace_amount = round(float(self.balance - self.oriamount), 2)
                         cursor.execute("UPDATE account SET acc_amount = (acc_amount-?) WHERE acc_id = ?",
                                        (self.oriamount, self.oriacc,))
                         connect.commit()
 
                         # if the user did not change the type
                         if self.typeid == 1:
-                            self.new_amount = round(float(self.balance+self.amount), 2)
+                            self.new_amount = round(float(self.balance + self.amount), 2)
 
                         # if the user change the type to expense
                         else:
-                            self.new_amount = round(float(self.balance-self.amount), 2)
+                            self.new_amount = round(float(self.balance - self.amount), 2)
 
                     # if the original type is expense
                     else:
-                        self.replace_amount = round(float(self.balance+self.oriamount), 2)
+                        self.replace_amount = round(float(self.balance + self.oriamount), 2)
                         cursor.execute("UPDATE account SET acc_amount = (acc_amount+?) WHERE acc_id = ?",
                                        (self.oriamount, self.oriacc,))
                         connect.commit()
 
                         # if the user change the type to income
                         if self.typeid == 1:
-                            self.new_amount = round(float(self.balance+self.amount), 2)
+                            self.new_amount = round(float(self.balance + self.amount), 2)
 
                         # if the user did not change the type
                         else:
-                            self.new_amount = round(float(self.balance-self.amount), 2)
+                            self.new_amount = round(float(self.balance - self.amount), 2)
                 cursor.execute("UPDATE account SET acc_amount = ? WHERE acc_id = ?", (self.new_amount,
                                                                                       self.accountid,))
                 connect.commit()
@@ -5622,13 +5624,13 @@ class Transaction(tk.Frame):
                 self.Balance = cursor.fetchall()
                 self.balance = self.Balance[0][0]
                 if self.typeid == 1:
-                    self.new_amount = round(float(self.balance-self.account_amount), 2)
+                    self.new_amount = round(float(self.balance - self.account_amount), 2)
 
                 # if the type of the selected row is expense
                 else:
-                    self.new_amount = round(float(self.balance+self.account_amount), 2)
+                    self.new_amount = round(float(self.balance + self.account_amount), 2)
                 cursor.execute("UPDATE account SET acc_amount = ? WHERE acc_id = ?", (self.new_amount,
-                                                                                      self.accountid,))    
+                                                                                      self.accountid,))
                 connect.commit()
 
                 # remove record in database
@@ -5782,7 +5784,7 @@ class Transaction(tk.Frame):
 
         # empty treeview
         self.transaction_list.delete(*self.transaction_list.get_children())
-        
+
         try:
             cursor.execute(self.query, (var0,))
             self.rows = cursor.fetchall()
@@ -5790,7 +5792,7 @@ class Transaction(tk.Frame):
             # get total income from database
             cursor.execute(self.query1, (Var0,))
             self.total_in_Amount = cursor.fetchall()
-            if self.total_in_Amount == None:
+            if self.total_in_Amount is None:
                 self.total_in_amount.set(0)
             else:
                 self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
@@ -5799,7 +5801,7 @@ class Transaction(tk.Frame):
             # get total expense from database
             cursor.execute(self.query2, (Var0,))
             self.total_ex_Amount = cursor.fetchall()
-            if self.total_ex_Amount == None:
+            if self.total_ex_Amount is None:
                 self.total_ex_amount.set(0)
             else:
                 self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
@@ -5812,7 +5814,7 @@ class Transaction(tk.Frame):
                 # get total income from database
                 cursor.execute(self.query1, (Var0, Var1,))
                 self.total_in_Amount = cursor.fetchall()
-                if self.total_in_Amount == None:
+                if self.total_in_Amount is None:
                     self.total_in_amount.set(0)
                 else:
                     self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
@@ -5821,7 +5823,7 @@ class Transaction(tk.Frame):
                 # get total expense from database
                 cursor.execute(self.query2, (Var0, Var1,))
                 self.total_ex_Amount = cursor.fetchall()
-                if self.total_ex_Amount == None:
+                if self.total_ex_Amount is None:
                     self.total_ex_amount.set(0)
                 else:
                     self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
@@ -5834,7 +5836,7 @@ class Transaction(tk.Frame):
                     # get total income from database
                     cursor.execute(self.query1, (Var0, Var1, Var2,))
                     self.total_in_Amount = cursor.fetchall()
-                    if self.total_in_Amount == None:
+                    if self.total_in_Amount is None:
                         self.total_in_amount.set(0)
                     else:
                         self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
@@ -5843,7 +5845,7 @@ class Transaction(tk.Frame):
                     # get total expense from database
                     cursor.execute(self.query2, (Var0, Var1, Var2,))
                     self.total_ex_Amount = cursor.fetchall()
-                    if self.total_ex_Amount == None:
+                    if self.total_ex_Amount is None:
                         self.total_ex_amount.set(0)
                     else:
                         self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
@@ -5856,7 +5858,7 @@ class Transaction(tk.Frame):
                         # get total income from database
                         cursor.execute(self.query1, (Var0, Var1, Var2, Var3,))
                         self.total_in_Amount = cursor.fetchall()
-                        if self.total_in_Amount == None:
+                        if self.total_in_Amount is None:
                             self.total_in_amount.set(0)
                         else:
                             self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
@@ -5865,7 +5867,7 @@ class Transaction(tk.Frame):
                         # get total expense from database
                         cursor.execute(self.query2, (Var0, Var1, Var2, Var3,))
                         self.total_ex_Amount = cursor.fetchall()
-                        if self.total_ex_Amount == None:
+                        if self.total_ex_Amount is None:
                             self.total_ex_amount.set(0)
                         else:
                             self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
@@ -5878,7 +5880,7 @@ class Transaction(tk.Frame):
                             # get total income from database
                             cursor.execute(self.query1, (Var0, Var1, Var2, Var3, Var4,))
                             self.total_in_Amount = cursor.fetchall()
-                            if self.total_in_Amount == None:
+                            if self.total_in_Amount is None:
                                 self.total_in_amount.set(0)
                             else:
                                 self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
@@ -5887,7 +5889,7 @@ class Transaction(tk.Frame):
                             # get total expense from database
                             cursor.execute(self.query2, (Var0, Var1, Var2, Var3, Var4,))
                             self.total_ex_Amount = cursor.fetchall()
-                            if self.total_ex_Amount == None:
+                            if self.total_ex_Amount is None:
                                 self.total_ex_amount.set(0)
                             else:
                                 self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
@@ -5900,7 +5902,7 @@ class Transaction(tk.Frame):
                                 # get total income from database
                                 cursor.execute(self.query1, (Var0, Var1, Var2, Var3, Var4, Var5,))
                                 self.total_in_Amount = cursor.fetchall()
-                                if self.total_in_Amount == None:
+                                if self.total_in_Amount is None:
                                     self.total_in_amount.set(0)
                                 else:
                                     self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
@@ -5909,7 +5911,7 @@ class Transaction(tk.Frame):
                                 # get total expense from database
                                 cursor.execute(self.query2, (Var0, Var1, Var2, Var3, Var4, Var5,))
                                 self.total_ex_Amount = cursor.fetchall()
-                                if self.total_ex_Amount == None:
+                                if self.total_ex_Amount is None:
                                     self.total_ex_amount.set(0)
                                 else:
                                     self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
@@ -5922,7 +5924,7 @@ class Transaction(tk.Frame):
                                     # get total income from database
                                     cursor.execute(self.query1, (Var0,))
                                     self.total_in_Amount = cursor.fetchall()
-                                    if self.total_in_Amount == None:
+                                    if self.total_in_Amount is None:
                                         self.total_in_amount.set(0)
                                     else:
                                         self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
@@ -5931,7 +5933,7 @@ class Transaction(tk.Frame):
                                     # get total expense from database
                                     cursor.execute(self.query2, (Var0,))
                                     self.total_ex_Amount = cursor.fetchall()
-                                    if self.total_ex_Amount == None:
+                                    if self.total_ex_Amount is None:
                                         self.total_ex_amount.set(0)
                                     else:
                                         self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
@@ -5944,7 +5946,7 @@ class Transaction(tk.Frame):
                                         # get total income from database
                                         cursor.execute(self.query1, (Var0, Var1,))
                                         self.total_in_Amount = cursor.fetchall()
-                                        if self.total_in_Amount == None:
+                                        if self.total_in_Amount is None:
                                             self.total_in_amount.set(0)
                                         else:
                                             self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
@@ -5953,7 +5955,7 @@ class Transaction(tk.Frame):
                                         # get total expense from database
                                         cursor.execute(self.query2, (Var0, Var1,))
                                         self.total_ex_Amount = cursor.fetchall()
-                                        if self.total_ex_Amount == None:
+                                        if self.total_ex_Amount is None:
                                             self.total_ex_amount.set(0)
                                         else:
                                             self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
@@ -5966,7 +5968,7 @@ class Transaction(tk.Frame):
                                             # get total income from database
                                             cursor.execute(self.query1, (Var0, Var1, Var2,))
                                             self.total_in_Amount = cursor.fetchall()
-                                            if self.total_in_Amount == None:
+                                            if self.total_in_Amount is None:
                                                 self.total_in_amount.set(0)
                                             else:
                                                 self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
@@ -5975,7 +5977,7 @@ class Transaction(tk.Frame):
                                             # get total expense from database
                                             cursor.execute(self.query2, (Var0, Var1, Var2,))
                                             self.total_ex_Amount = cursor.fetchall()
-                                            if self.total_ex_Amount == None:
+                                            if self.total_ex_Amount is None:
                                                 self.total_ex_amount.set(0)
                                             else:
                                                 self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
@@ -5988,7 +5990,7 @@ class Transaction(tk.Frame):
                                                 # get total income from database
                                                 cursor.execute(self.query1, (Var0, Var1, Var2, Var3,))
                                                 self.total_in_Amount = cursor.fetchall()
-                                                if self.total_in_Amount == None:
+                                                if self.total_in_Amount is None:
                                                     self.total_in_amount.set(0)
                                                 else:
                                                     self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
@@ -5997,7 +5999,7 @@ class Transaction(tk.Frame):
                                                 # get total expense from database
                                                 cursor.execute(self.query2, (Var0, Var1, Var2, Var3,))
                                                 self.total_ex_Amount = cursor.fetchall()
-                                                if self.total_ex_Amount == None:
+                                                if self.total_ex_Amount is None:
                                                     self.total_ex_amount.set(0)
                                                 else:
                                                     self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
@@ -6009,7 +6011,7 @@ class Transaction(tk.Frame):
                                                 # get total income from database
                                                 cursor.execute(self.query1, (Var0, Var1, Var2, Var3, Var4,))
                                                 self.total_in_Amount = cursor.fetchall()
-                                                if self.total_in_Amount == None:
+                                                if self.total_in_Amount is None:
                                                     self.total_in_amount.set(0)
                                                 else:
                                                     self.total_in_amount = round(float(self.total_in_Amount[0][0]), 2)
@@ -6018,17 +6020,12 @@ class Transaction(tk.Frame):
                                                 # get total expense from database
                                                 cursor.execute(self.query2, (Var0, Var1, Var2, Var3, Var4,))
                                                 self.total_ex_Amount = cursor.fetchall()
-                                                if self.total_ex_Amount == None:
+                                                if self.total_ex_Amount is None:
                                                     self.total_ex_amount.set(0)
                                                 else:
                                                     self.total_ex_amount = round(float(self.total_ex_Amount[0][0]), 2)
                                                     self.total_ex_a.config(text=str(self.total_ex_amount))
-        print(self.query)
-        print(self.variable_list)
-        print(self.query1)
-        print(self.variable_list1)
-        print(self.query2)
-        print(self.variable_list1)
+
         # loop to display all the transaction in treeview
         global count
         count = 0
@@ -6582,16 +6579,16 @@ class Tips(tk.Frame):
 
         # So that it does not depend on the widgets inside the frame
         self.menuFrame.grid_propagate(False)
-        
+
         self.my_canvas = Canvas(self.sideFrame, bg='#1A1A1A', highlightcolor="#1A1A1A")
         self.my_canvas.pack(side=LEFT, fill=BOTH, expand=1)
-        
+
         self.scrollbar = ttk.Scrollbar(self.sideFrame, orient=VERTICAL, command=self.my_canvas.yview)
         self.scrollbar.pack(side=RIGHT, fill=Y)
-        
+
         self.my_canvas.config(yscrollcommand=self.scrollbar.set)
         self.my_canvas.bind('<Configure>', lambda e: self.my_canvas.config(scrollregion=self.my_canvas.bbox("all")))
-        
+
         self.second_frame = Frame(self.my_canvas, bg='#1A1A1A', highlightbackground='#1A1A1A', highlightcolor="#1A1A1A")
         self.my_canvas.create_window((0, 0), window=self.second_frame, anchor="nw")
 
@@ -6679,9 +6676,10 @@ class Tips(tk.Frame):
             self.spending = self.budget * 0.5
             self.savings = self.budget * 0.3
             self.extra = self.budget - self.spending - self.savings
-            self.draw(f"\n\tTotal Budget\t\t: RM {'{:.2f}'.format(self.budget)}\n\tSpending Money\t\t: RM {'{:.2f}'.format(self.spending)} \
+            self.draw(
+                f"\n\tTotal Budget\t\t: RM {'{:.2f}'.format(self.budget)}\n\tSpending Money\t\t: RM {'{:.2f}'.format(self.spending)} \
                         \tTo Save\t\t: RM {'{:.2f}'.format(self.savings)}\n\tExtra\t\t: RM {'{:.2f}'.format(self.extra)}")
-            
+
         except:
             messagebox.showerror('Error', "Please fill your budget amount in number.")
 
@@ -6712,8 +6710,7 @@ class Tips(tk.Frame):
             messagebox.showinfo('Log Out', 'You have successfully Logged Out!')
             self.controller.show_frame(LoginPage)
 
+
 if __name__ == "__main__":
     app = windows()
     app.mainloop()
-
-

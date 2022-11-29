@@ -5,9 +5,6 @@
 Iccountant: Money Management System 
 
 
-Development all done // combine code all done >.<`
-
-
 Report by 30/11
 
 

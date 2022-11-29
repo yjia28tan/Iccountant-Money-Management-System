@@ -9,6 +9,7 @@ from PIL import Image, ImageTk
 import customtkinter
 customtkinter.set_appearance_mode("dark")
 
+
 class Converter:
     def __init__(self, url):
         self.data = requests.get(url).json()
@@ -24,7 +25,6 @@ class Converter:
 
 
 class CurrencyConverter(tk.Tk):
-
     def __init__(self, converter):
         tk.Tk.__init__(self)
         self.title("ICCOUNTANT - Currency Converter")
@@ -137,6 +137,6 @@ class CurrencyConverter(tk.Tk):
 if __name__ == '__main__':
     url = 'https://api.exchangerate-api.com/v4/latest/USD'
     converter = Converter(url)
-
     CurrencyConverter(converter)
     mainloop()
+    

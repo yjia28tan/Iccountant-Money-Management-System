@@ -6726,8 +6726,7 @@ class Tips(tk.Frame):
             messagebox.showinfo('Log Out', 'You have successfully Logged Out!')
             self.controller.show_frame(LoginPage)
 
+            
 if __name__ == "__main__":
     app = windows()
     app.mainloop()
-
-

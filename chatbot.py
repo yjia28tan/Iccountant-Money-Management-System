@@ -23,10 +23,13 @@ class Chatbot:
         self.txt.insert(END, "\n" + "   🤖 🢂 This is your personal chatbot that provides guidance in using the app!")
         self.chatbot_menu()
         self.disabled_state()
+        
         self.e = Entry(self.root, width=85, fg='white', bg="#7d8391", insertbackground='white',
                        font=tkFont.Font(family='Lato', size=11))
+        
         self.sendbtn = customtkinter.CTkButton(master=self.root, text="SEND", width=90, height=30, command=self.send)
         self.sendbtn.grid(row=1, column=1)
+        
         self.send = "   👤 🢂 " + self.e.get()
         self.txt.insert(END, "\n" + self.send)
         self.e.grid(row=1, column=0)

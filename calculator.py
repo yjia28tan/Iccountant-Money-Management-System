@@ -125,9 +125,8 @@ class Calculator:
         self.btn_M_sub = tk.Button(bottom_frame, **btn_params, text="M-", command=self.memory_minus)
         self.btn_M_sub.grid(row=4, column=8)
 
-    # functions
+    # ============ functions ================
     # allows button you click to be put into self.expression
-
     def btn_click(self, expression_val):
         if len(self.expression) >= 23:
             self.expression = self.expression
@@ -137,7 +136,6 @@ class Calculator:
             self.text_input.set(self.expression)
 
     # validate number of dots
-
     def val_dot(self, expression_val):
         self.current = self.expression
         while "." in self.expression:
@@ -145,41 +143,34 @@ class Calculator:
         self.btn_click('.')
 
     # clears last item in string
-
     def btn_clear1(self):
         self.expression = self.expression[:-1]
         self.text_input.set(self.expression)
 
     # adds in a negative sign
-
     def change_signs(self):
         self.expression = '-' + self.expression
         self.text_input.set(self.expression)
 
     # clears memory_recall
-
     def memory_clear(self):
         self.recall = ""
 
     # adds whatever is on the screen to self.recall
-
     def memory_add(self):
         self.recall = self.recall + '+' + self.expression
 
     # minus whatever is on the screen to self.recall
-
     def memory_minus(self):
         self.recall = self.recall + '-' + self.expression
 
     # uses whatever is stored in memory_recall
-
     def answer(self):
         self.answer = self.sum_up
         self.expression = self.expression + self.answer
         self.text_input.set(self.expression)
 
     # uses whatever is stored in memory_recall
-
     def memory_recall(self):
         if self.expression == "":
             self.text_input.set('0' + self.expression + self.recall)
@@ -187,18 +178,15 @@ class Calculator:
             self.text_input.set(self.expression + self.recall)
 
     # clears self.expression
-
     def btn_clear_all(self):
         self.expression = ""
         self.text_input.set("")
 
     # converts self.expression into a mathematical expression and evaluates it
-
     def btn_equal(self):
         self.sum_up = str(eval(self.expression))
         self.text_input.set(self.sum_up)
         self.expression = self.sum_up
-
 
 # tkinter layout
 root = tk.Tk()

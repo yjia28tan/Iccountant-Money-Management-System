@@ -4,12 +4,6 @@
 
 Iccountant: Money Management System 
 
-
-Report by 30/11
-
-
-Presentation on 1st December
-
 - Currency Converter (done)
 - Login, Register -OTP (done)
 - Logout (done)
